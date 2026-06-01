@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Arches Tracker — War Room</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{--orange:#F7A200;--orange-dark:#E07000;--bg:#0D0F1A;--surface:#111320;--border:#1E2240;--green:#16A34A;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100vh;overflow:hidden;}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
+  .proj-btn{transition:all 0.2s;cursor:pointer}.proj-btn:hover{transform:translateY(-1px)}
+  .cbtn{transition:all 0.12s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:6px}
+  .cbtn:active{transform:scale(0.85)}
+  .arow{transition:background 0.15s}.arow:hover{background:rgba(247,162,0,0.05)!important}
+  #header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50}
+  #layout{display:grid;grid-template-columns:200px 1fr 230px;height:calc(100vh - 56px);overflow:hidden}
+  #left{background:var(--surface);border-right:1px solid var(--border);padding:12px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+  #center{overflow-y:auto;padding:14px 16px;background:var(--bg)}
+  #right{background:var(--surface);border-left:1px solid var(--border);padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  .ring-wrap{position:relative;flex-shrink:0}
+  .ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;color:#fff}
+  .stat-box{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 10px}
+  .stat-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:900;line-height:1}
+  .stat-lbl{font-size:8px;color:rgba(255,255,255,0.35);letter-spacing:0.8px;margin-top:1px;text-transform:uppercase}
+  .btn-slack{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35);border-radius:8px;padding:7px 12px;color:#F7A200;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+  .btn-slack:hover{background:rgba(247,162,0,0.25)}
+  .btn-eod{background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(247,162,0,0.4);white-space:nowrap}
+  .btn-eod:hover{transform:translateY(-1px)}
+  .btn-eod:disabled,.btn-slack:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+  .proj-card-left{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-left:3px solid transparent;border-radius:9px;padding:9px 10px}
+  .mini-bar{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+  .side-panel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:11px;overflow:hidden}
+  .side-head{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);background:linear-gradient(135deg,rgba(247,162,0,0.1),transparent);display:flex;align-items:center;gap:6px}
+  .side-title{font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#F7A200;letter-spacing:2px}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:11px;padding:11px 22px;font-size:12px;font-weight:600;opacity:0;transition:all 0.35s;pointer-events:none;z-index:998;box-shadow:0 6px 24px rgba(0,0,0,0.5);white-space:nowrap;border:1px solid rgba(255,255,255,0.08)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+  #gbar{height:2px;background:var(--border)}
+  #gbar-fill{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
+</style>
+</head>
+<body>
+<div id="confetti-wrap"></div>
+<div id="header">
+  <div style="display:flex;align-items:center;gap:10px">
+    <svg width="30" height="20" viewBox="0 0 200 130" fill="none">
+      <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
+      <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
+      <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+      <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
+      <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+      <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
+    </svg>
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
+      <div style="font-size:8px;color:#F7A200;letter-spacing:2.5px" id="header-date">WAR ROOM</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="ring-wrap" style="width:42px;height:42px">
+      <svg width="42" height="42" style="transform:rotate(-90deg);position:absolute">
+        <circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+        <circle cx="21" cy="21" r="18" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="113.1" id="ring-circle" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-label" style="font-size:11px" id="ring-label">0%</div>
+    </div>
+    <div class="stat-box"><div class="stat-val" id="stat-targets">0/0</div><div class="stat-lbl">Targets</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-checks">0/0</div><div class="stat-lbl">Checks</div></div>
+    <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:5px 12px;text-align:center">
+      <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase">ENDS 17:00</div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900" id="timer-val">—</div>
+      <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="timer-now">—</div>
+    </div>
+    <div id="slack-ind" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
+    <input id="uname" placeholder="Tu nombre…" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:5px 10px;font-size:11px;font-family:'DM Mono',monospace;outline:none;color:#fff;width:120px"/>
+    <button class="btn-slack" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
+    <button class="btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Debrief</button>
+  </div>
+</div>
+<div id="gbar"><div id="gbar-fill"></div></div>
+<div id="layout">
+  <div id="left">
+    <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">PROYECTOS HOY</div>
+    <div id="proj-list"></div>
+    <div style="margin-top:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:9px 10px">
+      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TOTALES HOY</div>
+      <div id="totals-list"></div>
+    </div>
+  </div>
+  <div id="center"><div id="proj-header"></div><div id="actions-list"></div></div>
+  <div id="right">
+    <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:11px;padding:10px 12px">
+      <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ SLACK AUTO</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.7">
+        🟢 Auto-notifica al completar cada proyecto<br>
+        🏆 Debrief automático al terminar todo<br>
+        Canal: <span style="color:#E879F9;font-weight:700">#bogota-actions-taken</span>
+      </div>
+      <div id="slack-live" style="margin-top:8px;display:none;align-items:center;gap:6px;border-radius:7px;padding:6px 10px">
+        <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="slack-dot"></div>
+        <span style="font-size:9px;font-weight:600" id="slack-txt"></span>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">ACTIVIDAD</span></div>
+      <div id="activity-feed" style="max-height:220px;overflow-y:auto;padding:3px 0">
+        <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">Sin actividad aún…</div>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="side-head"><span class="side-title">🗂️ OVERVIEW</span></div>
+      <div id="overview-list"></div>
+    </div>
+    <div>
+      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:5px;font-weight:700">TU NOMBRE</div>
+      <input id="uname2" placeholder="e.g. Juan Valentin" oninput="document.getElementById('uname').value=this.value"
+        style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace;outline:none;color:#fff"/>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+// Slack goes through our own server (no CORS issues)
+const SLACK_API = "/api/slack";
+
+const PROJECTS = [
+  { id:"p0", name:"stax_us_undercarriage",                  short:"Stax Undercarriage", color:"#F7A200" },
+  { id:"p1", name:"oliverwyman_us_service_automation",       short:"OW Service Auto",    color:"#E07000" },
+  { id:"p2", name:"advancy_us_f-b_nutraceutical_market",    short:"F&B Nutra",          color:"#F59E0B" },
+  { id:"p3", name:"oliverwyman_us_shipping",                 short:"OW Shipping",        color:"#D97706" },
+  { id:"p4", name:"advancy_us_specialty_plant",              short:"Specialty Plant",    color:"#B45309" },
+];
+
+const ACTIONS = [
+  { id:"emails",      emoji:"📧", name:"Emails",              target:40 },
+  { id:"inmails",     emoji:"💼", name:"InMails",              target:10 },
+  { id:"connections", emoji:"🔗", name:"Connections",          target:25 },
+  { id:"calls",       emoji:"📞", name:"Cold Calls",           target:20 },
+  { id:"sms",         emoji:"💬", name:"SMS / iMessage",       target:15 },
+  { id:"proposals",   emoji:"🤝", name:"Proposals",            target:3  },
+  { id:"int_sched",   emoji:"🎙️", name:"Interviews Sched.",    target:2  },
+  { id:"int_done",    emoji:"📅", name:"Interviews Done",      target:1  },
+  { id:"followups",   emoji:"🔄", name:"Follow Ups",           target:20 },
+  { id:"db_leads",    emoji:"🗂️", name:"DB Leads",             target:1  },
+  { id:"expansion",   emoji:"📈", name:"Lead Expansion",       target:60 },
+];
+
+const S={checks:{},counts:{},notes:{},active:"p0",completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[]};
+const getName=()=>document.getElementById("uname").value.trim()||"Team member";
+
+async function slackSend(text){
+  setSlackUI("sending");
+  try{
+    const res=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
+    const data=await res.json();
+    if(data.ok){setSlackUI("success");return true;}
+    else{setSlackUI("error",data.error);return false;}
+  }catch(e){setSlackUI("error","network");return false;}
+}
+
+function setSlackUI(status,detail){
+  const cfgs={
+    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",label:"Enviando…",anim:"pulse 1s infinite"},
+    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",label:"✅ Slack enviado!",anim:"none"},
+    error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",label:`⚠️ ${detail||"Error"}`,anim:"none"},
+  };
+  const c=cfgs[status];
+  const ind=document.getElementById("slack-ind");
+  ind.style.cssText=`display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${c.bc};background:${c.bg};color:${c.color};animation:${c.anim}`;
+  ind.textContent=c.label;
+  const live=document.getElementById("slack-live");live.style.display="flex";live.style.background=c.bg;
+  document.getElementById("slack-dot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${c.dot};box-shadow:0 0 6px ${c.dot};flex-shrink:0`;
+  document.getElementById("slack-txt").style.color=c.color;document.getElementById("slack-txt").textContent=c.label;
+  ["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
+  if(status!=="sending")setTimeout(()=>{ind.style.display="none";live.style.display="none";["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
+}
+
+function buildProjectMsg(proj){
+  const name=getName();
+  let m=`🎉 *Proyecto Completado!*\n*${name}* terminó *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
+  ACTIONS.forEach(a=>{const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k];m+=`${cnt>=a.target?"✅":"⬜"} ${a.emoji} *${a.name}:* ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
+  return m;
+}
+
+function buildEODMsg(){
+  const name=getName(),date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
+  let m=`🏆 *DEBRIEF FINAL — ${name}*\n*${date}* | *${pct}% completado*\n\n`;
+  PROJECTS.forEach(proj=>{
+    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swElapsed[proj.id]||0)/60000);
+    m+=`*${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
+    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`];if(cnt>0||note)m+=`  ${a.emoji} ${a.name}: ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
+    m+="\n";
+  });
+  m+=`📊 *Grand Totals:*\n`;
+  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0)m+=`${a.emoji} ${a.name}: *${t}*\n`;});
+  return m;
+}
+
+function buildUpdateMsg(){
+  const name=getName(),date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
+  let m=`📊 *Update — ${name}* | *${date}* | ${pct}% completado\n\n`;
+  PROJECTS.forEach(proj=>{
+    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+    m+=`*${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
+    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0;if(cnt>0)m+=`  ${a.emoji} ${a.name}: ${cnt}/${a.target}\n`;});
+    m+="\n";
+  });
+  return m;
+}
+
+async function sendUpdate(){const ok=await slackSend(buildUpdateMsg());showToast(ok?"📊 Update enviado!":"⚠️ Error",ok?"success":"error");}
+async function sendEOD(){const ok=await slackSend(buildEODMsg());showToast(ok?"🏆 Debrief enviado!":"⚠️ Error",ok?"success":"error");}
+async function notifyProject(pid){const proj=PROJECTS.find(p=>p.id===pid),ok=await slackSend(buildProjectMsg(proj));showToast(ok?`✅ ${proj.short} notificado!`:"⚠️ Error",ok?"success":"error");}
+
+function checkComplete(pid){
+  const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
+  if(done&&!S.completed[pid]){
+    S.completed[pid]=true;logAct("🎉",`¡${proj.short} 100% completado!`);
+    fireConfetti();showToast(`🎉 ¡${proj.short} listo! Notificando Slack…`,"success");
+    slackSend(buildProjectMsg(proj)).then(ok=>showToast(ok?`✅ Slack notificado!`:"⚠️ Slack falló",ok?"success":"error"));
+    if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
+      S.allDone=true;fireConfetti(true);
+      setTimeout(()=>{showToast("🏆 ¡TODO LISTO! Enviando debrief…","success");slackSend(buildEODMsg());},1800);
+    }
+  }else if(!done){S.completed[pid]=false;S.allDone=false;}
+}
+
+function toggleSW(pid){
+  if(S.swRunning[pid]){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;}
+  else{const t0=Date.now()-(S.swElapsed[pid]||0);S.swIv[pid]=setInterval(()=>{S.swElapsed[pid]=Date.now()-t0;updateSW(pid);},500);S.swRunning[pid]=true;}
+  renderLeft();renderProjHeader();
+}
+function resetSW(pid){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;S.swElapsed[pid]=0;renderLeft();renderProjHeader();}
+function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
+function updateSW(pid){["sw-left-"+pid,"sw-center"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=fmtT(S.swElapsed[pid]||0);el.style.color=S.swRunning[pid]?PROJECTS.find(p=>p.id===pid).color:"#fff";}});}
+
+function addCount(pid,aid,delta){
+  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,prev+delta);
+  S.counts[key]=next;
+  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
+  else if(next<a.target&&prev>=a.target){S.checks[key]=false;}
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
+}
+function toggleCheck(pid,aid){
+  const key=`${pid}_${aid}`;S.checks[key]=!S.checks[key];
+  const a=ACTIONS.find(x=>x.id===aid),proj=PROJECTS.find(x=>x.id===pid);
+  if(S.checks[key])logAct("✅",`${getName()} ✓ ${a.name} · ${proj.short}`);
+  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
+}
+
+function renderAll(){
+  document.getElementById("header-date").textContent="WAR ROOM · "+new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
+  renderLeft();renderCenter();renderOverview();updateGlobal();updateTimer();
+}
+
+function renderLeft(){
+  const list=document.getElementById("proj-list");list.innerHTML="";
+  PROJECTS.forEach(proj=>{
+    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
+    const d=document.createElement("div");d.className="proj-btn proj-card-left";
+    d.style.cssText=`border-left-color:${allDone?"#16A34A":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"50":"rgba(255,255,255,0.05)"};background:${isAct?`linear-gradient(135deg,${proj.color}22,${proj.color}0A)`:"rgba(255,255,255,0.02)"};box-shadow:${isAct?`0 0 16px ${proj.color}18`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
+    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.45)"};line-height:1.3;flex:1;padding-right:4px">${proj.short}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:900;color:${allDone?"#4ADE80":"rgba(255,255,255,0.5)"}">${allDone?"✓":pct+"%"}</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><span id="sw-left-${proj.id}" style="font-size:9px;color:${S.swRunning[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="event.stopPropagation();toggleSW('${proj.id}')" style="width:16px;height:16px;border-radius:4px;border:none;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color+"35"};color:${S.swRunning[proj.id]?"#FF6B6B":proj.color};font-size:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">${S.swRunning[proj.id]?"⏸":"▶"}</button></div>`;
+    d.onclick=()=>{S.active=proj.id;renderAll();};
+    list.appendChild(d);
+  });
+  const tl=document.getElementById("totals-list");tl.innerHTML="";let any=false;
+  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
+  if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">Sin actividad aún</div>`;
+}
+
+function renderCenter(){renderProjHeader();renderActions();}
+
+function renderProjHeader(){
+  const proj=PROJECTS.find(p=>p.id===S.active),done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
+  document.getElementById("proj-header").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="position:relative;width:54px;height:54px;flex-shrink:0"><svg width="54" height="54" style="transform:rotate(-90deg);position:absolute"><circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="27" cy="27" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#fff">${proj.name}</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} acciones · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit</div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 12px;border:1px solid rgba(255,255,255,0.07)"><span id="sw-center" style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${S.swRunning[proj.id]?proj.color:"#fff"};min-width:54px;text-align:center">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="toggleSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color};color:${S.swRunning[proj.id]?"#FF6B6B":"#fff"};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${S.swRunning[proj.id]?"⏸":"▶"}</button><button onclick="resetSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:11px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProject('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:8px;padding:7px 12px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notificar Slack</button></div></div>`;
+}
+
+function renderActions(){
+  const al=document.getElementById("actions-list");al.innerHTML="";
+  ACTIONS.forEach(action=>{const d=document.createElement("div");d.id=`ar-${S.active}-${action.id}`;al.appendChild(d);renderActionRow(S.active,action.id);});
+}
+
+function renderActionRow(pid,aid){
+  const el=document.getElementById(`ar-${pid}-${aid}`);if(!el)return;
+  const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
+  const checked=S.checks[key]||false,count=S.counts[key]||0,hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100)),note=S.notes[key]||"";
+  el.className="arow";el.style.cssText=`background:${checked?`${proj.color}07`:"rgba(255,255,255,0.015)"};border:1px solid ${hit?"rgba(22,163,74,0.25)":checked?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.04)"};border-radius:9px;margin-bottom:5px;padding:9px 13px;display:grid;grid-template-columns:26px 1fr 230px 150px;align-items:center;gap:10px`;
+  el.innerHTML=`<div onclick="toggleCheck('${pid}','${aid}')" style="width:20px;height:20px;border-radius:5px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.12)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 10px ${proj.color}50`:"none"};flex-shrink:0">${checked?"✓":""}</div>
+    <div><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:14px">${a.emoji}</span><span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.3)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 6px;border-radius:8px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}</div><div class="mini-bar"><div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EA580C":proj.color};border-radius:2px;transition:width 0.3s"></div></div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count}/${a.target} · ${pctA}%</div></div>
+    <div style="display:flex;align-items:center;gap:3px"><button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:28px;height:26px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:30px;height:26px;background:${proj.color}30;color:#fff;font-size:10px">+1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:30px;height:26px;background:${proj.color}55;color:#fff;font-size:10px">+5</button><button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:36px;height:26px;background:${proj.color}80;color:#fff;font-size:10px;box-shadow:0 2px 8px ${proj.color}40">+10</button><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${hit?"#4ADE80":count>0?"#F7A200":"rgba(255,255,255,0.25)"};min-width:28px;text-align:center">${count}</div></div>
+    <div id="nc-${key}"></div>`;
+  renderNote(key,note);
+}
+
+function renderNote(key,note){
+  const el=document.getElementById(`nc-${key}`);if(!el)return;
+  if(S.editingNote===key){
+    el.innerHTML=`<input id="ni-${key}" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid #F7A200;border-radius:6px;padding:4px 8px;font-size:10px;font-family:'DM Mono',monospace;outline:none;color:#fff" placeholder="+ nota"/>`;
+    const inp=document.getElementById(`ni-${key}`);inp.value=note;inp.focus();
+    const save=()=>{S.notes[key]=inp.value;S.editingNote=null;if(inp.value)logAct("📝","Nota guardada");const[p,a]=key.split("_");renderActionRow(p,a);};
+    inp.onblur=save;inp.onkeydown=e=>{if(e.key==="Enter")inp.blur();};
+  }else{
+    el.innerHTML=`<span onclick="S.editingNote='${key}';renderNote('${key}','${(note||"").replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" style="font-size:10px;color:${note?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${note?"normal":"italic"};cursor:text;font-weight:${note?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note||"+ nota"}</span>`;
+  }
+}
+
+function renderOverview(){
+  const ol=document.getElementById("overview-list");ol.innerHTML="";
+  PROJECTS.forEach(proj=>{const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;ol.innerHTML+=`<div onclick="S.active='${proj.id}';renderAll()" style="padding:7px 12px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"};transition:background 0.15s"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span></div><div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div></div>`;});
+}
+
+function updateGlobal(){
+  const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=Math.round(tc/ti*100);
+  const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
+  document.getElementById("ring-circle").setAttribute("stroke-dashoffset",(113.1-(pct/100)*113.1).toFixed(1));
+  document.getElementById("ring-label").textContent=pct+"%";
+  document.getElementById("stat-targets").textContent=`${th}/${ti}`;
+  document.getElementById("stat-checks").textContent=`${tc}/${ti}`;
+  document.getElementById("gbar-fill").style.width=pct+"%";
+}
+
+function updateTimer(){
+  const now=new Date(),dl=new Date();dl.setHours(17,0,0,0);
+  const ms=dl-now,h=Math.max(0,Math.floor(ms/3600000)),m=Math.max(0,Math.floor((ms%3600000)/60000)),urgent=h<2&&ms>0;
+  const t=document.getElementById("timer");
+  t.style.background=urgent?"rgba(220,38,38,0.15)":"rgba(255,255,255,0.04)";
+  t.style.border=urgent?"1px solid rgba(220,38,38,0.4)":"1px solid rgba(255,255,255,0.08)";
+  t.style.animation=urgent?"pulse 1.5s infinite":"none";
+  document.getElementById("timer-val").textContent=ms<=0?"⏰ UP":`${h}h${m}m`;
+  document.getElementById("timer-val").style.color=urgent?"#FF6B6B":"#fff";
+  document.getElementById("timer-now").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+}
+
+function logAct(emoji,text){
+  const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
+  const f=document.getElementById("activity-feed");f.innerHTML="";
+  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:6px;animation:slideIn 0.3s ease;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
+}
+
+function fireConfetti(big=false){
+  const w=document.getElementById("confetti-wrap");w.innerHTML="";
+  const cols=["#F7A200","#E07000","#FFD60A","#FF6B6B","#51CF66","#4DABF7","#CC5DE8"];
+  for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*9}px;height:${5+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>0.5?"50%":"2px"};animation:confettiFall ${1.5+Math.random()*1.2}s ${Math.random()*0.8}s ease-in forwards`;w.appendChild(el);}
+  setTimeout(()=>w.innerHTML="",big?5000:3500);
+}
+
+function showToast(msg,type="info"){
+  const t=document.getElementById("toast");
+  t.style.background=type==="success"?"linear-gradient(135deg,#16A34A,#15803D)":type==="error"?"linear-gradient(135deg,#DC2626,#B91C1C)":"linear-gradient(135deg,#1E2240,#111320)";
+  t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),4500);
+}
+
+document.getElementById("uname").oninput=function(){document.getElementById("uname2").value=this.value;};
+renderAll();
+setInterval(updateTimer,30000);
+setInterval(()=>PROJECTS.forEach(p=>{if(S.swRunning[p.id])updateSW(p.id);}),1000);
+</script>
+</body>
+</html>
