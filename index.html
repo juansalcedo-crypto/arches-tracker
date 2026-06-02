@@ -12,14 +12,37 @@
   ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
   @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-  @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
-  .proj-btn{transition:all 0.2s;cursor:pointer}.proj-btn:hover{transform:translateY(-1px)}
-  .cbtn{transition:all 0.12s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:6px}
-  .cbtn:active{transform:scale(0.85)}
-  .arow{transition:background 0.15s}.arow:hover{background:rgba(247,162,0,0.05)!important}
-  #header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50}
-  #layout{display:grid;grid-template-columns:200px 1fr 230px;height:calc(100vh - 56px);overflow:hidden}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  /* SETUP SCREEN */
+  #setup-screen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
+  .setup-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px 40px;max-width:580px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+  .setup-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+  .setup-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+  .setup-sub{font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:2px}
+  .setup-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+  .setup-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:border-color 0.2s}
+  .setup-input:focus{border-color:#F7A200;box-shadow:0 0 0 3px rgba(247,162,0,0.1)}
+  .setup-input::placeholder{color:rgba(255,255,255,0.2)}
+  .proj-input-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;animation:slideIn 0.3s ease}
+  .proj-num{font-size:10px;color:rgba(255,255,255,0.25);width:18px;text-align:right;flex-shrink:0}
+  .proj-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;font-size:12px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:all 0.2s}
+  .proj-input:focus{border-color:#F7A200;background:rgba(247,162,0,0.05)}
+  .proj-input::placeholder{color:rgba(255,255,255,0.15)}
+  .proj-remove{width:24px;height:24px;border-radius:6px;border:none;background:rgba(220,38,38,0.15);color:#FF6B6B;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0}
+  .proj-remove:hover{background:rgba(220,38,38,0.3)}
+  .btn-add-proj{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:8px 14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;width:100%;transition:all 0.2s;margin-bottom:24px}
+  .btn-add-proj:hover{border-color:rgba(247,162,0,0.4);color:#F7A200;background:rgba(247,162,0,0.05)}
+  .btn-start{width:100%;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:12px;padding:14px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 20px rgba(247,162,0,0.4);transition:all 0.2s;letter-spacing:0.5px}
+  .btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(247,162,0,0.5)}
+  .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+  /* MAIN APP */
+  #app{display:none;flex-direction:column;height:100vh}
+  #header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50;flex-shrink:0}
+  #layout{display:grid;grid-template-columns:200px 1fr 230px;flex:1;overflow:hidden}
   #left{background:var(--surface);border-right:1px solid var(--border);padding:12px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
   #center{overflow-y:auto;padding:14px 16px;background:var(--bg)}
   #right{background:var(--surface);border-left:1px solid var(--border);padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
@@ -33,6 +56,12 @@
   .btn-eod{background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(247,162,0,0.4);white-space:nowrap}
   .btn-eod:hover{transform:translateY(-1px)}
   .btn-eod:disabled,.btn-slack:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+  .btn-reset-day{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 12px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .btn-reset-day:hover{color:#fff;border-color:rgba(255,255,255,0.2)}
+  .proj-btn{transition:all 0.2s;cursor:pointer}.proj-btn:hover{transform:translateY(-1px)}
+  .cbtn{transition:all 0.12s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:6px}
+  .cbtn:active{transform:scale(0.85)}
+  .arow{transition:background 0.15s}.arow:hover{background:rgba(247,162,0,0.05)!important}
   .proj-card-left{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-left:3px solid transparent;border-radius:9px;padding:9px 10px}
   .mini-bar{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
   .side-panel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:11px;overflow:hidden}
@@ -41,119 +70,214 @@
   #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:11px;padding:11px 22px;font-size:12px;font-weight:600;opacity:0;transition:all 0.35s;pointer-events:none;z-index:998;box-shadow:0 6px 24px rgba(0,0,0,0.5);white-space:nowrap;border:1px solid rgba(255,255,255,0.08)}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   #confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
-  #gbar{height:2px;background:var(--border)}
+  #gbar{height:2px;background:var(--border);flex-shrink:0}
   #gbar-fill{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
 </style>
 </head>
 <body>
 <div id="confetti-wrap"></div>
-<div id="header">
-  <div style="display:flex;align-items:center;gap:10px">
-    <svg width="30" height="20" viewBox="0 0 200 130" fill="none">
-      <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-      <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
-      <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-      <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
-      <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
-      <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
-    </svg>
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
-      <div style="font-size:8px;color:#F7A200;letter-spacing:2.5px" id="header-date">WAR ROOM</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:10px;align-items:center">
-    <div class="ring-wrap" style="width:42px;height:42px">
-      <svg width="42" height="42" style="transform:rotate(-90deg);position:absolute">
-        <circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
-        <circle cx="21" cy="21" r="18" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="113.1" id="ring-circle" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+
+<!-- ── SETUP SCREEN ── -->
+<div id="setup-screen">
+  <div class="setup-box">
+    <div class="setup-logo">
+      <svg width="40" height="26" viewBox="0 0 200 130" fill="none">
+        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
+        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
       </svg>
-      <div class="ring-label" style="font-size:11px" id="ring-label">0%</div>
+      <div>
+        <div class="setup-title">ARCHES TRACKER</div>
+        <div class="setup-sub">WAR ROOM · <span id="setup-date"></span></div>
+      </div>
     </div>
-    <div class="stat-box"><div class="stat-val" id="stat-targets">0/0</div><div class="stat-lbl">Targets</div></div>
-    <div class="stat-box"><div class="stat-val" id="stat-checks">0/0</div><div class="stat-lbl">Checks</div></div>
-    <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:5px 12px;text-align:center">
-      <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase">ENDS 17:00</div>
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900" id="timer-val">—</div>
-      <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="timer-now">—</div>
+
+    <!-- Name -->
+    <div style="margin-bottom:20px">
+      <div class="setup-label">Tu nombre</div>
+      <input class="setup-input" id="setup-name" placeholder="e.g. Juan Valentin" maxlength="40"/>
     </div>
-    <div id="slack-ind" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-    <input id="uname" placeholder="Tu nombre…" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:5px 10px;font-size:11px;font-family:'DM Mono',monospace;outline:none;color:#fff;width:120px"/>
-    <button class="btn-slack" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
-    <button class="btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Debrief</button>
+
+    <!-- Projects -->
+    <div style="margin-bottom:12px">
+      <div class="setup-label">Proyectos de hoy <span style="color:rgba(255,255,255,0.25);font-weight:400">(mínimo 1, máximo 8)</span></div>
+    </div>
+    <div id="proj-inputs"></div>
+    <button class="btn-add-proj" id="btn-add" onclick="addProjInput()">+ Agregar proyecto</button>
+
+    <button class="btn-start" id="btn-start" onclick="startDay()">🚀 EMPEZAR DÍA</button>
   </div>
 </div>
-<div id="gbar"><div id="gbar-fill"></div></div>
-<div id="layout">
-  <div id="left">
-    <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">PROYECTOS HOY</div>
-    <div id="proj-list"></div>
-    <div style="margin-top:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:9px 10px">
-      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TOTALES HOY</div>
-      <div id="totals-list"></div>
+
+<!-- ── MAIN APP ── -->
+<div id="app">
+  <div id="header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="30" height="20" viewBox="0 0 200 130" fill="none">
+        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
+        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
+      </svg>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
+        <div style="font-size:8px;color:#F7A200;letter-spacing:2.5px" id="header-date">WAR ROOM</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div class="ring-wrap" style="width:42px;height:42px">
+        <svg width="42" height="42" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+          <circle cx="21" cy="21" r="18" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="113.1" id="ring-circle" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-label" style="font-size:11px" id="ring-label">0%</div>
+      </div>
+      <div class="stat-box"><div class="stat-val" id="stat-targets">0/0</div><div class="stat-lbl">Targets</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-checks">0/0</div><div class="stat-lbl">Checks</div></div>
+      <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:5px 12px;text-align:center">
+        <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase">ENDS 17:00</div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900" id="timer-val">—</div>
+        <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="timer-now">—</div>
+      </div>
+      <div id="slack-ind" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
+      <span id="header-name" style="font-size:11px;color:rgba(255,255,255,0.5)"></span>
+      <button class="btn-slack" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
+      <button class="btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Debrief</button>
+      <button class="btn-reset-day" onclick="resetDay()">↺ Nuevo día</button>
     </div>
   </div>
-  <div id="center"><div id="proj-header"></div><div id="actions-list"></div></div>
-  <div id="right">
-    <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:11px;padding:10px 12px">
-      <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ SLACK AUTO</div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.7">
-        🟢 Auto-notifica al completar cada proyecto<br>
-        🏆 Debrief automático al terminar todo<br>
-        Canal: <span style="color:#E879F9;font-weight:700">#bogota-actions-taken</span>
-      </div>
-      <div id="slack-live" style="margin-top:8px;display:none;align-items:center;gap:6px;border-radius:7px;padding:6px 10px">
-        <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="slack-dot"></div>
-        <span style="font-size:9px;font-weight:600" id="slack-txt"></span>
+  <div id="gbar"><div id="gbar-fill"></div></div>
+  <div id="layout">
+    <div id="left">
+      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">PROYECTOS HOY</div>
+      <div id="proj-list"></div>
+      <div style="margin-top:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:9px 10px">
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TOTALES HOY</div>
+        <div id="totals-list"></div>
       </div>
     </div>
-    <div class="side-panel">
-      <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">ACTIVIDAD</span></div>
-      <div id="activity-feed" style="max-height:220px;overflow-y:auto;padding:3px 0">
-        <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">Sin actividad aún…</div>
+    <div id="center"><div id="proj-header"></div><div id="actions-list"></div></div>
+    <div id="right">
+      <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:11px;padding:10px 12px">
+        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ SLACK AUTO</div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.7">
+          🟢 Auto-notifica al completar cada proyecto<br>
+          🏆 Debrief automático al terminar todo<br>
+          Canal: <span style="color:#E879F9;font-weight:700">#bogota-actions-taken</span>
+        </div>
+        <div id="slack-live" style="margin-top:8px;display:none;align-items:center;gap:6px;border-radius:7px;padding:6px 10px">
+          <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="slack-dot"></div>
+          <span style="font-size:9px;font-weight:600" id="slack-txt"></span>
+        </div>
       </div>
-    </div>
-    <div class="side-panel">
-      <div class="side-head"><span class="side-title">🗂️ OVERVIEW</span></div>
-      <div id="overview-list"></div>
-    </div>
-    <div>
-      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:5px;font-weight:700">TU NOMBRE</div>
-      <input id="uname2" placeholder="e.g. Juan Valentin" oninput="document.getElementById('uname').value=this.value"
-        style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:6px 10px;font-size:11px;font-family:'DM Mono',monospace;outline:none;color:#fff"/>
+      <div class="side-panel">
+        <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">ACTIVIDAD</span></div>
+        <div id="activity-feed" style="max-height:220px;overflow-y:auto;padding:3px 0">
+          <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">Sin actividad aún…</div>
+        </div>
+      </div>
+      <div class="side-panel">
+        <div class="side-head"><span class="side-title">🗂️ OVERVIEW</span></div>
+        <div id="overview-list"></div>
+      </div>
     </div>
   </div>
 </div>
 <div id="toast"></div>
+
 <script>
-// Slack goes through our own server (no CORS issues)
-const SLACK_API = "/api/slack";
-
-const PROJECTS = [
-  { id:"p0", name:"stax_us_undercarriage",                  short:"Stax Undercarriage", color:"#F7A200" },
-  { id:"p1", name:"oliverwyman_us_service_automation",       short:"OW Service Auto",    color:"#E07000" },
-  { id:"p2", name:"advancy_us_f-b_nutraceutical_market",    short:"F&B Nutra",          color:"#F59E0B" },
-  { id:"p3", name:"oliverwyman_us_shipping",                 short:"OW Shipping",        color:"#D97706" },
-  { id:"p4", name:"advancy_us_specialty_plant",              short:"Specialty Plant",    color:"#B45309" },
+const SLACK_API="/api/slack";
+const PROJ_COLORS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
+const ACTIONS=[
+  {id:"emails",      emoji:"📧",name:"Emails",             target:40},
+  {id:"inmails",     emoji:"💼",name:"InMails",             target:10},
+  {id:"connections", emoji:"🔗",name:"Connections",         target:25},
+  {id:"calls",       emoji:"📞",name:"Cold Calls",          target:20},
+  {id:"sms",         emoji:"💬",name:"SMS / iMessage",      target:15},
+  {id:"proposals",   emoji:"🤝",name:"Proposals",           target:3 },
+  {id:"int_sched",   emoji:"🎙️",name:"Interviews Sched.",   target:2 },
+  {id:"int_done",    emoji:"📅",name:"Interviews Done",     target:1 },
+  {id:"followups",   emoji:"🔄",name:"Follow Ups",          target:20},
+  {id:"db_leads",    emoji:"🗂️",name:"DB Leads",            target:1 },
+  {id:"expansion",   emoji:"📈",name:"Lead Expansion",      target:60},
 ];
 
-const ACTIONS = [
-  { id:"emails",      emoji:"📧", name:"Emails",              target:40 },
-  { id:"inmails",     emoji:"💼", name:"InMails",              target:10 },
-  { id:"connections", emoji:"🔗", name:"Connections",          target:25 },
-  { id:"calls",       emoji:"📞", name:"Cold Calls",           target:20 },
-  { id:"sms",         emoji:"💬", name:"SMS / iMessage",       target:15 },
-  { id:"proposals",   emoji:"🤝", name:"Proposals",            target:3  },
-  { id:"int_sched",   emoji:"🎙️", name:"Interviews Sched.",    target:2  },
-  { id:"int_done",    emoji:"📅", name:"Interviews Done",      target:1  },
-  { id:"followups",   emoji:"🔄", name:"Follow Ups",           target:20 },
-  { id:"db_leads",    emoji:"🗂️", name:"DB Leads",             target:1  },
-  { id:"expansion",   emoji:"📈", name:"Lead Expansion",       target:60 },
-];
+let PROJECTS=[];
+const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[],userName:""};
 
-const S={checks:{},counts:{},notes:{},active:"p0",completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[]};
-const getName=()=>document.getElementById("uname").value.trim()||"Team member";
+// ── SETUP ─────────────────────────────────────────────────────────────────────
+document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
 
+function addProjInput(val=""){
+  const container=document.getElementById("proj-inputs");
+  const count=container.children.length;
+  if(count>=8)return;
+  const row=document.createElement("div");row.className="proj-input-row";
+  const id="pi-"+Date.now();
+  row.innerHTML=`<span class="proj-num">${count+1}</span><input class="proj-input" id="${id}" placeholder="Nombre del proyecto…" value="${val}" maxlength="60"/><button class="proj-remove" onclick="removeProjInput(this)">×</button>`;
+  container.appendChild(row);
+  document.getElementById(id).focus();
+  if(container.children.length>=8)document.getElementById("btn-add").style.display="none";
+  updateStartBtn();
+  row.querySelector("input").addEventListener("input",updateStartBtn);
+}
+
+function removeProjInput(btn){
+  const container=document.getElementById("proj-inputs");
+  btn.closest(".proj-input-row").remove();
+  // renumber
+  Array.from(container.children).forEach((row,i)=>row.querySelector(".proj-num").textContent=i+1);
+  document.getElementById("btn-add").style.display="";
+  updateStartBtn();
+}
+
+function updateStartBtn(){
+  const inputs=Array.from(document.querySelectorAll(".proj-input")).map(i=>i.value.trim()).filter(Boolean);
+  const name=document.getElementById("setup-name").value.trim();
+  document.getElementById("btn-start").disabled=inputs.length===0||!name;
+}
+
+function startDay(){
+  const name=document.getElementById("setup-name").value.trim();
+  const projNames=Array.from(document.querySelectorAll(".proj-input")).map(i=>i.value.trim()).filter(Boolean);
+  if(!name||projNames.length===0)return;
+  S.userName=name;
+  PROJECTS=projNames.map((n,i)=>({id:"p"+i,name:n,short:n.length>18?n.substring(0,16)+"…":n,color:PROJ_COLORS[i%PROJ_COLORS.length]}));
+  S.active=PROJECTS[0].id;
+  document.getElementById("setup-screen").style.display="none";
+  document.getElementById("app").style.display="flex";
+  document.getElementById("header-name").textContent=name;
+  renderAll();
+}
+
+function resetDay(){
+  if(!confirm("¿Empezar un nuevo día? Se perderá el progreso actual."))return;
+  PROJECTS=[];
+  Object.keys(S).forEach(k=>{if(typeof S[k]==="object"&&S[k]!==null&&!Array.isArray(S[k]))S[k]={};});
+  S.actLog=[];S.allDone=false;S.userName="";S.editingNote=null;
+  // Reset stopwatches
+  Object.values(S.swIv).forEach(iv=>clearInterval(iv));
+  S.swIv={};S.swRunning={};S.swElapsed={};
+  // Reset setup form
+  document.getElementById("setup-name").value="";
+  document.getElementById("proj-inputs").innerHTML="";
+  document.getElementById("btn-add").style.display="";
+  addProjInput();
+  document.getElementById("app").style.display="none";
+  document.getElementById("setup-screen").style.display="flex";
+}
+
+// init setup with one empty input
+document.getElementById("setup-name").addEventListener("input",updateStartBtn);
+addProjInput();
+updateStartBtn();
+
+// ── SLACK ─────────────────────────────────────────────────────────────────────
 async function slackSend(text){
   setSlackUI("sending");
   try{
@@ -182,16 +306,15 @@ function setSlackUI(status,detail){
 }
 
 function buildProjectMsg(proj){
-  const name=getName();
-  let m=`🎉 *Proyecto Completado!*\n*${name}* terminó *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
+  let m=`🎉 *Proyecto Completado!*\n*${S.userName}* terminó *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
   ACTIONS.forEach(a=>{const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k];m+=`${cnt>=a.target?"✅":"⬜"} ${a.emoji} *${a.name}:* ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
   return m;
 }
 
 function buildEODMsg(){
-  const name=getName(),date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`🏆 *DEBRIEF FINAL — ${name}*\n*${date}* | *${pct}% completado*\n\n`;
+  let m=`🏆 *DEBRIEF FINAL — ${S.userName}*\n*${date}* | *${pct}% completado*\n\n`;
   PROJECTS.forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swElapsed[proj.id]||0)/60000);
     m+=`*${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
@@ -204,9 +327,9 @@ function buildEODMsg(){
 }
 
 function buildUpdateMsg(){
-  const name=getName(),date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`📊 *Update — ${name}* | *${date}* | ${pct}% completado\n\n`;
+  let m=`📊 *Update — ${S.userName}* | *${date}* | ${pct}% completado\n\n`;
   PROJECTS.forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
     m+=`*${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
@@ -252,7 +375,7 @@ function addCount(pid,aid,delta){
 function toggleCheck(pid,aid){
   const key=`${pid}_${aid}`;S.checks[key]=!S.checks[key];
   const a=ACTIONS.find(x=>x.id===aid),proj=PROJECTS.find(x=>x.id===pid);
-  if(S.checks[key])logAct("✅",`${getName()} ✓ ${a.name} · ${proj.short}`);
+  if(S.checks[key])logAct("✅",`${S.userName} ✓ ${a.name} · ${proj.short}`);
   checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
 }
 
@@ -279,7 +402,8 @@ function renderLeft(){
 function renderCenter(){renderProjHeader();renderActions();}
 
 function renderProjHeader(){
-  const proj=PROJECTS.find(p=>p.id===S.active),done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
+  const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
+  const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
   document.getElementById("proj-header").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="position:relative;width:54px;height:54px;flex-shrink:0"><svg width="54" height="54" style="transform:rotate(-90deg);position:absolute"><circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="27" cy="27" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#fff">${proj.name}</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} acciones · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit</div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 12px;border:1px solid rgba(255,255,255,0.07)"><span id="sw-center" style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${S.swRunning[proj.id]?proj.color:"#fff"};min-width:54px;text-align:center">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="toggleSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color};color:${S.swRunning[proj.id]?"#FF6B6B":"#fff"};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${S.swRunning[proj.id]?"⏸":"▶"}</button><button onclick="resetSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:11px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProject('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:8px;padding:7px 12px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notificar Slack</button></div></div>`;
 }
 
@@ -318,7 +442,7 @@ function renderOverview(){
 }
 
 function updateGlobal(){
-  const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=Math.round(tc/ti*100);
+  const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=ti>0?Math.round(tc/ti*100):0;
   const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
   document.getElementById("ring-circle").setAttribute("stroke-dashoffset",(113.1-(pct/100)*113.1).toFixed(1));
   document.getElementById("ring-label").textContent=pct+"%";
@@ -359,8 +483,6 @@ function showToast(msg,type="info"){
   t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),4500);
 }
 
-document.getElementById("uname").oninput=function(){document.getElementById("uname2").value=this.value;};
-renderAll();
 setInterval(updateTimer,30000);
 setInterval(()=>PROJECTS.forEach(p=>{if(S.swRunning[p.id])updateSW(p.id);}),1000);
 </script>
