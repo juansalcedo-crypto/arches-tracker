@@ -16,10 +16,9 @@
   @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-  /* SETUP SCREEN */
+  /* SETUP */
   #setup-screen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
   .setup-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px 40px;max-width:580px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-  .setup-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
   .setup-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
   .setup-sub{font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:2px}
   .setup-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
@@ -39,7 +38,7 @@
   .btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(247,162,0,0.5)}
   .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 
-  /* MAIN APP */
+  /* APP */
   #app{display:none;flex-direction:column;height:100vh}
   #header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50;flex-shrink:0}
   #layout{display:grid;grid-template-columns:200px 1fr 230px;flex:1;overflow:hidden}
@@ -51,13 +50,14 @@
   .stat-box{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 10px}
   .stat-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:900;line-height:1}
   .stat-lbl{font-size:8px;color:rgba(255,255,255,0.35);letter-spacing:0.8px;margin-top:1px;text-transform:uppercase}
-  .btn-slack{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35);border-radius:8px;padding:7px 12px;color:#F7A200;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s}
-  .btn-slack:hover{background:rgba(247,162,0,0.25)}
-  .btn-eod{background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(247,162,0,0.4);white-space:nowrap}
+  .btn-hdr{border-radius:8px;padding:7px 12px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s;border:none}
+  .btn-update{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35);color:#F7A200}
+  .btn-update:hover{background:rgba(247,162,0,0.25)}
+  .btn-eod{background:linear-gradient(135deg,#F7A200,#E07000);color:#fff;box-shadow:0 3px 12px rgba(247,162,0,0.4)}
   .btn-eod:hover{transform:translateY(-1px)}
-  .btn-eod:disabled,.btn-slack:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-  .btn-reset-day{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 12px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
-  .btn-reset-day:hover{color:#fff;border-color:rgba(255,255,255,0.2)}
+  .btn-newday{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)!important;color:rgba(255,255,255,0.4)}
+  .btn-newday:hover{color:#fff;border-color:rgba(255,255,255,0.2)!important}
+  .btn-hdr:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
   .proj-btn{transition:all 0.2s;cursor:pointer}.proj-btn:hover{transform:translateY(-1px)}
   .cbtn{transition:all 0.12s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:6px}
   .cbtn:active{transform:scale(0.85)}
@@ -77,10 +77,10 @@
 <body>
 <div id="confetti-wrap"></div>
 
-<!-- ── SETUP SCREEN ── -->
+<!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-box">
-    <div class="setup-logo">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
       <svg width="40" height="26" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
         <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
@@ -94,25 +94,20 @@
         <div class="setup-sub">WAR ROOM · <span id="setup-date"></span></div>
       </div>
     </div>
-
-    <!-- Name -->
     <div style="margin-bottom:20px">
-      <div class="setup-label">Tu nombre</div>
+      <div class="setup-label">Your Name</div>
       <input class="setup-input" id="setup-name" placeholder="e.g. Juan Valentin" maxlength="40"/>
     </div>
-
-    <!-- Projects -->
     <div style="margin-bottom:12px">
-      <div class="setup-label">Proyectos de hoy <span style="color:rgba(255,255,255,0.25);font-weight:400">(mínimo 1, máximo 8)</span></div>
+      <div class="setup-label">Today's Projects <span style="color:rgba(255,255,255,0.25);font-weight:400">(min 1, max 8)</span></div>
     </div>
     <div id="proj-inputs"></div>
-    <button class="btn-add-proj" id="btn-add" onclick="addProjInput()">+ Agregar proyecto</button>
-
-    <button class="btn-start" id="btn-start" onclick="startDay()">🚀 EMPEZAR DÍA</button>
+    <button class="btn-add-proj" id="btn-add" onclick="addProjInput()">+ Add project</button>
+    <button class="btn-start" id="btn-start" onclick="startDay()">🚀 START DAY</button>
   </div>
 </div>
 
-<!-- ── MAIN APP ── -->
+<!-- MAIN APP -->
 <div id="app">
   <div id="header">
     <div style="display:flex;align-items:center;gap:10px">
@@ -129,7 +124,7 @@
         <div style="font-size:8px;color:#F7A200;letter-spacing:2.5px" id="header-date">WAR ROOM</div>
       </div>
     </div>
-    <div style="display:flex;gap:10px;align-items:center">
+    <div style="display:flex;gap:8px;align-items:center">
       <div class="ring-wrap" style="width:42px;height:42px">
         <svg width="42" height="42" style="transform:rotate(-90deg);position:absolute">
           <circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
@@ -145,30 +140,32 @@
         <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="timer-now">—</div>
       </div>
       <div id="slack-ind" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <span id="header-name" style="font-size:11px;color:rgba(255,255,255,0.5)"></span>
-      <button class="btn-slack" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
-      <button class="btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Debrief</button>
-      <button class="btn-reset-day" onclick="resetDay()">↺ Nuevo día</button>
+      <span id="header-name" style="font-size:11px;color:rgba(255,255,255,0.4);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="btn-hdr btn-update" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
+      <button class="btn-hdr btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Report</button>
+      <button class="btn-hdr btn-newday" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
     </div>
   </div>
   <div id="gbar"><div id="gbar-fill"></div></div>
   <div id="layout">
     <div id="left">
-      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">PROYECTOS HOY</div>
+      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">TODAY'S PROJECTS</div>
       <div id="proj-list"></div>
       <div style="margin-top:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:9px 10px">
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TOTALES HOY</div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TODAY'S TOTALS</div>
         <div id="totals-list"></div>
       </div>
     </div>
     <div id="center"><div id="proj-header"></div><div id="actions-list"></div></div>
     <div id="right">
+      <!-- Integrations status -->
       <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:11px;padding:10px 12px">
-        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ SLACK AUTO</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.7">
-          🟢 Auto-notifica al completar cada proyecto<br>
-          🏆 Debrief automático al terminar todo<br>
-          Canal: <span style="color:#E879F9;font-weight:700">#bogota-actions-taken</span>
+        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ AUTO INTEGRATIONS</div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8">
+          🟢 Slack notified on each project complete<br>
+          📊 Google Sheets logged on EOD<br>
+          🏆 Full debrief when all done<br>
+          <span style="color:#E879F9;font-weight:600">#bogota-actions-taken</span>
         </div>
         <div id="slack-live" style="margin-top:8px;display:none;align-items:center;gap:6px;border-radius:7px;padding:6px 10px">
           <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="slack-dot"></div>
@@ -176,9 +173,9 @@
         </div>
       </div>
       <div class="side-panel">
-        <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">ACTIVIDAD</span></div>
+        <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">LIVE ACTIVITY</span></div>
         <div id="activity-feed" style="max-height:220px;overflow-y:auto;padding:3px 0">
-          <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">Sin actividad aún…</div>
+          <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">No activity yet…</div>
         </div>
       </div>
       <div class="side-panel">
@@ -191,20 +188,22 @@
 <div id="toast"></div>
 
 <script>
-const SLACK_API="/api/slack";
+const SLACK_API = "/api/slack";
+const SHEETS_URL = "https://script.google.com/a/macros/arches-global.com/s/AKfycbwI-WiXAYKR7ei3j-buc0gmXZG0pRXM4cDBpHX03njeuOSf9v0D3Ne45dnIGStaKQK1/exec";
+
 const PROJ_COLORS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
 const ACTIONS=[
-  {id:"emails",      emoji:"📧",name:"Emails",             target:40},
-  {id:"inmails",     emoji:"💼",name:"InMails",             target:10},
-  {id:"connections", emoji:"🔗",name:"Connections",         target:25},
-  {id:"calls",       emoji:"📞",name:"Cold Calls",          target:20},
-  {id:"sms",         emoji:"💬",name:"SMS / iMessage",      target:15},
-  {id:"proposals",   emoji:"🤝",name:"Proposals",           target:3 },
-  {id:"int_sched",   emoji:"🎙️",name:"Interviews Sched.",   target:2 },
-  {id:"int_done",    emoji:"📅",name:"Interviews Done",     target:1 },
-  {id:"followups",   emoji:"🔄",name:"Follow Ups",          target:20},
-  {id:"db_leads",    emoji:"🗂️",name:"DB Leads",            target:1 },
-  {id:"expansion",   emoji:"📈",name:"Lead Expansion",      target:60},
+  {id:"emails",      emoji:"📧", name:"Emails",              target:40},
+  {id:"inmails",     emoji:"💼", name:"InMails",              target:10},
+  {id:"connections", emoji:"🔗", name:"Connections",          target:25},
+  {id:"calls",       emoji:"📞", name:"Cold Calls",           target:20},
+  {id:"sms",         emoji:"💬", name:"SMS / iMessage",       target:15},
+  {id:"proposals",   emoji:"🤝", name:"Proposals",            target:3 },
+  {id:"int_sched",   emoji:"🎙️", name:"Interviews Sched.",    target:2 },
+  {id:"int_done",    emoji:"📅", name:"Interviews Done",      target:1 },
+  {id:"followups",   emoji:"🔄", name:"Follow Ups",           target:20},
+  {id:"db_leads",    emoji:"🗂️", name:"DB Leads",             target:1 },
+  {id:"expansion",   emoji:"📈", name:"Lead Expansion",       target:60},
 ];
 
 let PROJECTS=[];
@@ -214,24 +213,22 @@ const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE
 document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
 
 function addProjInput(val=""){
-  const container=document.getElementById("proj-inputs");
-  const count=container.children.length;
+  const c=document.getElementById("proj-inputs"),count=c.children.length;
   if(count>=8)return;
   const row=document.createElement("div");row.className="proj-input-row";
   const id="pi-"+Date.now();
-  row.innerHTML=`<span class="proj-num">${count+1}</span><input class="proj-input" id="${id}" placeholder="Nombre del proyecto…" value="${val}" maxlength="60"/><button class="proj-remove" onclick="removeProjInput(this)">×</button>`;
-  container.appendChild(row);
+  row.innerHTML=`<span class="proj-num">${count+1}</span><input class="proj-input" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/><button class="proj-remove" onclick="removeProjInput(this)">×</button>`;
+  c.appendChild(row);
   document.getElementById(id).focus();
-  if(container.children.length>=8)document.getElementById("btn-add").style.display="none";
+  if(c.children.length>=8)document.getElementById("btn-add").style.display="none";
   updateStartBtn();
   row.querySelector("input").addEventListener("input",updateStartBtn);
 }
 
 function removeProjInput(btn){
-  const container=document.getElementById("proj-inputs");
+  const c=document.getElementById("proj-inputs");
   btn.closest(".proj-input-row").remove();
-  // renumber
-  Array.from(container.children).forEach((row,i)=>row.querySelector(".proj-num").textContent=i+1);
+  Array.from(c.children).forEach((r,i)=>r.querySelector(".proj-num").textContent=i+1);
   document.getElementById("btn-add").style.display="";
   updateStartBtn();
 }
@@ -256,42 +253,56 @@ function startDay(){
 }
 
 function resetDay(){
-  if(!confirm("¿Empezar un nuevo día? Se perderá el progreso actual."))return;
+  if(!confirm("Start a new day? Current progress will be cleared."))return;
   PROJECTS=[];
-  Object.keys(S).forEach(k=>{if(typeof S[k]==="object"&&S[k]!==null&&!Array.isArray(S[k]))S[k]={};});
-  S.actLog=[];S.allDone=false;S.userName="";S.editingNote=null;
-  // Reset stopwatches
-  Object.values(S.swIv).forEach(iv=>clearInterval(iv));
-  S.swIv={};S.swRunning={};S.swElapsed={};
-  // Reset setup form
+  Object.keys(S.swIv).forEach(k=>clearInterval(S.swIv[k]));
+  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[],userName:""});
   document.getElementById("setup-name").value="";
   document.getElementById("proj-inputs").innerHTML="";
   document.getElementById("btn-add").style.display="";
   addProjInput();
   document.getElementById("app").style.display="none";
   document.getElementById("setup-screen").style.display="flex";
+  updateStartBtn();
 }
 
-// init setup with one empty input
 document.getElementById("setup-name").addEventListener("input",updateStartBtn);
 addProjInput();
 updateStartBtn();
 
 // ── SLACK ─────────────────────────────────────────────────────────────────────
 async function slackSend(text){
-  setSlackUI("sending");
   try{
     const res=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
     const data=await res.json();
-    if(data.ok){setSlackUI("success");return true;}
-    else{setSlackUI("error",data.error);return false;}
-  }catch(e){setSlackUI("error","network");return false;}
+    return data.ok;
+  }catch(e){return false;}
+}
+
+// ── GOOGLE SHEETS ─────────────────────────────────────────────────────────────
+async function sheetLog(){
+  try{
+    const now=new Date();
+    const payload={
+      date:now.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"}),
+      time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
+      person:S.userName,
+      projects:PROJECTS.map(proj=>{
+        const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+        const cnts={};
+        ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+        return{name:proj.name,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
+      })
+    };
+    await fetch(SHEETS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    return true;
+  }catch(e){return false;}
 }
 
 function setSlackUI(status,detail){
   const cfgs={
-    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",label:"Enviando…",anim:"pulse 1s infinite"},
-    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",label:"✅ Slack enviado!",anim:"none"},
+    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",label:"Sending…",anim:"pulse 1s infinite"},
+    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",label:"✅ Sent!",anim:"none"},
     error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",label:`⚠️ ${detail||"Error"}`,anim:"none"},
   };
   const c=cfgs[status];
@@ -300,13 +311,14 @@ function setSlackUI(status,detail){
   ind.textContent=c.label;
   const live=document.getElementById("slack-live");live.style.display="flex";live.style.background=c.bg;
   document.getElementById("slack-dot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${c.dot};box-shadow:0 0 6px ${c.dot};flex-shrink:0`;
-  document.getElementById("slack-txt").style.color=c.color;document.getElementById("slack-txt").textContent=c.label;
+  document.getElementById("slack-txt").style.color=c.color;
+  document.getElementById("slack-txt").textContent=c.label;
   ["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
   if(status!=="sending")setTimeout(()=>{ind.style.display="none";live.style.display="none";["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
 }
 
 function buildProjectMsg(proj){
-  let m=`🎉 *Proyecto Completado!*\n*${S.userName}* terminó *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
+  let m=`🎉 *Project Complete!*\n*${S.userName}* finished *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
   ACTIONS.forEach(a=>{const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k];m+=`${cnt>=a.target?"✅":"⬜"} ${a.emoji} *${a.name}:* ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
   return m;
 }
@@ -314,7 +326,7 @@ function buildProjectMsg(proj){
 function buildEODMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`🏆 *DEBRIEF FINAL — ${S.userName}*\n*${date}* | *${pct}% completado*\n\n`;
+  let m=`🏆 *END OF DAY REPORT — ${S.userName}*\n*${date}* | *${pct}% complete*\n\n`;
   PROJECTS.forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swElapsed[proj.id]||0)/60000);
     m+=`*${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
@@ -329,7 +341,7 @@ function buildEODMsg(){
 function buildUpdateMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`📊 *Update — ${S.userName}* | *${date}* | ${pct}% completado\n\n`;
+  let m=`📊 *Update — ${S.userName}* | *${date}* | ${pct}% complete\n\n`;
   PROJECTS.forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
     m+=`*${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
@@ -339,23 +351,53 @@ function buildUpdateMsg(){
   return m;
 }
 
-async function sendUpdate(){const ok=await slackSend(buildUpdateMsg());showToast(ok?"📊 Update enviado!":"⚠️ Error",ok?"success":"error");}
-async function sendEOD(){const ok=await slackSend(buildEODMsg());showToast(ok?"🏆 Debrief enviado!":"⚠️ Error",ok?"success":"error");}
-async function notifyProject(pid){const proj=PROJECTS.find(p=>p.id===pid),ok=await slackSend(buildProjectMsg(proj));showToast(ok?`✅ ${proj.short} notificado!`:"⚠️ Error",ok?"success":"error");}
+async function sendUpdate(){
+  setSlackUI("sending");
+  const ok=await slackSend(buildUpdateMsg());
+  setSlackUI(ok?"success":"error",ok?"":" Check connection");
+  showToast(ok?"📊 Update sent to Slack!":"⚠️ Slack error",ok?"success":"error");
+}
+
+async function sendEOD(){
+  setSlackUI("sending");
+  const [slackOk,sheetOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
+  setSlackUI(slackOk?"success":"error");
+  if(slackOk&&sheetOk) showToast("🏆 EOD sent to Slack & Sheets!","success");
+  else if(slackOk) showToast("🏆 Slack ✅ · Sheets ⚠️","success");
+  else showToast("⚠️ Error sending","error");
+  logAct("📊","EOD report sent");
+}
+
+async function notifyProject(pid){
+  const proj=PROJECTS.find(p=>p.id===pid);
+  setSlackUI("sending");
+  const ok=await slackSend(buildProjectMsg(proj));
+  setSlackUI(ok?"success":"error");
+  showToast(ok?`✅ ${proj.short} sent to Slack!`:"⚠️ Error",ok?"success":"error");
+}
 
 function checkComplete(pid){
   const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
   if(done&&!S.completed[pid]){
-    S.completed[pid]=true;logAct("🎉",`¡${proj.short} 100% completado!`);
-    fireConfetti();showToast(`🎉 ¡${proj.short} listo! Notificando Slack…`,"success");
-    slackSend(buildProjectMsg(proj)).then(ok=>showToast(ok?`✅ Slack notificado!`:"⚠️ Slack falló",ok?"success":"error"));
+    S.completed[pid]=true;logAct("🎉",`${proj.short} 100% complete!`);
+    fireConfetti();showToast(`🎉 ${proj.short} done! Notifying Slack…`,"success");
+    slackSend(buildProjectMsg(proj)).then(ok=>{
+      setSlackUI(ok?"success":"error");
+      showToast(ok?`✅ Slack notified!`:"⚠️ Slack failed",ok?"success":"error");
+    });
     if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
       S.allDone=true;fireConfetti(true);
-      setTimeout(()=>{showToast("🏆 ¡TODO LISTO! Enviando debrief…","success");slackSend(buildEODMsg());},1800);
+      setTimeout(async()=>{
+        showToast("🏆 ALL DONE! Sending final report…","success");
+        const[slackOk,sheetOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
+        showToast(slackOk&&sheetOk?"🏆 Slack & Sheets updated!":slackOk?"🏆 Slack ✅ · Sheets ⚠️":"⚠️ Error","success");
+        logAct("🏆","Full debrief sent to Slack & Sheets");
+      },1800);
     }
   }else if(!done){S.completed[pid]=false;S.allDone=false;}
 }
 
+// ── STOPWATCH ─────────────────────────────────────────────────────────────────
 function toggleSW(pid){
   if(S.swRunning[pid]){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;}
   else{const t0=Date.now()-(S.swElapsed[pid]||0);S.swIv[pid]=setInterval(()=>{S.swElapsed[pid]=Date.now()-t0;updateSW(pid);},500);S.swRunning[pid]=true;}
@@ -365,10 +407,11 @@ function resetSW(pid){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;S.swElap
 function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
 function updateSW(pid){["sw-left-"+pid,"sw-center"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=fmtT(S.swElapsed[pid]||0);el.style.color=S.swRunning[pid]?PROJECTS.find(p=>p.id===pid).color:"#fff";}});}
 
+// ── COUNTERS ──────────────────────────────────────────────────────────────────
 function addCount(pid,aid,delta){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,prev+delta);
   S.counts[key]=next;
-  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
+  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target hit! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
   else if(next<a.target&&prev>=a.target){S.checks[key]=false;}
   renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
 }
@@ -379,6 +422,7 @@ function toggleCheck(pid,aid){
   checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
 }
 
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll(){
   document.getElementById("header-date").textContent="WAR ROOM · "+new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
   renderLeft();renderCenter();renderOverview();updateGlobal();updateTimer();
@@ -396,7 +440,7 @@ function renderLeft(){
   });
   const tl=document.getElementById("totals-list");tl.innerHTML="";let any=false;
   ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
-  if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">Sin actividad aún</div>`;
+  if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">No activity yet</div>`;
 }
 
 function renderCenter(){renderProjHeader();renderActions();}
@@ -404,7 +448,7 @@ function renderCenter(){renderProjHeader();renderActions();}
 function renderProjHeader(){
   const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
   const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
-  document.getElementById("proj-header").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="position:relative;width:54px;height:54px;flex-shrink:0"><svg width="54" height="54" style="transform:rotate(-90deg);position:absolute"><circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="27" cy="27" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#fff">${proj.name}</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} acciones · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit</div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 12px;border:1px solid rgba(255,255,255,0.07)"><span id="sw-center" style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${S.swRunning[proj.id]?proj.color:"#fff"};min-width:54px;text-align:center">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="toggleSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color};color:${S.swRunning[proj.id]?"#FF6B6B":"#fff"};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${S.swRunning[proj.id]?"⏸":"▶"}</button><button onclick="resetSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:11px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProject('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:8px;padding:7px 12px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notificar Slack</button></div></div>`;
+  document.getElementById("proj-header").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="position:relative;width:54px;height:54px;flex-shrink:0"><svg width="54" height="54" style="transform:rotate(-90deg);position:absolute"><circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="27" cy="27" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#fff">${proj.name}</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit</div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 12px;border:1px solid rgba(255,255,255,0.07)"><span id="sw-center" style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${S.swRunning[proj.id]?proj.color:"#fff"};min-width:54px;text-align:center">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="toggleSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color};color:${S.swRunning[proj.id]?"#FF6B6B":"#fff"};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${S.swRunning[proj.id]?"⏸":"▶"}</button><button onclick="resetSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:11px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProject('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:8px;padding:7px 12px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button></div></div>`;
 }
 
 function renderActions(){
@@ -427,12 +471,12 @@ function renderActionRow(pid,aid){
 function renderNote(key,note){
   const el=document.getElementById(`nc-${key}`);if(!el)return;
   if(S.editingNote===key){
-    el.innerHTML=`<input id="ni-${key}" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid #F7A200;border-radius:6px;padding:4px 8px;font-size:10px;font-family:'DM Mono',monospace;outline:none;color:#fff" placeholder="+ nota"/>`;
+    el.innerHTML=`<input id="ni-${key}" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid #F7A200;border-radius:6px;padding:4px 8px;font-size:10px;font-family:'DM Mono',monospace;outline:none;color:#fff" placeholder="+ note"/>`;
     const inp=document.getElementById(`ni-${key}`);inp.value=note;inp.focus();
-    const save=()=>{S.notes[key]=inp.value;S.editingNote=null;if(inp.value)logAct("📝","Nota guardada");const[p,a]=key.split("_");renderActionRow(p,a);};
+    const save=()=>{S.notes[key]=inp.value;S.editingNote=null;if(inp.value)logAct("📝","Note saved");const[p,a]=key.split("_");renderActionRow(p,a);};
     inp.onblur=save;inp.onkeydown=e=>{if(e.key==="Enter")inp.blur();};
   }else{
-    el.innerHTML=`<span onclick="S.editingNote='${key}';renderNote('${key}','${(note||"").replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" style="font-size:10px;color:${note?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${note?"normal":"italic"};cursor:text;font-weight:${note?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note||"+ nota"}</span>`;
+    el.innerHTML=`<span onclick="S.editingNote='${key}';renderNote('${key}','${(note||"").replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" style="font-size:10px;color:${note?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${note?"normal":"italic"};cursor:text;font-weight:${note?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note||"+ note"}</span>`;
   }
 }
 
@@ -467,7 +511,7 @@ function logAct(emoji,text){
   const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
   S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
   const f=document.getElementById("activity-feed");f.innerHTML="";
-  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:6px;animation:slideIn 0.3s ease;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
+  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:6px;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
 }
 
 function fireConfetti(big=false){
