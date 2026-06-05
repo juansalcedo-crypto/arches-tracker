@@ -105,10 +105,12 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
   </div>
 </div>
 
-<!-- SETUP -->
+<!-- SETUP — 3 steps -->
 <div id="setup">
-  <div class="sbox">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+
+  <!-- STEP 1: TEAM SELECT -->
+  <div id="step-team" class="sbox" style="max-width:480px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
       <svg width="38" height="25" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
         <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
@@ -122,19 +124,52 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
         <div style="font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:1px">WAR ROOM v4 · <span id="setup-date"></span></div>
       </div>
     </div>
-    <div style="margin-bottom:18px">
-      <div class="slbl">Your Name</div>
-      <input class="sinp" id="sname" placeholder="e.g. Juan Valentin" maxlength="40"/>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px;letter-spacing:0.5px">Which team are you on?</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="selectTeam('luis')" style="background:linear-gradient(135deg,rgba(247,162,0,0.15),rgba(247,162,0,0.05));border:1px solid rgba(247,162,0,0.4);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%" onmouseover="this.style.background='linear-gradient(135deg,rgba(247,162,0,0.25),rgba(247,162,0,0.1))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(247,162,0,0.15),rgba(247,162,0,0.05))'">
+        <span style="font-size:28px">🟠</span>
+        <div style="text-align:left">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#F7A200">Team Luis</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">9 members</div>
+        </div>
+      </button>
+      <button onclick="selectTeam('taiki')" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.4);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%" onmouseover="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.25),rgba(59,130,246,0.1))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05))'">
+        <span style="font-size:28px">🔵</span>
+        <div style="text-align:left">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#3B82F6">Team Taiki</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">7 members</div>
+        </div>
+      </button>
     </div>
-    <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
-      <div class="slbl" style="margin:0">Today's Projects <span style="color:rgba(255,255,255,0.2);font-weight:400">(max 8)</span></div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.3)">Set priority → P1 = highest</div>
+  </div>
+
+  <!-- STEP 2: MEMBER SELECT -->
+  <div id="step-member" class="sbox" style="max-width:480px;display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+      <button onclick="goBackToTeam()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#fff" id="team-label">Team</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Who are you?</div>
+      </div>
+    </div>
+    <div id="member-list" style="display:flex;flex-direction:column;gap:7px"></div>
+  </div>
+
+  <!-- STEP 3: PROJECTS -->
+  <div id="step-projects" class="sbox" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <button onclick="goBackToMember()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:#fff" id="proj-step-title">Today's Projects</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)" id="proj-step-sub">Set priority → P1 = highest · max 8</div>
+      </div>
     </div>
     <div id="pinputs"></div>
     <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name — please use a unique name</div>
     <button class="badd" id="badd" onclick="addPI()">+ Add project</button>
     <button class="bstart" id="bstart" onclick="startDay()">🚀 START DAY</button>
   </div>
+
 </div>
 
 <!-- APP -->
@@ -170,7 +205,7 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
         <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="tnow">—</div>
       </div>
       <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <div style="display:flex;align-items:center;gap:5px"><span id="hteam-badge" style="display:none;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px"></span><span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></div>
       <button class="bhdr bupd" id="bupd" style="border:1px solid" onclick="sendUpdate()">📊 Update</button>
       <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
       <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
@@ -223,6 +258,47 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 
 <script>
 const SLACK_API="/api/slack";
+
+// ── TEAMS CONFIG ──────────────────────────────────────────────────────────────
+const TEAMS = [
+  {
+    id: "luis",
+    name: "Luis",
+    emoji: "🟠",
+    color: "#F7A200",
+    slackChannel: "C0B8QE4DNBE",
+    members: [
+      "Sergio Barcia",
+      "Valentin Alvarez",
+      "Mariale Bustamante",
+      "JuanFer Mora",
+      "Julian Castellanos",
+      "Martin Perez",
+      "Nicolas Silva",
+      "Sebastian Guzman",
+      "Shadia Said"
+    ]
+  },
+  {
+    id: "taiki",
+    name: "Taiki",
+    emoji: "🔵",
+    color: "#3B82F6",
+    slackChannel: "C0B8EENH60K",
+    members: [
+      "Andres Rodriguez",
+      "Majo Villalba",
+      "MariaP Puerto",
+      "JuanPa Leon",
+      "Nicolas Rosero",
+      "Lala Phan",
+      "Thomas Botto"
+    ]
+  }
+];
+const SLACK_GENERAL = "C0B6EGPPC0L";
+
+let SELECTED_TEAM = null;
 const SHEETS_URL="https://script.google.com/a/macros/arches-global.com/s/AKfycbwI-WiXAYKR7ei3j-buc0gmXZG0pRXM4cDBpHX03njeuOSf9v0D3Ne45dnIGStaKQK1/exec";
 const PCOLS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
 
@@ -254,6 +330,7 @@ function saveState(){
     const data = {
       date: today,
       user: S.user,
+      teamId: SELECTED_TEAM?.id||null,
       projects: PROJECTS,
       checks: S.checks,
       counts: S.counts,
@@ -301,6 +378,7 @@ function saveState(){
     const data = {
       date: today,
       user: S.user,
+      teamId: SELECTED_TEAM?.id||null,
       projects: PROJECTS,
       checks: S.checks,
       counts: S.counts,
@@ -344,6 +422,59 @@ function clearProgress(){
 
 // ── SETUP ─────────────────────────────────────────────────────────────────────
 document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
+
+function selectTeam(teamId){
+  SELECTED_TEAM = TEAMS.find(t=>t.id===teamId);
+  document.getElementById("step-team").style.display="none";
+  document.getElementById("step-member").style.display="block";
+  document.getElementById("team-label").textContent=`Team ${SELECTED_TEAM.name}`;
+  document.getElementById("team-label").style.color=SELECTED_TEAM.color;
+  // Build member list
+  const ml=document.getElementById("member-list");
+  ml.innerHTML="";
+  SELECTED_TEAM.members.forEach(name=>{
+    const btn=document.createElement("button");
+    btn.style.cssText=`background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s;width:100%;text-align:left`;
+    btn.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,${SELECTED_TEAM.color},${SELECTED_TEAM.color}80);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff;flex-shrink:0">${name.charAt(0)}</div><span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff">${name}</span>`;
+    btn.onmouseover=()=>btn.style.background=`rgba(${SELECTED_TEAM.id==="luis"?"247,162,0":"59,130,246"},0.1)`;
+    btn.onmouseout=()=>btn.style.background="rgba(255,255,255,0.03)";
+    btn.onclick=()=>selectMember(name);
+    ml.appendChild(btn);
+  });
+}
+
+function goBackToTeam(){
+  document.getElementById("step-member").style.display="none";
+  document.getElementById("step-team").style.display="block";
+  SELECTED_TEAM=null;
+}
+
+function selectMember(name){
+  document.getElementById("sname") ? null : null; // sname is in step3 now
+  document.getElementById("step-member").style.display="none";
+  document.getElementById("step-projects").style.display="block";
+  document.getElementById("proj-step-title").textContent=`${name}'s Projects`;
+  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Set priority → P1 = highest · max 8`;
+  document.getElementById("proj-step-sub").style.color=SELECTED_TEAM.color;
+  // Store name
+  if(!document.getElementById("sname")){
+    const inp=document.createElement("input");
+    inp.id="sname"; inp.type="hidden"; inp.value=name;
+    document.body.appendChild(inp);
+  } else {
+    document.getElementById("sname").value=name;
+  }
+  // Reset project inputs
+  document.getElementById("pinputs").innerHTML="";
+  document.getElementById("badd").style.display="";
+  addPI();
+  updateSBtn();
+}
+
+function goBackToMember(){
+  document.getElementById("step-projects").style.display="none";
+  document.getElementById("step-member").style.display="block";
+}
 
 function addPI(val="",prio="P2"){
   const c=document.getElementById("pinputs"),n=c.children.length;
@@ -396,7 +527,8 @@ function updateSBtn(){
 }
 
 function startDay(){
-  const name=document.getElementById("sname").value.trim();
+  const nameEl=document.getElementById("sname");
+  const name=nameEl?nameEl.value.trim():"";
   const rows=Array.from(document.getElementById("pinputs").children);
   const projData=rows.map(r=>{
     const inp=r.querySelector(".pinp"),sel=r.querySelector(".prio-sel");
@@ -412,6 +544,14 @@ function startDay(){
   document.getElementById("setup").style.display="none";
   document.getElementById("app").style.display="flex";
   document.getElementById("hname").textContent=name;
+  if(SELECTED_TEAM){
+    const badge=document.getElementById("hteam-badge");
+    badge.style.display="inline";
+    badge.textContent=`${SELECTED_TEAM.emoji} ${SELECTED_TEAM.name}`;
+    badge.style.background=SELECTED_TEAM.color+"25";
+    badge.style.color=SELECTED_TEAM.color;
+    badge.style.border=`1px solid ${SELECTED_TEAM.color}50`;
+  }
   startSW(S.active);
   saveState();
   renderAll();
@@ -423,16 +563,18 @@ function resetDay(){
   PROJECTS=[];
   Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
   Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null});
-  document.getElementById("sname").value="";
   document.getElementById("pinputs").innerHTML="";
   document.getElementById("badd").style.display="";
-  addPI();
+  // Reset to step 1
+  document.getElementById("step-team").style.display="block";
+  document.getElementById("step-member").style.display="none";
+  document.getElementById("step-projects").style.display="none";
+  SELECTED_TEAM=null;
   document.getElementById("app").style.display="none";
   document.getElementById("setup").style.display="flex";
   updateSBtn();
 }
 
-document.getElementById("sname").addEventListener("input",updateSBtn);
 addPI();updateSBtn();
 
 // Auto-restore if same day
@@ -440,6 +582,14 @@ if(loadState()){
   document.getElementById("setup").style.display="none";
   document.getElementById("app").style.display="flex";
   document.getElementById("hname").textContent=S.user;
+  if(SELECTED_TEAM){
+    const badge=document.getElementById("hteam-badge");
+    badge.style.display="inline";
+    badge.textContent=`${SELECTED_TEAM.emoji} ${SELECTED_TEAM.name}`;
+    badge.style.background=SELECTED_TEAM.color+"25";
+    badge.style.color=SELECTED_TEAM.color;
+    badge.style.border=`1px solid ${SELECTED_TEAM.color}50`;
+  }
   // Show resume banner
   showResumeBanner();
   renderAll();
@@ -472,7 +622,17 @@ function closeNoteModal(save){
 
 // ── SLACK + SHEETS ────────────────────────────────────────────────────────────
 async function slackSend(text){
-  try{const r=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});const d=await r.json();return d.ok;}catch{return false;}
+  try{
+    // Send to team channel
+    const teamChannel = SELECTED_TEAM?.slackChannel || SLACK_GENERAL;
+    const r1 = await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text, channel: teamChannel})});
+    const d1 = await r1.json();
+    // Also send to general channel (if different)
+    if(teamChannel !== SLACK_GENERAL){
+      fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text, channel: SLACK_GENERAL})});
+    }
+    return d1.ok;
+  }catch{return false;}
 }
 async function sheetLog(){
   try{
