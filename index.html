@@ -258,6 +258,16 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 
 <script>
 const SLACK_API="/api/slack";
+const SUPA_URL="https://watgvezsgppjvusotuge.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
+
+// Fetch from Supabase directly
+async function supa(table, params=""){
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
+    headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`}
+  });
+  return r.ok ? r.json() : [];
+}
 
 // ── TEAMS CONFIG ──────────────────────────────────────────────────────────────
 const TEAMS = [
@@ -449,13 +459,7 @@ function goBackToTeam(){
   SELECTED_TEAM=null;
 }
 
-function selectMember(name){
-  document.getElementById("sname") ? null : null; // sname is in step3 now
-  document.getElementById("step-member").style.display="none";
-  document.getElementById("step-projects").style.display="block";
-  document.getElementById("proj-step-title").textContent=`${name}'s Projects`;
-  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Set priority → P1 = highest · max 8`;
-  document.getElementById("proj-step-sub").style.color=SELECTED_TEAM.color;
+async function selectMember(name){
   // Store name
   if(!document.getElementById("sname")){
     const inp=document.createElement("input");
@@ -464,11 +468,51 @@ function selectMember(name){
   } else {
     document.getElementById("sname").value=name;
   }
-  // Reset project inputs
+
+  // Show loading
+  document.getElementById("step-member").style.display="none";
+  document.getElementById("step-projects").style.display="block";
+  document.getElementById("proj-step-title").textContent=`${name}'s Projects`;
+  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Loading…`;
+
+  // Reset inputs
   document.getElementById("pinputs").innerHTML="";
   document.getElementById("badd").style.display="";
-  addPI();
+
+  // Fetch assigned projects from Supabase
+  const today=new Date().toISOString().split("T")[0];
+  const assigned = await supa("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`).catch(()=>[]);
+
+  // Fetch action targets from Supabase
+  const targets = await supa("action_targets","?select=*&order=sort_order").catch(()=>[]);
+  if(targets && targets.length>0){
+    // Override local ACTIONS targets with Supabase values
+    targets.forEach(t=>{
+      const a=ACTIONS.find(x=>x.id===t.id);
+      if(a) a.target=t.target;
+    });
+  }
+
+  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Priority P1 = highest · max 8`;
+  document.getElementById("proj-step-sub").style.color=SELECTED_TEAM.color;
+
+  if(assigned && assigned.length>0){
+    // Pre-fill assigned projects
+    assigned.forEach(p=>addPI(p.project, p.priority||"P2"));
+    showSetupBanner(`📋 ${assigned.length} project(s) assigned by manager loaded!`);
+  } else {
+    addPI();
+  }
   updateSBtn();
+}
+
+function showSetupBanner(msg){
+  const b=document.createElement("div");
+  b.style.cssText="background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px";
+  b.innerHTML=`<span>${msg}</span>`;
+  const pinputs=document.getElementById("pinputs");
+  pinputs.parentNode.insertBefore(b, pinputs);
+  setTimeout(()=>b.remove(),5000);
 }
 
 function goBackToMember(){
