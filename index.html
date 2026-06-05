@@ -619,19 +619,21 @@ async function slackSend(text){
 async function sheetLog(){
   try{
     const now=new Date();
+    const projects=PROJECTS.map(proj=>{
+      const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+      const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+      return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
+    });
     const payload={
-      date:now.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"}),
-      time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
       person:S.user,
-      projects:PROJECTS.map(proj=>{
-        const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-        const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-        return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
-      })
+      teamId:SELECTED_TEAM?.id||null,
+      projects,
+      date:now.toISOString().split("T")[0],
+      time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
     };
-    const enc=encodeURIComponent(JSON.stringify(payload));
-    await fetch(`${SHEETS_URL}?data=${enc}`,{method:"GET",mode:"no-cors"});
-    return true;
+    // Log to Supabase via our API
+    const r=await fetch("/api/log",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    return r.ok;
   }catch{return false;}
 }
 
