@@ -3,115 +3,113 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Arches Tracker — War Room</title>
+<title>Arches Tracker v4</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
-  :root{--orange:#F7A200;--orange-dark:#E07000;--bg:#0D0F1A;--surface:#111320;--border:#1E2240;--green:#16A34A;--red:#DC2626;}
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100vh;overflow:hidden;}
-  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-  @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-  @keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+:root{--orange:#F7A200;--od:#E07000;--bg:#0D0F1A;--sur:#111320;--bdr:#1E2240;--grn:#16A34A;--red:#DC2626;--ylw:#EAB308;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100vh;overflow:hidden;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-  /* SETUP */
-  #setup-screen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
-  .setup-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px 40px;max-width:580px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-  .setup-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
-  .setup-sub{font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:2px}
-  .setup-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
-  .setup-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:border-color 0.2s}
-  .setup-input:focus{border-color:#F7A200;box-shadow:0 0 0 3px rgba(247,162,0,0.1)}
-  .setup-input::placeholder{color:rgba(255,255,255,0.2)}
-  .proj-input-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;animation:slideIn 0.3s ease}
-  .proj-num{font-size:10px;color:rgba(255,255,255,0.25);width:18px;text-align:right;flex-shrink:0}
-  .proj-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;font-size:12px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:all 0.2s}
-  .proj-input:focus{border-color:#F7A200;background:rgba(247,162,0,0.05)}
-  .proj-input::placeholder{color:rgba(255,255,255,0.15)}
-  .proj-remove{width:24px;height:24px;border-radius:6px;border:none;background:rgba(220,38,38,0.15);color:#FF6B6B;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0}
-  .proj-remove:hover{background:rgba(220,38,38,0.3)}
-  .btn-add-proj{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:8px 14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;width:100%;transition:all 0.2s;margin-bottom:24px}
-  .btn-add-proj:hover{border-color:rgba(247,162,0,0.4);color:#F7A200;background:rgba(247,162,0,0.05)}
-  .btn-start{width:100%;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:12px;padding:14px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 20px rgba(247,162,0,0.4);transition:all 0.2s;letter-spacing:0.5px}
-  .btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(247,162,0,0.5)}
-  .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+/* SETUP */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
+.sbox{background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:32px 36px;max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto}
+.slbl{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.sinp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:border-color 0.2s}
+.sinp:focus{border-color:#F7A200;box-shadow:0 0 0 3px rgba(247,162,0,0.1)}
+.sinp::placeholder{color:rgba(255,255,255,0.2)}
+.prow{display:flex;align-items:center;gap:6px;margin-bottom:8px;animation:slideIn 0.3s ease}
+.pnum{font-size:10px;color:rgba(255,255,255,0.25);width:16px;text-align:right;flex-shrink:0}
+.pinp{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:all 0.2s}
+.pinp:focus{border-color:#F7A200;background:rgba(247,162,0,0.05)}
+.pinp::placeholder{color:rgba(255,255,255,0.15)}
+.pinp.duplicate{border-color:#DC2626;animation:shake 0.3s ease}
+.prio-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 8px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;outline:none;cursor:pointer;flex-shrink:0}
+.prio-sel option{background:#111320}
+.prio-P1{border-color:#DC2626!important;color:#FF6B6B!important}
+.prio-P2{border-color:#F7A200!important;color:#F7A200!important}
+.prio-P3{border-color:#4ADE80!important;color:#4ADE80!important}
+.prm{width:22px;height:22px;border-radius:5px;border:none;background:rgba(220,38,38,0.15);color:#FF6B6B;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prm:hover{background:rgba(220,38,38,0.3)}
+.badd{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:7px 14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;width:100%;transition:all 0.2s;margin-bottom:20px}
+.badd:hover{border-color:rgba(247,162,0,0.4);color:#F7A200;background:rgba(247,162,0,0.05)}
+.bstart{width:100%;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:12px;padding:13px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 20px rgba(247,162,0,0.4);transition:all 0.2s}
+.bstart:hover{transform:translateY(-1px)}
+.bstart:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.dup-warn{font-size:10px;color:#FF6B6B;margin:-4px 0 8px 24px;display:none}
 
-  /* APP */
-  #app{display:none;flex-direction:column;height:100vh}
-  #header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;height:54px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50;flex-shrink:0}
-  #layout{display:grid;grid-template-columns:200px 1fr 230px;flex:1;overflow:hidden}
-  #left{background:var(--surface);border-right:1px solid var(--border);padding:12px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
-  #center{overflow-y:auto;padding:14px 16px;background:var(--bg)}
-  #right{background:var(--surface);border-left:1px solid var(--border);padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-  .ring-wrap{position:relative;flex-shrink:0}
-  .ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;color:#fff}
-  .stat-box{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 10px}
-  .stat-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:900;line-height:1}
-  .stat-lbl{font-size:8px;color:rgba(255,255,255,0.35);letter-spacing:0.8px;margin-top:1px;text-transform:uppercase}
-  .btn-hdr{border-radius:8px;padding:7px 12px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s;border:none}
-  .btn-update{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35);color:#F7A200}
-  .btn-update:hover{background:rgba(247,162,0,0.25)}
-  .btn-eod{background:linear-gradient(135deg,#F7A200,#E07000);color:#fff;box-shadow:0 3px 12px rgba(247,162,0,0.4)}
-  .btn-eod:hover{transform:translateY(-1px)}
-  .btn-newday{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)!important;color:rgba(255,255,255,0.4)}
-  .btn-newday:hover{color:#fff;border-color:rgba(255,255,255,0.2)!important}
-  .btn-hdr:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-  .proj-btn{transition:all 0.2s;cursor:pointer}.proj-btn:hover{transform:translateY(-1px)}
-  .cbtn{transition:all 0.12s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:6px}
-  .cbtn:active{transform:scale(0.85)}
-  .arow{transition:background 0.15s}.arow:hover{background:rgba(247,162,0,0.05)!important}
-  .proj-card-left{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-left:3px solid transparent;border-radius:9px;padding:9px 10px}
-  .mini-bar{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
-  .side-panel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:11px;overflow:hidden}
-  .side-head{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);background:linear-gradient(135deg,rgba(247,162,0,0.1),transparent);display:flex;align-items:center;gap:6px}
-  .side-title{font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#F7A200;letter-spacing:2px}
-  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:11px;padding:11px 22px;font-size:12px;font-weight:600;opacity:0;transition:all 0.35s;pointer-events:none;z-index:998;box-shadow:0 6px 24px rgba(0,0,0,0.5);white-space:nowrap;border:1px solid rgba(255,255,255,0.08)}
-  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  #confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
-  #gbar{height:2px;background:var(--border);flex-shrink:0}
-  #gbar-fill{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
+/* APP */
+#app{display:none;flex-direction:column;height:100vh}
+#hdr{background:var(--sur);border-bottom:1px solid var(--bdr);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50;flex-shrink:0}
+#layout{display:grid;grid-template-columns:220px 1fr 240px;flex:1;overflow:hidden}
+#left{background:var(--sur);border-right:1px solid var(--bdr);padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+#center{overflow-y:auto;padding:12px 14px;background:var(--bg)}
+#right{background:var(--sur);border-left:1px solid var(--bdr);padding:10px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.rwrap{position:relative;flex-shrink:0}
+.rlbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;color:#fff}
+.sbox2{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 9px}
+.sv{font-family:'Syne',sans-serif;font-size:13px;font-weight:900;line-height:1}
+.sl{font-size:8px;color:rgba(255,255,255,0.35);letter-spacing:0.8px;margin-top:1px;text-transform:uppercase}
+.bhdr{border-radius:7px;padding:6px 11px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s;border:none}
+.bupd{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35)!important;color:#F7A200}
+.bupd:hover{background:rgba(247,162,0,0.25)}
+.beod{background:linear-gradient(135deg,#F7A200,#E07000);color:#fff;box-shadow:0 3px 10px rgba(247,162,0,0.4)}
+.beod:hover{transform:translateY(-1px)}
+.bnew{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)!important;color:rgba(255,255,255,0.4)}
+.bnew:hover{color:#fff}
+.bhdr:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+.pbtn{transition:all 0.2s;cursor:pointer}.pbtn:hover{transform:translateY(-1px)}
+.cbtn{transition:all 0.1s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:5px}
+.cbtn:active{transform:scale(0.85)}
+.aleft{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-left:3px solid transparent;border-radius:9px;padding:8px 9px}
+.spanel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;overflow:hidden}
+.shead{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.05);background:linear-gradient(135deg,rgba(247,162,0,0.1),transparent);display:flex;align-items:center;gap:5px}
+.stitle{font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#F7A200;letter-spacing:2px}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;opacity:0;transition:all 0.3s;pointer-events:none;z-index:998;box-shadow:0 6px 24px rgba(0,0,0,0.5);white-space:nowrap;border:1px solid rgba(255,255,255,0.08)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#cfw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+#gbar{height:2px;background:var(--bdr);flex-shrink:0}
+#gbf{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
+
+/* NOTE MODAL */
+#note-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center}
+.nmodal-box{background:var(--sur);border:1px solid #F7A200;border-radius:14px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
+
+/* PRIO BADGE */
+.prio-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
+.prio-P1{background:rgba(220,38,38,0.2);color:#FF6B6B;border:1px solid rgba(220,38,38,0.3)}
+.prio-P2{background:rgba(247,162,0,0.2);color:#F7A200;border:1px solid rgba(247,162,0,0.3)}
+.prio-P3{background:rgba(74,222,128,0.2);color:#4ADE80;border:1px solid rgba(74,222,128,0.3)}
 </style>
 </head>
 <body>
-<div id="confetti-wrap"></div>
+<div id="cfw"></div>
 
-<!-- SETUP SCREEN -->
-<div id="setup-screen">
-  <div class="setup-box">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
-      <svg width="40" height="26" viewBox="0 0 200 130" fill="none">
-        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
-        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
-        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
-        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
-      </svg>
-      <div>
-        <div class="setup-title">ARCHES TRACKER</div>
-        <div class="setup-sub">WAR ROOM · <span id="setup-date"></span></div>
-      </div>
+<!-- NOTE MODAL (mandatory note for 0 actions) -->
+<div id="note-modal">
+  <div class="nmodal-box">
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900;color:#F7A200;margin-bottom:6px">📝 Note Required</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:16px" id="note-modal-sub">To mark this action as complete with 0, you must explain why.</div>
+    <textarea id="note-modal-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…"
+      style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px;font-family:'DM Mono',monospace;font-size:12px;color:#fff;outline:none;resize:none;line-height:1.5"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="closeNoteModal(false)" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">Cancel</button>
+      <button onclick="closeNoteModal(true)" style="flex:2;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;cursor:pointer">Save Note & Mark Done</button>
     </div>
-    <div style="margin-bottom:20px">
-      <div class="setup-label">Your Name</div>
-      <input class="setup-input" id="setup-name" placeholder="e.g. Juan Valentin" maxlength="40"/>
-    </div>
-    <div style="margin-bottom:12px">
-      <div class="setup-label">Today's Projects <span style="color:rgba(255,255,255,0.25);font-weight:400">(min 1, max 8)</span></div>
-    </div>
-    <div id="proj-inputs"></div>
-    <button class="btn-add-proj" id="btn-add" onclick="addProjInput()">+ Add project</button>
-    <button class="btn-start" id="btn-start" onclick="startDay()">🚀 START DAY</button>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="app">
-  <div id="header">
-    <div style="display:flex;align-items:center;gap:10px">
-      <svg width="30" height="20" viewBox="0 0 200 130" fill="none">
+<!-- SETUP -->
+<div id="setup">
+  <div class="sbox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <svg width="38" height="25" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
         <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
         <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
@@ -120,67 +118,103 @@
         <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
       </svg>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
-        <div style="font-size:8px;color:#F7A200;letter-spacing:2.5px" id="header-date">WAR ROOM</div>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px">ARCHES TRACKER</div>
+        <div style="font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:1px">WAR ROOM v4 · <span id="setup-date"></span></div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <div class="ring-wrap" style="width:42px;height:42px">
-        <svg width="42" height="42" style="transform:rotate(-90deg);position:absolute">
-          <circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
-          <circle cx="21" cy="21" r="18" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="113.1" id="ring-circle" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+    <div style="margin-bottom:18px">
+      <div class="slbl">Your Name</div>
+      <input class="sinp" id="sname" placeholder="e.g. Juan Valentin" maxlength="40"/>
+    </div>
+    <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+      <div class="slbl" style="margin:0">Today's Projects <span style="color:rgba(255,255,255,0.2);font-weight:400">(max 8)</span></div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.3)">Set priority → P1 = highest</div>
+    </div>
+    <div id="pinputs"></div>
+    <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name — please use a unique name</div>
+    <button class="badd" id="badd" onclick="addPI()">+ Add project</button>
+    <button class="bstart" id="bstart" onclick="startDay()">🚀 START DAY</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="hdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="28" height="18" viewBox="0 0 200 130" fill="none">
+        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
+        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
+      </svg>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
+        <div style="font-size:7px;color:#F7A200;letter-spacing:2px" id="hdate">WAR ROOM</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center">
+      <div class="rwrap" style="width:40px;height:40px">
+        <svg width="40" height="40" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+          <circle cx="20" cy="20" r="17" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" id="rc" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
         </svg>
-        <div class="ring-label" style="font-size:11px" id="ring-label">0%</div>
+        <div class="rlbl" style="font-size:10px" id="rl">0%</div>
       </div>
-      <div class="stat-box"><div class="stat-val" id="stat-targets">0/0</div><div class="stat-lbl">Targets</div></div>
-      <div class="stat-box"><div class="stat-val" id="stat-checks">0/0</div><div class="stat-lbl">Checks</div></div>
-      <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:5px 12px;text-align:center">
-        <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase">ENDS 17:00</div>
-        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900" id="timer-val">—</div>
-        <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="timer-now">—</div>
+      <div class="sbox2"><div class="sv" id="s-tgt">0/0</div><div class="sl">Targets</div></div>
+      <div class="sbox2"><div class="sv" id="s-chk">0/0</div><div class="sl">Checks</div></div>
+      <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 10px;text-align:center">
+        <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase">ENDS 17:00</div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900" id="tv">—</div>
+        <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="tnow">—</div>
       </div>
-      <div id="slack-ind" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <span id="header-name" style="font-size:11px;color:rgba(255,255,255,0.4);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-      <button class="btn-hdr btn-update" id="btn-upd" onclick="sendUpdate()">📊 Update</button>
-      <button class="btn-hdr btn-eod" id="btn-eod" onclick="sendEOD()">🏆 EOD Report</button>
-      <button class="btn-hdr btn-newday" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
+      <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
+      <span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="bhdr bupd" id="bupd" style="border:1px solid" onclick="sendUpdate()">📊 Update</button>
+      <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
+      <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
     </div>
   </div>
-  <div id="gbar"><div id="gbar-fill"></div></div>
+  <div id="gbar"><div id="gbf"></div></div>
   <div id="layout">
+    <!-- LEFT -->
     <div id="left">
-      <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:2px;padding:0 6px 6px;font-weight:700">TODAY'S PROJECTS</div>
-      <div id="proj-list"></div>
-      <div style="margin-top:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:9px 10px">
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:7px;font-weight:700">TODAY'S TOTALS</div>
-        <div id="totals-list"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:0 2px 6px;border-bottom:1px solid var(--bdr);margin-bottom:6px">
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700;align-self:center">PROJECTS</div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700;text-align:right">TO DO</div>
+      </div>
+      <div id="plist"></div>
+      <div style="margin-top:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:8px 9px">
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:6px;font-weight:700">TODAY'S TOTALS</div>
+        <div id="totals"></div>
       </div>
     </div>
-    <div id="center"><div id="proj-header"></div><div id="actions-list"></div></div>
+    <!-- CENTER -->
+    <div id="center"><div id="phdr"></div><div id="alist"></div></div>
+    <!-- RIGHT -->
     <div id="right">
-      <!-- Integrations status -->
-      <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:11px;padding:10px 12px">
-        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:7px">⚡ AUTO INTEGRATIONS</div>
+      <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:10px;padding:10px 11px">
+        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:6px">⚡ AUTO INTEGRATIONS</div>
         <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8">
-          🟢 Slack notified on each project complete<br>
-          📊 Google Sheets logged on EOD<br>
-          🏆 Full debrief when all done<br>
-          <span style="color:#E879F9;font-weight:600">#bogota-actions-taken</span>
+          🟢 Slack on each project complete<br>
+          📊 Sheets logged on EOD<br>
+          🏆 Full debrief when all done
         </div>
-        <div id="slack-live" style="margin-top:8px;display:none;align-items:center;gap:6px;border-radius:7px;padding:6px 10px">
-          <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="slack-dot"></div>
-          <span style="font-size:9px;font-weight:600" id="slack-txt"></span>
-        </div>
-      </div>
-      <div class="side-panel">
-        <div class="side-head"><span style="font-size:11px">⚡</span><span class="side-title">LIVE ACTIVITY</span></div>
-        <div id="activity-feed" style="max-height:220px;overflow-y:auto;padding:3px 0">
-          <div style="padding:14px 12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">No activity yet…</div>
+        <div id="slive" style="margin-top:7px;display:none;align-items:center;gap:5px;border-radius:6px;padding:5px 9px">
+          <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="sdot"></div>
+          <span style="font-size:9px;font-weight:600" id="stxt"></span>
         </div>
       </div>
-      <div class="side-panel">
-        <div class="side-head"><span class="side-title">🗂️ OVERVIEW</span></div>
-        <div id="overview-list"></div>
+      <div class="spanel">
+        <div class="shead"><span style="font-size:11px">⚡</span><span class="stitle">LIVE ACTIVITY</span></div>
+        <div id="afeed" style="max-height:200px;overflow-y:auto;padding:3px 0">
+          <div style="padding:12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">No activity yet…</div>
+        </div>
+      </div>
+      <div class="spanel">
+        <div class="shead"><span class="stitle">🗂️ OVERVIEW</span></div>
+        <div id="ovlist"></div>
       </div>
     </div>
   </div>
@@ -188,258 +222,349 @@
 <div id="toast"></div>
 
 <script>
-const SLACK_API = "/api/slack";
-const SHEETS_URL = "https://script.google.com/a/macros/arches-global.com/s/AKfycbwI-WiXAYKR7ei3j-buc0gmXZG0pRXM4cDBpHX03njeuOSf9v0D3Ne45dnIGStaKQK1/exec";
+const SLACK_API="/api/slack";
+const SHEETS_URL="https://script.google.com/a/macros/arches-global.com/s/AKfycbwI-WiXAYKR7ei3j-buc0gmXZG0pRXM4cDBpHX03njeuOSf9v0D3Ne45dnIGStaKQK1/exec";
+const PCOLS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
 
-const PROJ_COLORS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
 const ACTIONS=[
-  {id:"emails",      emoji:"📧", name:"Emails",              target:40},
-  {id:"inmails",     emoji:"💼", name:"InMails",              target:10},
-  {id:"connections", emoji:"🔗", name:"Connections",          target:25},
-  {id:"calls",       emoji:"📞", name:"Cold Calls",           target:20},
-  {id:"sms",         emoji:"💬", name:"SMS / iMessage",       target:15},
-  {id:"proposals",   emoji:"🤝", name:"Proposals",            target:3 },
-  {id:"int_sched",   emoji:"🎙️", name:"Interviews Sched.",    target:2 },
-  {id:"int_done",    emoji:"📅", name:"Interviews Done",      target:1 },
-  {id:"followups",   emoji:"🔄", name:"Follow Ups",           target:20},
-  {id:"db_leads",    emoji:"🗂️", name:"DB Leads",             target:1 },
-  {id:"expansion",   emoji:"📈", name:"Lead Expansion",       target:60},
+  {id:"db_search",    emoji:"🗄️", name:"DB Search (CC+Email)",  target:1,  note:"Mandatory if 0"},
+  {id:"li_search",    emoji:"🔍", name:"LinkedIn Search",         target:25, note:"Mandatory if 0"},
+  {id:"expansion",    emoji:"📈", name:"Expansion (if needed)",   target:60, note:"Mandatory if 0"},
+  {id:"cold_call",    emoji:"📞", name:"Cold Call",               target:20, note:"Mandatory if 0"},
+  {id:"connections",  emoji:"🔗", name:"Connections",             target:25, note:"Mandatory if 0"},
+  {id:"inmail",       emoji:"💼", name:"InMail (LI Premium)",     target:10, note:"Mandatory if 0"},
+  {id:"emails",       emoji:"📧", name:"Emails (Instantly)",      target:40, note:"Mandatory if 0"},
+  {id:"company_call", emoji:"🏢", name:"Company Call (if needed)",target:1,  note:"Mandatory if 0"},
 ];
 
 let PROJECTS=[];
-const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[],userName:""};
+const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null};
 
 // ── SETUP ─────────────────────────────────────────────────────────────────────
 document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
 
-function addProjInput(val=""){
-  const c=document.getElementById("proj-inputs"),count=c.children.length;
-  if(count>=8)return;
-  const row=document.createElement("div");row.className="proj-input-row";
+function addPI(val="",prio="P2"){
+  const c=document.getElementById("pinputs"),n=c.children.length;
+  if(n>=8)return;
+  const row=document.createElement("div");row.className="prow";
   const id="pi-"+Date.now();
-  row.innerHTML=`<span class="proj-num">${count+1}</span><input class="proj-input" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/><button class="proj-remove" onclick="removeProjInput(this)">×</button>`;
+  row.innerHTML=`<span class="pnum">${n+1}</span>
+    <input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/>
+    <select class="prio-sel prio-${prio}" id="pr-${id}" onchange="this.className='prio-sel prio-'+this.value">
+      <option value="P1" ${prio==="P1"?"selected":""}>P1</option>
+      <option value="P2" ${prio==="P2"?"selected":""}>P2</option>
+      <option value="P3" ${prio==="P3"?"selected":""}>P3</option>
+    </select>
+    <button class="prm" onclick="removePI(this)">×</button>`;
   c.appendChild(row);
-  document.getElementById(id).focus();
-  if(c.children.length>=8)document.getElementById("btn-add").style.display="none";
-  updateStartBtn();
-  row.querySelector("input").addEventListener("input",updateStartBtn);
+  const inp=document.getElementById(id);
+  inp.focus();
+  inp.addEventListener("input",()=>{checkDups();updateSBtn();});
+  if(c.children.length>=8)document.getElementById("badd").style.display="none";
+  updateSBtn();
 }
 
-function removeProjInput(btn){
-  const c=document.getElementById("proj-inputs");
-  btn.closest(".proj-input-row").remove();
-  Array.from(c.children).forEach((r,i)=>r.querySelector(".proj-num").textContent=i+1);
-  document.getElementById("btn-add").style.display="";
-  updateStartBtn();
+function removePI(btn){
+  const c=document.getElementById("pinputs");
+  btn.closest(".prow").remove();
+  Array.from(c.children).forEach((r,i)=>r.querySelector(".pnum").textContent=i+1);
+  document.getElementById("badd").style.display="";
+  checkDups();updateSBtn();
 }
 
-function updateStartBtn(){
-  const inputs=Array.from(document.querySelectorAll(".proj-input")).map(i=>i.value.trim()).filter(Boolean);
-  const name=document.getElementById("setup-name").value.trim();
-  document.getElementById("btn-start").disabled=inputs.length===0||!name;
+function checkDups(){
+  const inputs=Array.from(document.querySelectorAll(".pinp"));
+  const vals=inputs.map(i=>i.value.trim().toLowerCase());
+  const warn=document.getElementById("dup-warn");
+  let hasDup=false;
+  inputs.forEach(inp=>{
+    const v=inp.value.trim().toLowerCase();
+    if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("duplicate");hasDup=true;}
+    else inp.classList.remove("duplicate");
+  });
+  warn.style.display=hasDup?"block":"none";
+  return hasDup;
+}
+
+function updateSBtn(){
+  const inputs=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean);
+  const name=document.getElementById("sname").value.trim();
+  const hasDup=checkDups();
+  document.getElementById("bstart").disabled=inputs.length===0||!name||hasDup;
 }
 
 function startDay(){
-  const name=document.getElementById("setup-name").value.trim();
-  const projNames=Array.from(document.querySelectorAll(".proj-input")).map(i=>i.value.trim()).filter(Boolean);
-  if(!name||projNames.length===0)return;
-  S.userName=name;
-  PROJECTS=projNames.map((n,i)=>({id:"p"+i,name:n,short:n.length>18?n.substring(0,16)+"…":n,color:PROJ_COLORS[i%PROJ_COLORS.length]}));
+  const name=document.getElementById("sname").value.trim();
+  const rows=Array.from(document.getElementById("pinputs").children);
+  const projData=rows.map(r=>{
+    const inp=r.querySelector(".pinp"),sel=r.querySelector(".prio-sel");
+    return{name:inp.value.trim(),prio:sel?sel.value:"P2"};
+  }).filter(p=>p.name);
+  if(!name||projData.length===0)return;
+  S.user=name;
+  PROJECTS=projData.map((p,i)=>({id:"p"+i,name:p.name,short:p.name.length>16?p.name.substring(0,14)+"…":p.name,color:PCOLS[i%PCOLS.length],prio:p.prio}));
+  // Sort by priority P1 first
+  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
+  PROJECTS.forEach((p,i)=>p.id="p"+i);
   S.active=PROJECTS[0].id;
-  document.getElementById("setup-screen").style.display="none";
+  document.getElementById("setup").style.display="none";
   document.getElementById("app").style.display="flex";
-  document.getElementById("header-name").textContent=name;
+  document.getElementById("hname").textContent=name;
+  startSW(S.active);
   renderAll();
 }
 
 function resetDay(){
   if(!confirm("Start a new day? Current progress will be cleared."))return;
   PROJECTS=[];
-  Object.keys(S.swIv).forEach(k=>clearInterval(S.swIv[k]));
-  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swElapsed:{},swRunning:{},swIv:{},editingNote:null,actLog:[],userName:""});
-  document.getElementById("setup-name").value="";
-  document.getElementById("proj-inputs").innerHTML="";
-  document.getElementById("btn-add").style.display="";
-  addProjInput();
+  Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
+  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null});
+  document.getElementById("sname").value="";
+  document.getElementById("pinputs").innerHTML="";
+  document.getElementById("badd").style.display="";
+  addPI();
   document.getElementById("app").style.display="none";
-  document.getElementById("setup-screen").style.display="flex";
-  updateStartBtn();
+  document.getElementById("setup").style.display="flex";
+  updateSBtn();
 }
 
-document.getElementById("setup-name").addEventListener("input",updateStartBtn);
-addProjInput();
-updateStartBtn();
+document.getElementById("sname").addEventListener("input",updateSBtn);
+addPI();updateSBtn();
 
-// ── SLACK ─────────────────────────────────────────────────────────────────────
+// ── NOTE MODAL ────────────────────────────────────────────────────────────────
+function openNoteModal(pid,aid){
+  S.noteModal={pid,aid};
+  const a=ACTIONS.find(x=>x.id===aid);
+  document.getElementById("note-modal-sub").textContent=`Action: "${a.name}" — enter a reason to mark as complete with 0.`;
+  document.getElementById("note-modal-inp").value=S.notes[`${pid}_${aid}`]||"";
+  document.getElementById("note-modal").style.display="flex";
+  setTimeout(()=>document.getElementById("note-modal-inp").focus(),100);
+}
+function closeNoteModal(save){
+  if(save){
+    const val=document.getElementById("note-modal-inp").value.trim();
+    if(!val){document.getElementById("note-modal-inp").style.border="1px solid #DC2626";return;}
+    const{pid,aid}=S.noteModal;
+    S.notes[`${pid}_${aid}`]=val;
+    S.checks[`${pid}_${aid}`]=true;
+    logAct("📝",`Note saved: ${val.slice(0,30)}`);
+    checkComplete(pid);
+    renderActionRow(pid,aid);
+    updateGlobal();renderLeft();renderOv();
+  }
+  document.getElementById("note-modal").style.display="none";
+  S.noteModal=null;
+}
+
+// ── SLACK + SHEETS ────────────────────────────────────────────────────────────
 async function slackSend(text){
-  try{
-    const res=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
-    const data=await res.json();
-    return data.ok;
-  }catch(e){return false;}
+  try{const r=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});const d=await r.json();return d.ok;}catch{return false;}
 }
-
-// ── GOOGLE SHEETS ─────────────────────────────────────────────────────────────
 async function sheetLog(){
   try{
     const now=new Date();
     const payload={
       date:now.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"}),
       time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
-      person:S.userName,
+      person:S.user,
       projects:PROJECTS.map(proj=>{
         const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-        const cnts={};
-        ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-        return{name:proj.name,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
+        const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+        return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
       })
     };
-    await fetch(SHEETS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const enc=encodeURIComponent(JSON.stringify(payload));
+    await fetch(`${SHEETS_URL}?data=${enc}`,{method:"GET",mode:"no-cors"});
     return true;
-  }catch(e){return false;}
+  }catch{return false;}
 }
 
-function setSlackUI(status,detail){
-  const cfgs={
-    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",label:"Sending…",anim:"pulse 1s infinite"},
-    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",label:"✅ Sent!",anim:"none"},
-    error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",label:`⚠️ ${detail||"Error"}`,anim:"none"},
-  };
-  const c=cfgs[status];
-  const ind=document.getElementById("slack-ind");
-  ind.style.cssText=`display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${c.bc};background:${c.bg};color:${c.color};animation:${c.anim}`;
-  ind.textContent=c.label;
-  const live=document.getElementById("slack-live");live.style.display="flex";live.style.background=c.bg;
-  document.getElementById("slack-dot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${c.dot};box-shadow:0 0 6px ${c.dot};flex-shrink:0`;
-  document.getElementById("slack-txt").style.color=c.color;
-  document.getElementById("slack-txt").textContent=c.label;
-  ["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
-  if(status!=="sending")setTimeout(()=>{ind.style.display="none";live.style.display="none";["btn-upd","btn-eod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
+function setSUI(status,detail){
+  const c={sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",lbl:"Sending…",an:"pulse 1s infinite"},success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",lbl:"✅ Sent!",an:"none"},error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",lbl:`⚠️ ${detail||"Error"}`,an:"none"}}[status];
+  const i=document.getElementById("sind");
+  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${c.bc};background:${c.bg};color:${c.color};animation:${c.an}`;
+  i.textContent=c.lbl;
+  const l=document.getElementById("slive");l.style.display="flex";l.style.background=c.bg;
+  document.getElementById("sdot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${c.dot};box-shadow:0 0 6px ${c.dot};flex-shrink:0`;
+  document.getElementById("stxt").style.color=c.color;document.getElementById("stxt").textContent=c.lbl;
+  ["bupd","beod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
+  if(status!=="sending")setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
 }
 
-function buildProjectMsg(proj){
-  let m=`🎉 *Project Complete!*\n*${S.userName}* finished *${proj.name}*\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
-  ACTIONS.forEach(a=>{const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k];m+=`${cnt>=a.target?"✅":"⬜"} ${a.emoji} *${a.name}:* ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
+function buildProjMsg(proj){
+  let m=`🎉 *Project Complete!*\n*${S.user}* finished *${proj.name}* [${proj.prio}]\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
+  ACTIONS.forEach(a=>{
+    const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k],chk=S.checks[k];
+    const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":"⬜";
+    m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
+  });
   return m;
 }
-
 function buildEODMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`🏆 *END OF DAY REPORT — ${S.userName}*\n*${date}* | *${pct}% complete*\n\n`;
-  PROJECTS.forEach(proj=>{
-    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swElapsed[proj.id]||0)/60000);
-    m+=`*${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
-    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`];if(cnt>0||note)m+=`  ${a.emoji} ${a.name}: ${cnt}/${a.target}${note?` — _${note}_`:""}\n`;});
+  let m=`🏆 *END OF DAY — ${S.user}*\n*${date}* | *${pct}% complete*\n\n`;
+  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
+    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swE[proj.id]||0)/60000);
+    m+=`*[${proj.prio}] ${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
+    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`];if(cnt>0||note||S.checks[`${proj.id}_${a.id}`])m+=`  ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;});
     m+="\n";
   });
   m+=`📊 *Grand Totals:*\n`;
   ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0)m+=`${a.emoji} ${a.name}: *${t}*\n`;});
   return m;
 }
-
-function buildUpdateMsg(){
-  const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+function buildUpdMsg(){
+  const date=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`📊 *Update — ${S.userName}* | *${date}* | ${pct}% complete\n\n`;
+  let m=`📊 *Update — ${S.user}* | ${date} | ${pct}% complete\n\n`;
   PROJECTS.forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-    m+=`*${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
-    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0;if(cnt>0)m+=`  ${a.emoji} ${a.name}: ${cnt}/${a.target}\n`;});
+    m+=`*[${proj.prio}] ${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
+    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0;if(cnt>0)m+=`  ${a.emoji} ${a.name}: ${cnt}\n`;});
     m+="\n";
   });
   return m;
 }
 
-async function sendUpdate(){
-  setSlackUI("sending");
-  const ok=await slackSend(buildUpdateMsg());
-  setSlackUI(ok?"success":"error",ok?"":" Check connection");
-  showToast(ok?"📊 Update sent to Slack!":"⚠️ Slack error",ok?"success":"error");
-}
-
+async function sendUpdate(){setSUI("sending");const ok=await slackSend(buildUpdMsg());setSUI(ok?"success":"error");showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");}
 async function sendEOD(){
-  setSlackUI("sending");
-  const [slackOk,sheetOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
-  setSlackUI(slackOk?"success":"error");
-  if(slackOk&&sheetOk) showToast("🏆 EOD sent to Slack & Sheets!","success");
-  else if(slackOk) showToast("🏆 Slack ✅ · Sheets ⚠️","success");
-  else showToast("⚠️ Error sending","error");
+  setSUI("sending");
+  const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
+  setSUI(sOk?"success":"error");
+  showToast(sOk&&gOk?"🏆 Slack & Sheets updated!":sOk?"🏆 Slack ✅ Sheets ⚠️":"⚠️ Error",sOk?"success":"error");
   logAct("📊","EOD report sent");
 }
-
-async function notifyProject(pid){
-  const proj=PROJECTS.find(p=>p.id===pid);
-  setSlackUI("sending");
-  const ok=await slackSend(buildProjectMsg(proj));
-  setSlackUI(ok?"success":"error");
-  showToast(ok?`✅ ${proj.short} sent to Slack!`:"⚠️ Error",ok?"success":"error");
+async function notifyProj(pid){
+  const proj=PROJECTS.find(p=>p.id===pid);setSUI("sending");
+  const ok=await slackSend(buildProjMsg(proj));setSUI(ok?"success":"error");
+  showToast(ok?`✅ ${proj.short} sent!`:"⚠️ Error",ok?"success":"error");
 }
 
+// ── PROJECT COMPLETE ──────────────────────────────────────────────────────────
 function checkComplete(pid){
   const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
   if(done&&!S.completed[pid]){
     S.completed[pid]=true;logAct("🎉",`${proj.short} 100% complete!`);
     fireConfetti();showToast(`🎉 ${proj.short} done! Notifying Slack…`,"success");
-    slackSend(buildProjectMsg(proj)).then(ok=>{
-      setSlackUI(ok?"success":"error");
-      showToast(ok?`✅ Slack notified!`:"⚠️ Slack failed",ok?"success":"error");
-    });
+    slackSend(buildProjMsg(proj)).then(ok=>setSUI(ok?"success":"error"));
     if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
       S.allDone=true;fireConfetti(true);
       setTimeout(async()=>{
         showToast("🏆 ALL DONE! Sending final report…","success");
-        const[slackOk,sheetOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
-        showToast(slackOk&&sheetOk?"🏆 Slack & Sheets updated!":slackOk?"🏆 Slack ✅ · Sheets ⚠️":"⚠️ Error","success");
-        logAct("🏆","Full debrief sent to Slack & Sheets");
+        const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
+        showToast(sOk&&gOk?"🏆 Slack & Sheets done!":sOk?"Slack ✅ Sheets ⚠️":"⚠️ Error","success");
+        logAct("🏆","Debrief sent to Slack & Sheets");
       },1800);
     }
   }else if(!done){S.completed[pid]=false;S.allDone=false;}
 }
 
-// ── STOPWATCH ─────────────────────────────────────────────────────────────────
-function toggleSW(pid){
-  if(S.swRunning[pid]){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;}
-  else{const t0=Date.now()-(S.swElapsed[pid]||0);S.swIv[pid]=setInterval(()=>{S.swElapsed[pid]=Date.now()-t0;updateSW(pid);},500);S.swRunning[pid]=true;}
-  renderLeft();renderProjHeader();
+// ── AUTO STOPWATCH ────────────────────────────────────────────────────────────
+function startSW(pid){
+  if(S.swR[pid])return;
+  const t0=Date.now()-(S.swE[pid]||0);
+  S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);
+  S.swR[pid]=true;
 }
-function resetSW(pid){clearInterval(S.swIv[pid]);S.swRunning[pid]=false;S.swElapsed[pid]=0;renderLeft();renderProjHeader();}
+function stopSW(pid){
+  if(!S.swR[pid])return;
+  clearInterval(S.swI[pid]);S.swR[pid]=false;
+}
+function resetSW(pid){stopSW(pid);S.swE[pid]=0;updSW(pid);}
 function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
-function updateSW(pid){["sw-left-"+pid,"sw-center"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=fmtT(S.swElapsed[pid]||0);el.style.color=S.swRunning[pid]?PROJECTS.find(p=>p.id===pid).color:"#fff";}});}
+function updSW(pid){
+  const el1=document.getElementById(`swl-${pid}`),el2=document.getElementById("swc");
+  const col=PROJECTS.find(p=>p.id===pid)?.color||"#fff";
+  if(el1){el1.textContent=fmtT(S.swE[pid]||0);el1.style.color=S.swR[pid]?col:"rgba(255,255,255,0.3)";}
+  if(el2&&S.active===pid){el2.textContent=fmtT(S.swE[pid]||0);el2.style.color=S.swR[pid]?col:"#fff";}
+}
+
+function switchProject(pid){
+  if(S.active===pid)return;
+  stopSW(S.active);
+  S.active=pid;
+  startSW(pid);
+  renderAll();
+}
 
 // ── COUNTERS ──────────────────────────────────────────────────────────────────
-function addCount(pid,aid,delta){
-  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,prev+delta);
+function setCount(pid,aid,val){
+  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
+  const prev=S.counts[key]||0,next=Math.max(0,val);
   S.counts[key]=next;
-  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target hit! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
-  else if(next<a.target&&prev>=a.target){S.checks[key]=false;}
-  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
+  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
+  else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();
 }
+function addCount(pid,aid,delta){
+  const key=`${pid}_${aid}`;
+  setCount(pid,aid,(S.counts[key]||0)+delta);
+}
+
 function toggleCheck(pid,aid){
-  const key=`${pid}_${aid}`;S.checks[key]=!S.checks[key];
-  const a=ACTIONS.find(x=>x.id===aid),proj=PROJECTS.find(x=>x.id===pid);
-  if(S.checks[key])logAct("✅",`${S.userName} ✓ ${a.name} · ${proj.short}`);
-  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOverview();
+  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
+  if(!S.checks[key]){
+    // Trying to mark as done
+    if((S.counts[key]||0)===0){
+      // Need a note
+      openNoteModal(pid,aid);
+      return;
+    }
+    S.checks[key]=true;
+  } else {
+    S.checks[key]=false;
+  }
+  const proj=PROJECTS.find(x=>x.id===pid);
+  if(S.checks[key])logAct("✅",`${S.user} ✓ ${a.name} · ${proj.short}`);
+  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll(){
-  document.getElementById("header-date").textContent="WAR ROOM · "+new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
-  renderLeft();renderCenter();renderOverview();updateGlobal();updateTimer();
+  document.getElementById("hdate").textContent="WAR ROOM · "+new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
+  renderLeft();renderCenter();renderOv();updateGlobal();updateTimer();
 }
 
 function renderLeft(){
-  const list=document.getElementById("proj-list");list.innerHTML="";
+  const list=document.getElementById("plist");list.innerHTML="";
   PROJECTS.forEach(proj=>{
-    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
-    const d=document.createElement("div");d.className="proj-btn proj-card-left";
-    d.style.cssText=`border-left-color:${allDone?"#16A34A":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"50":"rgba(255,255,255,0.05)"};background:${isAct?`linear-gradient(135deg,${proj.color}22,${proj.color}0A)`:"rgba(255,255,255,0.02)"};box-shadow:${isAct?`0 0 16px ${proj.color}18`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
-    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.45)"};line-height:1.3;flex:1;padding-right:4px">${proj.short}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:900;color:${allDone?"#4ADE80":"rgba(255,255,255,0.5)"}">${allDone?"✓":pct+"%"}</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><span id="sw-left-${proj.id}" style="font-size:9px;color:${S.swRunning[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="event.stopPropagation();toggleSW('${proj.id}')" style="width:16px;height:16px;border-radius:4px;border:none;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color+"35"};color:${S.swRunning[proj.id]?"#FF6B6B":proj.color};font-size:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">${S.swRunning[proj.id]?"⏸":"▶"}</button></div>`;
-    d.onclick=()=>{S.active=proj.id;renderAll();};
+    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+    const todo=ACTIONS.length-done;
+    const pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
+    const d=document.createElement("div");d.className="pbtn aleft";
+    d.style.cssText=`border-left-color:${allDone?"#16A34A":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"50":"rgba(255,255,255,0.05)"};background:${isAct?`linear-gradient(135deg,${proj.color}22,${proj.color}08)`:"rgba(255,255,255,0.02)"};box-shadow:${isAct?`0 0 14px ${proj.color}15`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
+    // Status color per action
+    const actionIcons=ACTIONS.map(a=>{
+      const k=`${proj.id}_${a.id}`;
+      const cnt=S.counts[k]||0,chk=S.checks[k];
+      if(chk&&cnt>0)return`<span style="color:#4ADE80;font-size:7px">✓</span>`;
+      if(chk&&cnt===0)return`<span style="color:#4ADE80;font-size:7px">✓</span>`;
+      if(!chk&&cnt>0)return`<span style="color:#EAB308;font-size:7px">◑</span>`;
+      return`<span style="color:rgba(255,255,255,0.15);font-size:7px">○</span>`;
+    }).join("");
+    d.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0">
+          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
+          <span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.5)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span>
+        </div>
+        <span style="font-size:10px;font-weight:700;color:${allDone?"#4ADE80":todo>0?"#F7A200":"rgba(255,255,255,0.3)"};margin-left:4px;flex-shrink:0">${allDone?"✓":todo+" left"}</span>
+      </div>
+      <div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:5px">
+        <div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;gap:2px">${actionIcons}</div>
+        <span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span>
+      </div>`;
+    d.onclick=()=>switchProject(proj.id);
     list.appendChild(d);
   });
-  const tl=document.getElementById("totals-list");tl.innerHTML="";let any=false;
-  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
+
+  // Totals
+  const tl=document.getElementById("totals");tl.innerHTML="";let any=false;
+  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
   if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">No activity yet</div>`;
 }
 
@@ -448,51 +573,125 @@ function renderCenter(){renderProjHeader();renderActions();}
 function renderProjHeader(){
   const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
   const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
-  document.getElementById("proj-header").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="position:relative;width:54px;height:54px;flex-shrink:0"><svg width="54" height="54" style="transform:rotate(-90deg);position:absolute"><circle cx="27" cy="27" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="27" cy="27" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#fff">${proj.name}</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit</div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 12px;border:1px solid rgba(255,255,255,0.07)"><span id="sw-center" style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${S.swRunning[proj.id]?proj.color:"#fff"};min-width:54px;text-align:center">${fmtT(S.swElapsed[proj.id]||0)}</span><button onclick="toggleSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:none;cursor:pointer;background:${S.swRunning[proj.id]?"rgba(220,38,38,0.25)":proj.color};color:${S.swRunning[proj.id]?"#FF6B6B":"#fff"};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${S.swRunning[proj.id]?"⏸":"▶"}</button><button onclick="resetSW('${proj.id}')" style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:11px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProject('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:8px;padding:7px 12px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button></div></div>`;
+  document.getElementById("phdr").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative;width:52px;height:52px;flex-shrink:0">
+        <svg width="52" height="52" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+          <circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${pct}%</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
+          <span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-0.3px;color:#fff">${proj.name}</span>
+        </div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions done · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit · <span style="color:#F7A200">⏱ auto-tracking</span></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.07)">
+        <span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:${S.swR[proj.id]?proj.color:"#fff"};min-width:52px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span>
+        <button onclick="resetSW('${proj.id}')" style="width:24px;height:24px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:10px;display:flex;align-items:center;justify-content:center" title="Reset timer">↺</button>
+      </div>
+      <button onclick="notifyProj('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:7px;padding:6px 11px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button>
+    </div>
+  </div>`;
 }
 
 function renderActions(){
-  const al=document.getElementById("actions-list");al.innerHTML="";
+  const al=document.getElementById("alist");al.innerHTML="";
   ACTIONS.forEach(action=>{const d=document.createElement("div");d.id=`ar-${S.active}-${action.id}`;al.appendChild(d);renderActionRow(S.active,action.id);});
 }
 
 function renderActionRow(pid,aid){
   const el=document.getElementById(`ar-${pid}-${aid}`);if(!el)return;
   const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
-  const checked=S.checks[key]||false,count=S.counts[key]||0,hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100)),note=S.notes[key]||"";
-  el.className="arow";el.style.cssText=`background:${checked?`${proj.color}07`:"rgba(255,255,255,0.015)"};border:1px solid ${hit?"rgba(22,163,74,0.25)":checked?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.04)"};border-radius:9px;margin-bottom:5px;padding:9px 13px;display:grid;grid-template-columns:26px 1fr 230px 150px;align-items:center;gap:10px`;
-  el.innerHTML=`<div onclick="toggleCheck('${pid}','${aid}')" style="width:20px;height:20px;border-radius:5px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.12)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 10px ${proj.color}50`:"none"};flex-shrink:0">${checked?"✓":""}</div>
-    <div><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:14px">${a.emoji}</span><span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.3)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 6px;border-radius:8px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}</div><div class="mini-bar"><div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EA580C":proj.color};border-radius:2px;transition:width 0.3s"></div></div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count}/${a.target} · ${pctA}%</div></div>
-    <div style="display:flex;align-items:center;gap:3px"><button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:28px;height:26px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:30px;height:26px;background:${proj.color}30;color:#fff;font-size:10px">+1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:30px;height:26px;background:${proj.color}55;color:#fff;font-size:10px">+5</button><button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:36px;height:26px;background:${proj.color}80;color:#fff;font-size:10px;box-shadow:0 2px 8px ${proj.color}40">+10</button><div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:${hit?"#4ADE80":count>0?"#F7A200":"rgba(255,255,255,0.25)"};min-width:28px;text-align:center">${count}</div></div>
-    <div id="nc-${key}"></div>`;
+  const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
+  const hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
+
+  // Row status color
+  let rowBg,rowBorder,statusIcon;
+  if(checked&&count>0){rowBg=`${proj.color}07`;rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
+  else if(checked&&count===0){rowBg="rgba(22,163,74,0.06)";rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
+  else if(!checked&&count>0){rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";statusIcon=`<span style="font-size:11px">🟡</span>`;}
+  else{rowBg="rgba(255,255,255,0.01)";rowBorder="rgba(255,255,255,0.04)";statusIcon=`<span style="font-size:11px;color:rgba(255,255,255,0.15)">○</span>`;}
+
+  el.style.cssText=`background:${rowBg};border:1px solid ${rowBorder};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:24px 24px 1fr 200px 150px;align-items:center;gap:8px;transition:all 0.2s`;
+
+  el.innerHTML=`
+    ${statusIcon}
+    <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.15)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 8px ${proj.color}50`:"none"};transition:all 0.15s">${checked?"✓":""}</div>
+    <div>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <span style="font-size:13px">${a.emoji}</span>
+        <span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.35)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>
+        ${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 5px;border-radius:6px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}
+      </div>
+      <div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EAB308":proj.color};border-radius:2px;transition:width 0.3s"></div>
+      </div>
+      <div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count} / ${a.target} · ${pctA}%</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()">
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',1)"  style="width:28px;height:24px;background:${proj.color}35;color:#fff;font-size:10px">+1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',5)"  style="width:28px;height:24px;background:${proj.color}55;color:#fff;font-size:10px">+5</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}75;color:#fff;font-size:10px">+10</button>
+      <input type="number" min="0" value="${count}" id="ci-${key}"
+        onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)"
+        onclick="this.select()"
+        style="width:48px;height:24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:#F7A200;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/>
+    </div>
+    <div id="nc-${key}" onclick="event.stopPropagation()"></div>`;
+
   renderNote(key,note);
 }
 
 function renderNote(key,note){
   const el=document.getElementById(`nc-${key}`);if(!el)return;
-  if(S.editingNote===key){
-    el.innerHTML=`<input id="ni-${key}" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid #F7A200;border-radius:6px;padding:4px 8px;font-size:10px;font-family:'DM Mono',monospace;outline:none;color:#fff" placeholder="+ note"/>`;
-    const inp=document.getElementById(`ni-${key}`);inp.value=note;inp.focus();
-    const save=()=>{S.notes[key]=inp.value;S.editingNote=null;if(inp.value)logAct("📝","Note saved");const[p,a]=key.split("_");renderActionRow(p,a);};
-    inp.onblur=save;inp.onkeydown=e=>{if(e.key==="Enter")inp.blur();};
-  }else{
-    el.innerHTML=`<span onclick="S.editingNote='${key}';renderNote('${key}','${(note||"").replace(/'/g,"\\'").replace(/"/g,"&quot;")}')" style="font-size:10px;color:${note?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${note?"normal":"italic"};cursor:text;font-weight:${note?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note||"+ note"}</span>`;
+  const hasNote=note&&note.length>0;
+  el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:${hasNote?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${hasNote?"normal":"italic"};cursor:text;font-weight:${hasNote?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0" title="${hasNote?note:"Click to add note"}">${hasNote?note:"+ note"}</span>`;
+}
+
+function editNote(key){
+  const cur=S.notes[key]||"";
+  const val=prompt("Add note:",cur);
+  if(val!==null){
+    S.notes[key]=val;
+    renderNote(key,val);
+    if(val)logAct("📝","Note saved");
   }
 }
 
-function renderOverview(){
-  const ol=document.getElementById("overview-list");ol.innerHTML="";
-  PROJECTS.forEach(proj=>{const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;ol.innerHTML+=`<div onclick="S.active='${proj.id}';renderAll()" style="padding:7px 12px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"};transition:background 0.15s"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span></div><div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div></div>`;});
+function renderOv(){
+  const ol=document.getElementById("ovlist");ol.innerHTML="";
+  [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
+    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;
+    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 11px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"};transition:background 0.15s">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div style="display:flex;align-items:center;gap:5px">
+          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
+          <span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span>
+        </div>
+        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span>
+      </div>
+      <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div>
+      </div>
+    </div>`;
+  });
 }
 
 function updateGlobal(){
   const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=ti>0?Math.round(tc/ti*100):0;
   const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
-  document.getElementById("ring-circle").setAttribute("stroke-dashoffset",(113.1-(pct/100)*113.1).toFixed(1));
-  document.getElementById("ring-label").textContent=pct+"%";
-  document.getElementById("stat-targets").textContent=`${th}/${ti}`;
-  document.getElementById("stat-checks").textContent=`${tc}/${ti}`;
-  document.getElementById("gbar-fill").style.width=pct+"%";
+  document.getElementById("rc").setAttribute("stroke-dashoffset",(106.8-(pct/100)*106.8).toFixed(1));
+  document.getElementById("rl").textContent=pct+"%";
+  document.getElementById("s-tgt").textContent=`${th}/${ti}`;
+  document.getElementById("s-chk").textContent=`${tc}/${ti}`;
+  document.getElementById("gbf").style.width=pct+"%";
 }
 
 function updateTimer(){
@@ -502,20 +701,20 @@ function updateTimer(){
   t.style.background=urgent?"rgba(220,38,38,0.15)":"rgba(255,255,255,0.04)";
   t.style.border=urgent?"1px solid rgba(220,38,38,0.4)":"1px solid rgba(255,255,255,0.08)";
   t.style.animation=urgent?"pulse 1.5s infinite":"none";
-  document.getElementById("timer-val").textContent=ms<=0?"⏰ UP":`${h}h${m}m`;
-  document.getElementById("timer-val").style.color=urgent?"#FF6B6B":"#fff";
-  document.getElementById("timer-now").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("tv").textContent=ms<=0?"⏰ UP":`${h}h${m}m`;
+  document.getElementById("tv").style.color=urgent?"#FF6B6B":"#fff";
+  document.getElementById("tnow").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
 }
 
 function logAct(emoji,text){
   const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
   S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
-  const f=document.getElementById("activity-feed");f.innerHTML="";
-  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:6px;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
+  const f=document.getElementById("afeed");f.innerHTML="";
+  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:5px 11px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:5px;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
 }
 
 function fireConfetti(big=false){
-  const w=document.getElementById("confetti-wrap");w.innerHTML="";
+  const w=document.getElementById("cfw");w.innerHTML="";
   const cols=["#F7A200","#E07000","#FFD60A","#FF6B6B","#51CF66","#4DABF7","#CC5DE8"];
   for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*9}px;height:${5+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>0.5?"50%":"2px"};animation:confettiFall ${1.5+Math.random()*1.2}s ${Math.random()*0.8}s ease-in forwards`;w.appendChild(el);}
   setTimeout(()=>w.innerHTML="",big?5000:3500);
@@ -528,7 +727,7 @@ function showToast(msg,type="info"){
 }
 
 setInterval(updateTimer,30000);
-setInterval(()=>PROJECTS.forEach(p=>{if(S.swRunning[p.id])updateSW(p.id);}),1000);
+setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
 </script>
 </body>
 </html>
