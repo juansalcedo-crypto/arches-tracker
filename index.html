@@ -575,8 +575,6 @@ function resetDay(){
   updateSBtn();
 }
 
-addPI();updateSBtn();
-
 // [restore moved to bottom]
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
@@ -996,8 +994,9 @@ function showResumeBanner(){
 setInterval(updateTimer,30000);
 setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
 
-// ── AUTO-RESTORE on page load (must be last) ──────────────────────────────────
-(function(){
+// ── INIT (runs after all functions defined) ──────────────────────────────────
+window.addEventListener("DOMContentLoaded", function(){
+  // Try to restore saved session first
   if(loadState()){
     document.getElementById("setup").style.display="none";
     document.getElementById("app").style.display="flex";
@@ -1013,8 +1012,12 @@ setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
     showResumeBanner();
     startSW(S.active);
     renderAll();
+  } else {
+    // Fresh start — init setup form
+    addPI();
+    updateSBtn();
   }
-})();
+});
 </script>
 </body>
 </html>
