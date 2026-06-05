@@ -245,6 +245,103 @@ const ACTIONS=[
 let PROJECTS=[];
 const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null};
 
+// ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
+const STORE_KEY = "arches_tracker_v4";
+
+function saveState(){
+  try{
+    const today = new Date().toDateString();
+    const data = {
+      date: today,
+      user: S.user,
+      projects: PROJECTS,
+      checks: S.checks,
+      counts: S.counts,
+      notes: S.notes,
+      active: S.active,
+      completed: S.completed,
+      swE: S.swE,
+      actLog: S.actLog.slice(0,20),
+    };
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return false;
+    const data = JSON.parse(raw);
+    const today = new Date().toDateString();
+    // Only restore if same day
+    if(data.date !== today){ localStorage.removeItem(STORE_KEY); return false; }
+    if(!data.user || !data.projects || data.projects.length === 0) return false;
+    // Restore
+    S.user = data.user;
+    PROJECTS = data.projects;
+    S.checks = data.checks || {};
+    S.counts = data.counts || {};
+    S.notes = data.notes || {};
+    S.active = data.active || PROJECTS[0]?.id;
+    S.completed = data.completed || {};
+    S.swE = data.swE || {};
+    S.actLog = data.actLog || [];
+    return true;
+  }catch(e){ return false; }
+}
+
+function clearState(){ localStorage.removeItem(STORE_KEY); }
+
+// ── LOCAL STORAGE (persist progress across code updates) ──────────────────────
+const STORAGE_KEY = "arches_tracker_v4";
+
+function saveState(){
+  try{
+    const today = new Date().toLocaleDateString("en-US");
+    const data = {
+      date: today,
+      user: S.user,
+      projects: PROJECTS,
+      checks: S.checks,
+      counts: S.counts,
+      notes: S.notes,
+      active: S.active,
+      completed: S.completed,
+      allDone: S.allDone,
+      swE: S.swE,
+      actLog: S.actLog.slice(0,20),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const data = JSON.parse(raw);
+    const today = new Date().toLocaleDateString("en-US");
+    // Only restore if same day
+    if(data.date !== today){ localStorage.removeItem(STORAGE_KEY); return false; }
+    if(!data.user || !data.projects || data.projects.length===0) return false;
+    PROJECTS = data.projects;
+    S.user = data.user;
+    S.checks = data.checks || {};
+    S.counts = data.counts || {};
+    S.notes = data.notes || {};
+    S.active = data.active || PROJECTS[0]?.id;
+    S.completed = data.completed || {};
+    S.allDone = data.allDone || false;
+    S.swE = data.swE || {};
+    S.actLog = data.actLog || [];
+    return true;
+  }catch(e){ return false; }
+}
+
+function clearProgress(){
+  localStorage.removeItem(STORAGE_KEY);
+}
+
 // ── SETUP ─────────────────────────────────────────────────────────────────────
 document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
 
@@ -316,11 +413,13 @@ function startDay(){
   document.getElementById("app").style.display="flex";
   document.getElementById("hname").textContent=name;
   startSW(S.active);
+  saveState();
   renderAll();
 }
 
 function resetDay(){
   if(!confirm("Start a new day? Current progress will be cleared."))return;
+  clearState();
   PROJECTS=[];
   Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
   Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null});
@@ -335,6 +434,16 @@ function resetDay(){
 
 document.getElementById("sname").addEventListener("input",updateSBtn);
 addPI();updateSBtn();
+
+// Auto-restore if same day
+if(loadState()){
+  document.getElementById("setup").style.display="none";
+  document.getElementById("app").style.display="flex";
+  document.getElementById("hname").textContent=S.user;
+  // Show resume banner
+  showResumeBanner();
+  renderAll();
+}
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
 function openNoteModal(pid,aid){
@@ -355,7 +464,7 @@ function closeNoteModal(save){
     logAct("📝",`Note saved: ${val.slice(0,30)}`);
     checkComplete(pid);
     renderActionRow(pid,aid);
-    updateGlobal();renderLeft();renderOv();
+    updateGlobal();renderLeft();renderOv();saveState();
   }
   document.getElementById("note-modal").style.display="none";
   S.noteModal=null;
@@ -500,7 +609,7 @@ function setCount(pid,aid,val){
   S.counts[key]=next;
   if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
   else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
-  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
 }
 function addCount(pid,aid,delta){
   const key=`${pid}_${aid}`;
@@ -522,7 +631,7 @@ function toggleCheck(pid,aid){
   }
   const proj=PROJECTS.find(x=>x.id===pid);
   if(S.checks[key])logAct("✅",`${S.user} ✓ ${a.name} · ${proj.short}`);
-  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();
+  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
@@ -666,7 +775,7 @@ function editNote(key){
   if(val!==null){
     S.notes[key]=val;
     renderNote(key,val);
-    if(val)logAct("📝","Note saved");
+    if(val){logAct("📝","Note saved");saveState();}
   }
 }
 
@@ -729,6 +838,15 @@ function showToast(msg,type="info"){
   const t=document.getElementById("toast");
   t.style.background=type==="success"?"linear-gradient(135deg,#16A34A,#15803D)":type==="error"?"linear-gradient(135deg,#DC2626,#B91C1C)":"linear-gradient(135deg,#1E2240,#111320)";
   t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),4500);
+}
+
+function showResumeBanner(){
+  const banner = document.createElement("div");
+  banner.id = "resume-banner";
+  banner.style.cssText = "position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 20px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:slideIn 0.4s ease";
+  banner.innerHTML = `<span>✅ Progress restored for today!</span><button onclick="this.closest('#resume-banner').remove()" style="background:rgba(255,255,255,0.2);border:none;border-radius:5px;color:#fff;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">✕</button>`;
+  document.body.appendChild(banner);
+  setTimeout(()=>banner.remove(), 5000);
 }
 
 setInterval(updateTimer,30000);
