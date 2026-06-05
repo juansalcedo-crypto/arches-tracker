@@ -577,23 +577,7 @@ function resetDay(){
 
 addPI();updateSBtn();
 
-// Auto-restore if same day
-if(loadState()){
-  document.getElementById("setup").style.display="none";
-  document.getElementById("app").style.display="flex";
-  document.getElementById("hname").textContent=S.user;
-  if(SELECTED_TEAM){
-    const badge=document.getElementById("hteam-badge");
-    badge.style.display="inline";
-    badge.textContent=`${SELECTED_TEAM.emoji} ${SELECTED_TEAM.name}`;
-    badge.style.background=SELECTED_TEAM.color+"25";
-    badge.style.color=SELECTED_TEAM.color;
-    badge.style.border=`1px solid ${SELECTED_TEAM.color}50`;
-  }
-  // Show resume banner
-  showResumeBanner();
-  renderAll();
-}
+// [restore moved to bottom]
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
 function openNoteModal(pid,aid){
@@ -1011,6 +995,26 @@ function showResumeBanner(){
 
 setInterval(updateTimer,30000);
 setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
+
+// ── AUTO-RESTORE on page load (must be last) ──────────────────────────────────
+(function(){
+  if(loadState()){
+    document.getElementById("setup").style.display="none";
+    document.getElementById("app").style.display="flex";
+    document.getElementById("hname").textContent=S.user;
+    if(SELECTED_TEAM){
+      const badge=document.getElementById("hteam-badge");
+      badge.style.display="inline";
+      badge.textContent=SELECTED_TEAM.emoji+" "+SELECTED_TEAM.name;
+      badge.style.background=SELECTED_TEAM.color+"25";
+      badge.style.color=SELECTED_TEAM.color;
+      badge.style.border="1px solid "+SELECTED_TEAM.color+"50";
+    }
+    showResumeBanner();
+    startSW(S.active);
+    renderAll();
+  }
+})();
 </script>
 </body>
 </html>
