@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Arches Tracker v4</title>
+<title>Arches Tracker — War Room</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--orange:#F7A200;--od:#E07000;--bg:#0D0F1A;--sur:#111320;--bdr:#1E2240;--grn:#16A34A;--red:#DC2626;--ylw:#EAB308;}
+:root{--orange:#F7A200;--od:#E07000;--bg:#0D0F1A;--sur:#111320;--bdr:#1E2240;--grn:#16A34A;--red:#DC2626;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100vh;overflow:hidden;}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
@@ -16,6 +16,7 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* SETUP */
 #setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
@@ -32,9 +33,6 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 .pinp.duplicate{border-color:#DC2626;animation:shake 0.3s ease}
 .prio-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 8px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;outline:none;cursor:pointer;flex-shrink:0}
 .prio-sel option{background:#111320}
-.prio-P1{border-color:#DC2626!important;color:#FF6B6B!important}
-.prio-P2{border-color:#F7A200!important;color:#F7A200!important}
-.prio-P3{border-color:#4ADE80!important;color:#4ADE80!important}
 .prm{width:22px;height:22px;border-radius:5px;border:none;background:rgba(220,38,38,0.15);color:#FF6B6B;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .prm:hover{background:rgba(220,38,38,0.3)}
 .badd{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:7px 14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;width:100%;transition:all 0.2s;margin-bottom:20px}
@@ -43,6 +41,9 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 .bstart:hover{transform:translateY(-1px)}
 .bstart:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 .dup-warn{font-size:10px;color:#FF6B6B;margin:-4px 0 8px 24px;display:none}
+.team-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%;text-align:left;margin-bottom:10px}
+.member-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.2s;width:100%;text-align:left;margin-bottom:7px}
+.member-btn:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15)}
 
 /* APP */
 #app{display:none;flex-direction:column;height:100vh}
@@ -76,26 +77,23 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 #cfw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
 #gbar{height:2px;background:var(--bdr);flex-shrink:0}
 #gbf{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
-
-/* NOTE MODAL */
 #note-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center}
-.nmodal-box{background:var(--sur);border:1px solid #F7A200;border-radius:14px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-
-/* PRIO BADGE */
+.nbox{background:var(--sur);border:1px solid #F7A200;border-radius:14px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
 .prio-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
 .prio-P1{background:rgba(220,38,38,0.2);color:#FF6B6B;border:1px solid rgba(220,38,38,0.3)}
 .prio-P2{background:rgba(247,162,0,0.2);color:#F7A200;border:1px solid rgba(247,162,0,0.3)}
 .prio-P3{background:rgba(74,222,128,0.2);color:#4ADE80;border:1px solid rgba(74,222,128,0.3)}
+.loader{width:14px;height:14px;border:2px solid rgba(255,255,255,0.1);border-top-color:#F7A200;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block}
 </style>
 </head>
 <body>
 <div id="cfw"></div>
 
-<!-- NOTE MODAL (mandatory note for 0 actions) -->
+<!-- NOTE MODAL -->
 <div id="note-modal">
-  <div class="nmodal-box">
+  <div class="nbox">
     <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900;color:#F7A200;margin-bottom:6px">📝 Note Required</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:16px" id="note-modal-sub">To mark this action as complete with 0, you must explain why.</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:16px" id="note-modal-sub">To mark this action done with 0, you must explain why.</div>
     <textarea id="note-modal-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…"
       style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px;font-family:'DM Mono',monospace;font-size:12px;color:#fff;outline:none;resize:none;line-height:1.5"></textarea>
     <div style="display:flex;gap:8px;margin-top:12px">
@@ -107,10 +105,9 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 
 <!-- SETUP — 3 steps -->
 <div id="setup">
-
-  <!-- STEP 1: TEAM SELECT -->
+  <!-- STEP 1: TEAM -->
   <div id="step-team" class="sbox" style="max-width:480px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
       <svg width="38" height="25" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
         <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
@@ -121,55 +118,44 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
       </svg>
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px">ARCHES TRACKER</div>
-        <div style="font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:1px">WAR ROOM v4 · <span id="setup-date"></span></div>
+        <div style="font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:1px">WAR ROOM · <span id="setup-date"></span></div>
       </div>
     </div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px;letter-spacing:0.5px">Which team are you on?</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button onclick="selectTeam('luis')" style="background:linear-gradient(135deg,rgba(247,162,0,0.15),rgba(247,162,0,0.05));border:1px solid rgba(247,162,0,0.4);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%" onmouseover="this.style.background='linear-gradient(135deg,rgba(247,162,0,0.25),rgba(247,162,0,0.1))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(247,162,0,0.15),rgba(247,162,0,0.05))'">
-        <span style="font-size:28px">🟠</span>
-        <div style="text-align:left">
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#F7A200">Team Luis</div>
-          <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">9 members</div>
-        </div>
-      </button>
-      <button onclick="selectTeam('taiki')" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.4);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%" onmouseover="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.25),rgba(59,130,246,0.1))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05))'">
-        <span style="font-size:28px">🔵</span>
-        <div style="text-align:left">
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#3B82F6">Team Taiki</div>
-          <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">7 members</div>
-        </div>
-      </button>
-    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px">Which team are you on?</div>
+    <button class="team-btn" id="btn-luis" onclick="selectTeam('luis')">
+      <span style="font-size:28px">🟠</span>
+      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#F7A200">Team Luis</div><div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px" id="luis-count">Loading…</div></div>
+    </button>
+    <button class="team-btn" id="btn-taiki" onclick="selectTeam('taiki')">
+      <span style="font-size:28px">🔵</span>
+      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#3B82F6">Team Taiki</div><div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px" id="taiki-count">Loading…</div></div>
+    </button>
   </div>
 
-  <!-- STEP 2: MEMBER SELECT -->
+  <!-- STEP 2: MEMBER -->
   <div id="step-member" class="sbox" style="max-width:480px;display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
-      <button onclick="goBackToTeam()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#fff" id="team-label">Team</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Who are you?</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <button onclick="goStep('team')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
+      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900" id="team-label">Team</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Who are you?</div></div>
     </div>
-    <div id="member-list" style="display:flex;flex-direction:column;gap:7px"></div>
+    <div id="member-list"></div>
   </div>
 
   <!-- STEP 3: PROJECTS -->
   <div id="step-projects" class="sbox" style="display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-      <button onclick="goBackToMember()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <button onclick="goStep('member')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:#fff" id="proj-step-title">Today's Projects</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4)" id="proj-step-sub">Set priority → P1 = highest · max 8</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px" id="proj-step-sub">P1 = highest priority · max 8</div>
       </div>
     </div>
+    <div id="assigned-banner" style="display:none;background:linear-gradient(135deg,rgba(22,163,74,0.15),rgba(22,163,74,0.05));border:1px solid rgba(22,163,74,0.3);border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#4ADE80"></div>
     <div id="pinputs"></div>
-    <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name — please use a unique name</div>
+    <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name</div>
     <button class="badd" id="badd" onclick="addPI()">+ Add project</button>
     <button class="bstart" id="bstart" onclick="startDay()">🚀 START DAY</button>
   </div>
-
 </div>
 
 <!-- APP -->
@@ -205,7 +191,8 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
         <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="tnow">—</div>
       </div>
       <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <div style="display:flex;align-items:center;gap:5px"><span id="hteam-badge" style="display:none;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px"></span><span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></div>
+      <div id="hteam-badge" style="display:none;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px"></div>
+      <span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
       <button class="bhdr bupd" id="bupd" style="border:1px solid" onclick="sendUpdate()">📊 Update</button>
       <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
       <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
@@ -213,11 +200,10 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
   </div>
   <div id="gbar"><div id="gbf"></div></div>
   <div id="layout">
-    <!-- LEFT -->
     <div id="left">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:0 2px 6px;border-bottom:1px solid var(--bdr);margin-bottom:6px">
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700;align-self:center">PROJECTS</div>
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700;text-align:right">TO DO</div>
+      <div style="display:flex;justify-content:space-between;padding:0 2px 6px;border-bottom:1px solid var(--bdr);margin-bottom:4px">
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700">PROJECTS</div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700">TO DO</div>
       </div>
       <div id="plist"></div>
       <div style="margin-top:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:8px 9px">
@@ -225,16 +211,14 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
         <div id="totals"></div>
       </div>
     </div>
-    <!-- CENTER -->
     <div id="center"><div id="phdr"></div><div id="alist"></div></div>
-    <!-- RIGHT -->
     <div id="right">
       <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:10px;padding:10px 11px">
-        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:6px">⚡ AUTO INTEGRATIONS</div>
+        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:6px">⚡ AUTO SYNC</div>
         <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8">
-          🟢 Slack on each project complete<br>
-          📊 Sheets logged on EOD<br>
-          🏆 Full debrief when all done
+          🟢 Slack notified on project complete<br>
+          📊 Dashboard updated on EOD<br>
+          🔄 Checks for assignments every 60s
         </div>
         <div id="slive" style="margin-top:7px;display:none;align-items:center;gap:5px;border-radius:6px;padding:5px 9px">
           <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="sdot"></div>
@@ -257,287 +241,181 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 <div id="toast"></div>
 
 <script>
-const SLACK_API="/api/slack";
-const SUPA_URL="https://watgvezsgppjvusotuge.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
-
-// Fetch from Supabase directly
-async function supa(table, params=""){
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
-    headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`}
-  });
-  return r.ok ? r.json() : [];
-}
-
-// ── TEAMS CONFIG ──────────────────────────────────────────────────────────────
-const TEAMS = [
-  {
-    id: "luis",
-    name: "Luis",
-    emoji: "🟠",
-    color: "#F7A200",
-    slackChannel: "C0B8QE4DNBE",
-    members: [
-      "Sergio Barcia",
-      "Valentin Alvarez",
-      "Mariale Bustamante",
-      "JuanFer Mora",
-      "Julian Castellanos",
-      "Martin Perez",
-      "Nicolas Silva",
-      "Sebastian Guzman",
-      "Shadia Said"
-    ]
-  },
-  {
-    id: "taiki",
-    name: "Taiki",
-    emoji: "🔵",
-    color: "#3B82F6",
-    slackChannel: "C0B8EENH60K",
-    members: [
-      "Andres Rodriguez",
-      "Majo Villalba",
-      "MariaP Puerto",
-      "JuanPa Leon",
-      "Nicolas Rosero",
-      "Lala Phan",
-      "Thomas Botto"
-    ]
-  }
-];
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const SLACK_API   = "/api/slack";
+const LOG_API     = "/api/log";
+const SUPA_URL    = "https://watgvezsgppjvusotuge.supabase.co";
+const SUPA_KEY    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
 const SLACK_GENERAL = "C0B6EGPPC0L";
 
-let SELECTED_TEAM = null;
-const SHEETS_URL="https://script.google.com/a/macros/arches-global.com/s/AKfycbwI-WiXAYKR7ei3j-buc0gmXZG0pRXM4cDBpHX03njeuOSf9v0D3Ne45dnIGStaKQK1/exec";
-const PCOLS=["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
+const PCOLS = ["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
 
-const ACTIONS=[
-  {id:"db_search",    emoji:"🗄️", name:"DB Search (CC+Email)",  target:1,  note:"Mandatory if 0"},
-  {id:"li_search",    emoji:"🔍", name:"LinkedIn Search",         target:25, note:"Mandatory if 0"},
-  {id:"expansion",    emoji:"📈", name:"Expansion (if needed)",   target:60, note:"Mandatory if 0"},
-  {id:"cold_call",    emoji:"📞", name:"Cold Call",               target:20, note:"Mandatory if 0"},
-  {id:"connections",  emoji:"🔗", name:"Connections",             target:25, note:"Mandatory if 0"},
-  {id:"inmail",       emoji:"💼", name:"InMail (LI Premium)",     target:10, note:"Mandatory if 0"},
-  {id:"emails",       emoji:"📧", name:"Emails (Instantly)",      target:40, note:"Mandatory if 0"},
-  {id:"sms",          emoji:"💬", name:"SMS / iMessage",           target:15, note:"Mandatory if 0"},
-  {id:"company_call", emoji:"🏢", name:"Company Call (if needed)",target:1,  note:"Mandatory if 0"},
-  {id:"proposals",    emoji:"🤝", name:"Proposals",                target:3,  note:"Mandatory if 0"},
-  {id:"int_sched",    emoji:"🎙️", name:"Interviews Scheduled",     target:2,  note:"Mandatory if 0"},
-  {id:"int_done",     emoji:"📅", name:"Interviews Completed",     target:1,  note:"Mandatory if 0"},
-  {id:"other",        emoji:"⚡", name:"Other Actions",            target:1,  note:"Mandatory if 0"},
+const ACTIONS = [
+  {id:"db_search",    emoji:"🗄️", name:"DB Search (CC+Email)",   target:1  },
+  {id:"li_search",    emoji:"🔍", name:"LinkedIn Search",          target:25 },
+  {id:"expansion",    emoji:"📈", name:"Expansion (if needed)",    target:60 },
+  {id:"cold_call",    emoji:"📞", name:"Cold Call",                target:20 },
+  {id:"connections",  emoji:"🔗", name:"Connections",              target:25 },
+  {id:"inmail",       emoji:"💼", name:"InMail (LI Premium)",      target:10 },
+  {id:"emails",       emoji:"📧", name:"Emails (Instantly)",       target:40 },
+  {id:"sms",          emoji:"💬", name:"SMS / iMessage",           target:15 },
+  {id:"company_call", emoji:"🏢", name:"Company Call (if needed)", target:1  },
+  {id:"proposals",    emoji:"🤝", name:"Proposals",                target:3  },
+  {id:"int_sched",    emoji:"🎙️", name:"Interviews Scheduled",     target:2  },
+  {id:"int_done",     emoji:"📅", name:"Interviews Completed",     target:1  },
+  {id:"other",        emoji:"⚡", name:"Other Actions",            target:1  },
 ];
 
-let PROJECTS=[];
-const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null};
+let PROJECTS = [];
+const S = {checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null};
+const STORE_KEY = "arches_v4";
+
+// ── SUPABASE HELPERS ──────────────────────────────────────────────────────────
+async function supaGet(table, params=""){
+  try{
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
+      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json"}
+    });
+    return r.ok ? await r.json() : [];
+  }catch{ return []; }
+}
+
+async function supaPost(table, data){
+  try{
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}`,{
+      method:"POST",
+      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},
+      body: JSON.stringify(data)
+    });
+    return r.ok;
+  }catch{ return false; }
+}
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
-const STORE_KEY = "arches_tracker_v4";
-
 function saveState(){
   try{
     const today = new Date().toDateString();
-    const data = {
-      date: today,
-      user: S.user,
-      teamId: SELECTED_TEAM?.id||null,
-      projects: PROJECTS,
-      checks: S.checks,
-      counts: S.counts,
-      notes: S.notes,
-      active: S.active,
-      completed: S.completed,
-      swE: S.swE,
-      actLog: S.actLog.slice(0,20),
-    };
-    localStorage.setItem(STORE_KEY, JSON.stringify(data));
-  }catch(e){}
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      date:today, user:S.user, teamId:S.team?.id,
+      projects:PROJECTS, checks:S.checks, counts:S.counts,
+      notes:S.notes, active:S.active, completed:S.completed,
+      swE:S.swE, actLog:S.actLog.slice(0,20)
+    }));
+  }catch{}
 }
 
 function loadState(){
   try{
     const raw = localStorage.getItem(STORE_KEY);
     if(!raw) return false;
-    const data = JSON.parse(raw);
-    const today = new Date().toDateString();
-    // Only restore if same day
-    if(data.date !== today){ localStorage.removeItem(STORE_KEY); return false; }
-    if(!data.user || !data.projects || data.projects.length === 0) return false;
-    // Restore
-    S.user = data.user;
-    PROJECTS = data.projects;
-    S.checks = data.checks || {};
-    S.counts = data.counts || {};
-    S.notes = data.notes || {};
-    S.active = data.active || PROJECTS[0]?.id;
-    S.completed = data.completed || {};
-    S.swE = data.swE || {};
-    S.actLog = data.actLog || [];
+    const d = JSON.parse(raw);
+    if(d.date !== new Date().toDateString()){ localStorage.removeItem(STORE_KEY); return false; }
+    if(!d.user || !d.projects || !d.projects.length) return false;
+    S.user=d.user; S.checks=d.checks||{}; S.counts=d.counts||{};
+    S.notes=d.notes||{}; S.active=d.active; S.completed=d.completed||{};
+    S.swE=d.swE||{}; S.actLog=d.actLog||[];
+    PROJECTS=d.projects;
+    if(d.teamId) S.team=TEAMS[d.teamId]||null;
     return true;
-  }catch(e){ return false; }
+  }catch{ return false; }
 }
 
-function clearState(){ localStorage.removeItem(STORE_KEY); }
+// ── TEAMS ─────────────────────────────────────────────────────────────────────
+const TEAMS = {
+  luis:  {id:"luis",  name:"Luis",  emoji:"🟠", color:"#F7A200", slack:"C0B8QE4DNBE"},
+  taiki: {id:"taiki", name:"Taiki", emoji:"🔵", color:"#3B82F6", slack:"C0B8EENH60K"},
+};
 
-// ── LOCAL STORAGE (persist progress across code updates) ──────────────────────
-const STORAGE_KEY = "arches_tracker_v4";
-
-function saveState(){
-  try{
-    const today = new Date().toLocaleDateString("en-US");
-    const data = {
-      date: today,
-      user: S.user,
-      teamId: SELECTED_TEAM?.id||null,
-      projects: PROJECTS,
-      checks: S.checks,
-      counts: S.counts,
-      notes: S.notes,
-      active: S.active,
-      completed: S.completed,
-      allDone: S.allDone,
-      swE: S.swE,
-      actLog: S.actLog.slice(0,20),
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }catch(e){}
+// Load team members from Supabase
+async function loadTeamMembers(){
+  const data = await supaGet("members","?active=eq.true&select=name,team_id&order=name");
+  const byTeam = {luis:[], taiki:[]};
+  (data||[]).forEach(m=>{ if(byTeam[m.team_id]) byTeam[m.team_id].push(m.name); });
+  document.getElementById("luis-count").textContent = byTeam.luis.length + " members";
+  document.getElementById("taiki-count").textContent = byTeam.taiki.length + " members";
+  return byTeam;
 }
 
-function loadProgress(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return false;
-    const data = JSON.parse(raw);
-    const today = new Date().toLocaleDateString("en-US");
-    // Only restore if same day
-    if(data.date !== today){ localStorage.removeItem(STORAGE_KEY); return false; }
-    if(!data.user || !data.projects || data.projects.length===0) return false;
-    PROJECTS = data.projects;
-    S.user = data.user;
-    S.checks = data.checks || {};
-    S.counts = data.counts || {};
-    S.notes = data.notes || {};
-    S.active = data.active || PROJECTS[0]?.id;
-    S.completed = data.completed || {};
-    S.allDone = data.allDone || false;
-    S.swE = data.swE || {};
-    S.actLog = data.actLog || [];
-    return true;
-  }catch(e){ return false; }
-}
-
-function clearProgress(){
-  localStorage.removeItem(STORAGE_KEY);
+// Load action targets from Supabase
+async function loadTargets(){
+  const data = await supaGet("action_targets","?select=id,target&order=sort_order");
+  if(data && data.length>0){
+    data.forEach(t=>{ const a=ACTIONS.find(x=>x.id===t.id); if(a) a.target=t.target; });
+  }
 }
 
 // ── SETUP ─────────────────────────────────────────────────────────────────────
-document.getElementById("setup-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
+document.getElementById("setup-date").textContent = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
+let cachedMembers = null;
 
-function selectTeam(teamId){
-  SELECTED_TEAM = TEAMS.find(t=>t.id===teamId);
-  document.getElementById("step-team").style.display="none";
-  document.getElementById("step-member").style.display="block";
-  document.getElementById("team-label").textContent=`Team ${SELECTED_TEAM.name}`;
-  document.getElementById("team-label").style.color=SELECTED_TEAM.color;
-  // Build member list
-  const ml=document.getElementById("member-list");
-  ml.innerHTML="";
-  SELECTED_TEAM.members.forEach(name=>{
-    const btn=document.createElement("button");
-    btn.style.cssText=`background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.15s;width:100%;text-align:left`;
-    btn.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,${SELECTED_TEAM.color},${SELECTED_TEAM.color}80);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff;flex-shrink:0">${name.charAt(0)}</div><span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff">${name}</span>`;
-    btn.onmouseover=()=>btn.style.background=`rgba(${SELECTED_TEAM.id==="luis"?"247,162,0":"59,130,246"},0.1)`;
-    btn.onmouseout=()=>btn.style.background="rgba(255,255,255,0.03)";
-    btn.onclick=()=>selectMember(name);
-    ml.appendChild(btn);
-  });
+async function initSetup(){
+  cachedMembers = await loadTeamMembers();
+  await loadTargets();
 }
 
-function goBackToTeam(){
-  document.getElementById("step-member").style.display="none";
-  document.getElementById("step-team").style.display="block";
-  SELECTED_TEAM=null;
+function selectTeam(teamId){
+  S.team = TEAMS[teamId];
+  document.getElementById("team-label").textContent = "Team " + S.team.name;
+  document.getElementById("team-label").style.color = S.team.color;
+  // Build member list
+  const ml = document.getElementById("member-list");
+  const members = (cachedMembers||{})[teamId]||[];
+  ml.innerHTML = members.map(name=>`
+    <button class="member-btn" onclick="selectMember('${name}')">
+      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,${S.team.color},${S.team.color}80);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff;flex-shrink:0">${name.charAt(0)}</div>
+      <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff">${name}</span>
+    </button>`).join("");
+  goStep("member");
 }
 
 async function selectMember(name){
-  // Store name
-  if(!document.getElementById("sname")){
-    const inp=document.createElement("input");
-    inp.id="sname"; inp.type="hidden"; inp.value=name;
-    document.body.appendChild(inp);
-  } else {
-    document.getElementById("sname").value=name;
-  }
-
-  // Show loading
-  document.getElementById("step-member").style.display="none";
-  document.getElementById("step-projects").style.display="block";
-  document.getElementById("proj-step-title").textContent=`${name}'s Projects`;
-  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Loading…`;
-
-  // Reset inputs
-  document.getElementById("pinputs").innerHTML="";
-  document.getElementById("badd").style.display="";
+  S.user = name;
+  document.getElementById("proj-step-title").textContent = name + "'s Projects";
+  document.getElementById("proj-step-sub").textContent = S.team.emoji + " Team " + S.team.name + " · P1 = highest · max 8";
+  document.getElementById("proj-step-sub").style.color = S.team.color;
+  document.getElementById("pinputs").innerHTML = "";
+  document.getElementById("badd").style.display = "";
+  document.getElementById("assigned-banner").style.display = "none";
+  goStep("projects");
 
   // Fetch assigned projects from Supabase
-  const today=new Date().toISOString().split("T")[0];
-  const assigned = await supa("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`).catch(()=>[]);
-
-  // Fetch action targets from Supabase
-  const targets = await supa("action_targets","?select=*&order=sort_order").catch(()=>[]);
-  if(targets && targets.length>0){
-    // Override local ACTIONS targets with Supabase values
-    targets.forEach(t=>{
-      const a=ACTIONS.find(x=>x.id===t.id);
-      if(a) a.target=t.target;
-    });
-  }
-
-  document.getElementById("proj-step-sub").textContent=`${SELECTED_TEAM.emoji} Team ${SELECTED_TEAM.name} · Priority P1 = highest · max 8`;
-  document.getElementById("proj-step-sub").style.color=SELECTED_TEAM.color;
-
-  if(assigned && assigned.length>0){
-    // Pre-fill assigned projects
-    assigned.forEach(p=>addPI(p.project, p.priority||"P2"));
-    showSetupBanner(`📋 ${assigned.length} project(s) assigned by manager loaded!`);
+  const today = new Date().toISOString().split("T")[0];
+  const assigned = await supaGet("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`);
+  if(assigned && assigned.length > 0){
+    assigned.forEach(p => addPI(p.project, p.priority||"P2"));
+    const banner = document.getElementById("assigned-banner");
+    banner.style.display = "block";
+    banner.textContent = `📋 ${assigned.length} project(s) assigned by your manager — review and add more if needed`;
   } else {
     addPI();
   }
   updateSBtn();
 }
 
-function showSetupBanner(msg){
-  const b=document.createElement("div");
-  b.style.cssText="background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px";
-  b.innerHTML=`<span>${msg}</span>`;
-  const pinputs=document.getElementById("pinputs");
-  pinputs.parentNode.insertBefore(b, pinputs);
-  setTimeout(()=>b.remove(),5000);
+function goStep(step){
+  ["team","member","projects"].forEach(s=>{
+    document.getElementById("step-"+s).style.display = s===step ? "block" : "none";
+  });
 }
 
-function goBackToMember(){
-  document.getElementById("step-projects").style.display="none";
-  document.getElementById("step-member").style.display="block";
-}
-
-function addPI(val="",prio="P2"){
-  const c=document.getElementById("pinputs"),n=c.children.length;
-  if(n>=8)return;
-  const row=document.createElement("div");row.className="prow";
-  const id="pi-"+Date.now();
+function addPI(val="", prio="P2"){
+  const c = document.getElementById("pinputs"), n = c.children.length;
+  if(n>=8) return;
+  const row = document.createElement("div"); row.className="prow";
+  const id = "pi-"+Date.now();
   row.innerHTML=`<span class="pnum">${n+1}</span>
     <input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/>
-    <select class="prio-sel prio-${prio}" id="pr-${id}" onchange="this.className='prio-sel prio-'+this.value">
+    <select class="prio-sel" id="pr-${id}" onchange="this.className='prio-sel prio-'+this.value">
       <option value="P1" ${prio==="P1"?"selected":""}>P1</option>
       <option value="P2" ${prio==="P2"?"selected":""}>P2</option>
       <option value="P3" ${prio==="P3"?"selected":""}>P3</option>
     </select>
     <button class="prm" onclick="removePI(this)">×</button>`;
   c.appendChild(row);
-  const inp=document.getElementById(id);
-  inp.focus();
+  const inp = document.getElementById(id);
+  if(!val) inp.focus();
   inp.addEventListener("input",()=>{checkDups();updateSBtn();});
-  if(c.children.length>=8)document.getElementById("badd").style.display="none";
+  if(c.children.length>=8) document.getElementById("badd").style.display="none";
   updateSBtn();
 }
 
@@ -546,7 +424,7 @@ function removePI(btn){
   btn.closest(".prow").remove();
   Array.from(c.children).forEach((r,i)=>r.querySelector(".pnum").textContent=i+1);
   document.getElementById("badd").style.display="";
-  checkDups();updateSBtn();
+  checkDups(); updateSBtn();
 }
 
 function checkDups(){
@@ -554,169 +432,165 @@ function checkDups(){
   const vals=inputs.map(i=>i.value.trim().toLowerCase());
   const warn=document.getElementById("dup-warn");
   let hasDup=false;
-  inputs.forEach(inp=>{
-    const v=inp.value.trim().toLowerCase();
-    if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("duplicate");hasDup=true;}
-    else inp.classList.remove("duplicate");
-  });
+  inputs.forEach(inp=>{const v=inp.value.trim().toLowerCase();if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("duplicate");hasDup=true;}else inp.classList.remove("duplicate");});
   warn.style.display=hasDup?"block":"none";
   return hasDup;
 }
 
 function updateSBtn(){
   const inputs=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean);
-  const name=document.getElementById("sname").value.trim();
   const hasDup=checkDups();
-  document.getElementById("bstart").disabled=inputs.length===0||!name||hasDup;
+  const btn=document.getElementById("bstart");
+  if(btn) btn.disabled=inputs.length===0||hasDup;
 }
 
 function startDay(){
-  const nameEl=document.getElementById("sname");
-  const name=nameEl?nameEl.value.trim():"";
   const rows=Array.from(document.getElementById("pinputs").children);
-  const projData=rows.map(r=>{
-    const inp=r.querySelector(".pinp"),sel=r.querySelector(".prio-sel");
-    return{name:inp.value.trim(),prio:sel?sel.value:"P2"};
-  }).filter(p=>p.name);
-  if(!name||projData.length===0)return;
-  S.user=name;
+  const projData=rows.map(r=>{const inp=r.querySelector(".pinp"),sel=r.querySelector(".prio-sel");return{name:inp.value.trim(),prio:sel?sel.value:"P2"};}).filter(p=>p.name);
+  if(!S.user||projData.length===0) return;
   PROJECTS=projData.map((p,i)=>({id:"p"+i,name:p.name,short:p.name.length>16?p.name.substring(0,14)+"…":p.name,color:PCOLS[i%PCOLS.length],prio:p.prio}));
-  // Sort by priority P1 first
   PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
   PROJECTS.forEach((p,i)=>p.id="p"+i);
   S.active=PROJECTS[0].id;
   document.getElementById("setup").style.display="none";
   document.getElementById("app").style.display="flex";
-  document.getElementById("hname").textContent=name;
-  if(SELECTED_TEAM){
-    const badge=document.getElementById("hteam-badge");
-    badge.style.display="inline";
-    badge.textContent=`${SELECTED_TEAM.emoji} ${SELECTED_TEAM.name}`;
-    badge.style.background=SELECTED_TEAM.color+"25";
-    badge.style.color=SELECTED_TEAM.color;
-    badge.style.border=`1px solid ${SELECTED_TEAM.color}50`;
-  }
+  showTeamBadge();
   startSW(S.active);
   saveState();
   renderAll();
+  startPolling();
+}
+
+function showTeamBadge(){
+  document.getElementById("hname").textContent=S.user;
+  if(S.team){
+    const b=document.getElementById("hteam-badge");
+    b.style.display="inline"; b.textContent=S.team.emoji+" "+S.team.name;
+    b.style.background=S.team.color+"25"; b.style.color=S.team.color;
+    b.style.border=`1px solid ${S.team.color}50`;
+  }
 }
 
 function resetDay(){
-  if(!confirm("Start a new day? Current progress will be cleared."))return;
-  clearState();
+  if(!confirm("Start a new day? Current progress will be cleared.")) return;
+  localStorage.removeItem(STORE_KEY);
   PROJECTS=[];
   Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
-  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",noteModal:null});
+  if(pollInterval) clearInterval(pollInterval);
+  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null});
   document.getElementById("pinputs").innerHTML="";
   document.getElementById("badd").style.display="";
-  // Reset to step 1
-  document.getElementById("step-team").style.display="block";
-  document.getElementById("step-member").style.display="none";
-  document.getElementById("step-projects").style.display="none";
-  SELECTED_TEAM=null;
+  goStep("team");
   document.getElementById("app").style.display="none";
   document.getElementById("setup").style.display="flex";
-  updateSBtn();
+  initSetup();
 }
 
-// [restore moved to bottom]
-
-// ── NOTE MODAL ────────────────────────────────────────────────────────────────
-function openNoteModal(pid,aid){
-  S.noteModal={pid,aid};
-  const a=ACTIONS.find(x=>x.id===aid);
-  document.getElementById("note-modal-sub").textContent=`Action: "${a.name}" — enter a reason to mark as complete with 0.`;
-  document.getElementById("note-modal-inp").value=S.notes[`${pid}_${aid}`]||"";
-  document.getElementById("note-modal").style.display="flex";
-  setTimeout(()=>document.getElementById("note-modal-inp").focus(),100);
-}
-function closeNoteModal(save){
-  if(save){
-    const val=document.getElementById("note-modal-inp").value.trim();
-    if(!val){document.getElementById("note-modal-inp").style.border="1px solid #DC2626";return;}
-    const{pid,aid}=S.noteModal;
-    S.notes[`${pid}_${aid}`]=val;
-    S.checks[`${pid}_${aid}`]=true;
-    logAct("📝",`Note saved: ${val.slice(0,30)}`);
-    checkComplete(pid);
-    renderActionRow(pid,aid);
-    updateGlobal();renderLeft();renderOv();saveState();
+// ── POLL SUPABASE FOR ASSIGNMENTS (every 60s) ─────────────────────────────────
+let pollInterval = null;
+async function pollAssignments(){
+  if(!S.user) return;
+  const today = new Date().toISOString().split("T")[0];
+  const assigned = await supaGet("assigned_projects",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*`);
+  if(!assigned || assigned.length===0) return;
+  // Check for new projects not already in PROJECTS
+  let added=0;
+  assigned.forEach(a=>{
+    if(!PROJECTS.find(p=>p.name===a.project)){
+      const idx=PROJECTS.length;
+      PROJECTS.push({id:"p"+idx,name:a.project,short:a.project.length>16?a.project.substring(0,14)+"…":a.project,color:PCOLS[idx%PCOLS.length],prio:a.priority||"P2"});
+      added++;
+    }
+  });
+  if(added>0){
+    showToast(`📋 ${added} new project(s) assigned by manager!`,"success");
+    logAct("📋",`${added} new project(s) added by manager`);
+    saveState(); renderAll();
   }
-  document.getElementById("note-modal").style.display="none";
-  S.noteModal=null;
 }
 
-// ── SLACK + SHEETS ────────────────────────────────────────────────────────────
+function startPolling(){
+  if(pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(pollAssignments, 60000);
+}
+
+// ── SLACK ─────────────────────────────────────────────────────────────────────
 async function slackSend(text){
   try{
-    // Send to team channel
-    const teamChannel = SELECTED_TEAM?.slackChannel || SLACK_GENERAL;
-    const r1 = await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text, channel: teamChannel})});
-    const d1 = await r1.json();
-    // Also send to general channel (if different)
-    if(teamChannel !== SLACK_GENERAL){
-      fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text, channel: SLACK_GENERAL})});
+    const teamCh = S.team?.slack || SLACK_GENERAL;
+    const r = await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:teamCh})});
+    const d = await r.json();
+    if(d.ok && teamCh!==SLACK_GENERAL){
+      fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:SLACK_GENERAL})});
     }
-    return d1.ok;
-  }catch{return false;}
+    return d.ok;
+  }catch{ return false; }
 }
-async function sheetLog(){
+
+async function supaLog(){
   try{
     const now=new Date();
-    const projects=PROJECTS.map(proj=>{
-      const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-      const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-      return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
-    });
     const payload={
-      person:S.user,
-      teamId:SELECTED_TEAM?.id||null,
-      projects,
+      person:S.user, teamId:S.team?.id||null,
+      projects:PROJECTS.map(proj=>{
+        const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+        const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+        return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
+      }),
       date:now.toISOString().split("T")[0],
       time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
     };
-    // Log to Supabase via our API
-    const r=await fetch("/api/log",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const r=await fetch(LOG_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     return r.ok;
-  }catch{return false;}
+  }catch{ return false; }
 }
 
 function setSUI(status,detail){
-  const c={sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",lbl:"Sending…",an:"pulse 1s infinite"},success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",lbl:"✅ Sent!",an:"none"},error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",lbl:`⚠️ ${detail||"Error"}`,an:"none"}}[status];
+  const cfg={
+    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",lbl:"Sending…",an:"pulse 1s infinite"},
+    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",lbl:"✅ Sent!",an:"none"},
+    error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",lbl:`⚠️ ${detail||"Error"}`,an:"none"},
+  }[status];
   const i=document.getElementById("sind");
-  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${c.bc};background:${c.bg};color:${c.color};animation:${c.an}`;
-  i.textContent=c.lbl;
-  const l=document.getElementById("slive");l.style.display="flex";l.style.background=c.bg;
-  document.getElementById("sdot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${c.dot};box-shadow:0 0 6px ${c.dot};flex-shrink:0`;
-  document.getElementById("stxt").style.color=c.color;document.getElementById("stxt").textContent=c.lbl;
+  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${cfg.bc};background:${cfg.bg};color:${cfg.color};animation:${cfg.an}`;
+  i.textContent=cfg.lbl;
+  const l=document.getElementById("slive");l.style.display="flex";l.style.background=cfg.bg;
+  document.getElementById("sdot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${cfg.dot};box-shadow:0 0 6px ${cfg.dot};flex-shrink:0`;
+  document.getElementById("stxt").style.color=cfg.color; document.getElementById("stxt").textContent=cfg.lbl;
   ["bupd","beod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
-  if(status!=="sending")setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
+  if(status!=="sending") setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
 }
 
 function buildProjMsg(proj){
   let m=`🎉 *Project Complete!*\n*${S.user}* finished *${proj.name}* [${proj.prio}]\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
   ACTIONS.forEach(a=>{
     const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k],chk=S.checks[k];
-    const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":"⬜";
+    const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":cnt>0?"🟡":"❌";
     m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
   });
   return m;
 }
+
 function buildEODMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
   let m=`🏆 *END OF DAY — ${S.user}*\n*${date}* | *${pct}% complete*\n\n`;
-  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
+  [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swE[proj.id]||0)/60000);
     m+=`*[${proj.prio}] ${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
-    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`];if(cnt>0||note||S.checks[`${proj.id}_${a.id}`])m+=`  ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;});
+    ACTIONS.forEach(a=>{
+      const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`],chk=S.checks[`${proj.id}_${a.id}`];
+      const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":cnt>0?"🟡":"❌";
+      m+=`  ${icon} ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;
+    });
     m+="\n";
   });
   m+=`📊 *Grand Totals:*\n`;
   ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0)m+=`${a.emoji} ${a.name}: *${t}*\n`;});
   return m;
 }
-function buildUpdMsg(){
+
+function buildUpdateMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
   let m=`📊 *Update — ${S.user}* | ${date} | ${pct}% complete\n\n`;
@@ -729,50 +603,46 @@ function buildUpdMsg(){
   return m;
 }
 
-async function sendUpdate(){setSUI("sending");const ok=await slackSend(buildUpdMsg());setSUI(ok?"success":"error");showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");}
+async function sendUpdate(){setSUI("sending");const ok=await slackSend(buildUpdateMsg());setSUI(ok?"success":"error");showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");}
 async function sendEOD(){
   setSUI("sending");
-  const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
+  const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
   setSUI(sOk?"success":"error");
-  showToast(sOk&&gOk?"🏆 Slack & Sheets updated!":sOk?"🏆 Slack ✅ Sheets ⚠️":"⚠️ Error",sOk?"success":"error");
+  showToast(sOk&&gOk?"🏆 Slack & Dashboard updated!":sOk?"🏆 Sent! (Dashboard ⚠️)":"⚠️ Error",sOk?"success":"error");
   logAct("📊","EOD report sent");
 }
 async function notifyProj(pid){
-  const proj=PROJECTS.find(p=>p.id===pid);setSUI("sending");
-  const ok=await slackSend(buildProjMsg(proj));setSUI(ok?"success":"error");
-  showToast(ok?`✅ ${proj.short} sent!`:"⚠️ Error",ok?"success":"error");
+  const proj=PROJECTS.find(p=>p.id===pid); setSUI("sending");
+  const ok=await slackSend(buildProjMsg(proj)); setSUI(ok?"success":"error");
+  showToast(ok?`✅ ${proj.short} notified!`:"⚠️ Error",ok?"success":"error");
 }
 
-// ── PROJECT COMPLETE ──────────────────────────────────────────────────────────
 function checkComplete(pid){
   const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
   if(done&&!S.completed[pid]){
-    S.completed[pid]=true;logAct("🎉",`${proj.short} 100% complete!`);
-    fireConfetti();showToast(`🎉 ${proj.short} done! Notifying Slack…`,"success");
+    S.completed[pid]=true; logAct("🎉",`${proj.short} 100% complete!`);
+    fireConfetti(); showToast(`🎉 ${proj.short} done! Notifying Slack…`,"success");
     slackSend(buildProjMsg(proj)).then(ok=>setSUI(ok?"success":"error"));
     if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
-      S.allDone=true;fireConfetti(true);
+      S.allDone=true; fireConfetti(true);
       setTimeout(async()=>{
         showToast("🏆 ALL DONE! Sending final report…","success");
-        const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),sheetLog()]);
-        showToast(sOk&&gOk?"🏆 Slack & Sheets done!":sOk?"Slack ✅ Sheets ⚠️":"⚠️ Error","success");
-        logAct("🏆","Debrief sent to Slack & Sheets");
+        const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
+        showToast(sOk&&gOk?"🏆 Slack & Dashboard done!":"🏆 Done!","success");
+        logAct("🏆","Full debrief sent");
       },1800);
     }
   }else if(!done){S.completed[pid]=false;S.allDone=false;}
 }
 
-// ── AUTO STOPWATCH ────────────────────────────────────────────────────────────
+// ── STOPWATCH ─────────────────────────────────────────────────────────────────
 function startSW(pid){
-  if(S.swR[pid])return;
+  if(S.swR[pid]) return;
   const t0=Date.now()-(S.swE[pid]||0);
   S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);
   S.swR[pid]=true;
 }
-function stopSW(pid){
-  if(!S.swR[pid])return;
-  clearInterval(S.swI[pid]);S.swR[pid]=false;
-}
+function stopSW(pid){if(!S.swR[pid])return;clearInterval(S.swI[pid]);S.swR[pid]=false;}
 function resetSW(pid){stopSW(pid);S.swE[pid]=0;updSW(pid);}
 function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
 function updSW(pid){
@@ -781,45 +651,52 @@ function updSW(pid){
   if(el1){el1.textContent=fmtT(S.swE[pid]||0);el1.style.color=S.swR[pid]?col:"rgba(255,255,255,0.3)";}
   if(el2&&S.active===pid){el2.textContent=fmtT(S.swE[pid]||0);el2.style.color=S.swR[pid]?col:"#fff";}
 }
-
 function switchProject(pid){
-  if(S.active===pid)return;
-  stopSW(S.active);
-  S.active=pid;
-  startSW(pid);
-  renderAll();
+  if(S.active===pid) return;
+  stopSW(S.active); S.active=pid; startSW(pid);
+  saveState(); renderAll();
 }
 
 // ── COUNTERS ──────────────────────────────────────────────────────────────────
 function setCount(pid,aid,val){
-  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
-  const prev=S.counts[key]||0,next=Math.max(0,val);
+  const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,val);
   S.counts[key]=next;
   if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
   else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
   renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
 }
-function addCount(pid,aid,delta){
-  const key=`${pid}_${aid}`;
-  setCount(pid,aid,(S.counts[key]||0)+delta);
-}
+function addCount(pid,aid,delta){setCount(pid,aid,(S.counts[`${pid}_${aid}`]||0)+delta);}
 
 function toggleCheck(pid,aid){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
   if(!S.checks[key]){
-    // Trying to mark as done
-    if((S.counts[key]||0)===0){
-      // Need a note
-      openNoteModal(pid,aid);
-      return;
-    }
+    if((S.counts[key]||0)===0){openNoteModal(pid,aid);return;}
     S.checks[key]=true;
-  } else {
-    S.checks[key]=false;
-  }
+  }else{S.checks[key]=false;}
   const proj=PROJECTS.find(x=>x.id===pid);
   if(S.checks[key])logAct("✅",`${S.user} ✓ ${a.name} · ${proj.short}`);
   checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
+}
+
+// ── NOTE MODAL ────────────────────────────────────────────────────────────────
+function openNoteModal(pid,aid){
+  S.noteModal={pid,aid};
+  const a=ACTIONS.find(x=>x.id===aid);
+  document.getElementById("note-modal-sub").textContent=`"${a.name}" — enter reason to mark done with 0.`;
+  document.getElementById("note-modal-inp").value=S.notes[`${pid}_${aid}`]||"";
+  document.getElementById("note-modal").style.display="flex";
+  setTimeout(()=>document.getElementById("note-modal-inp").focus(),100);
+}
+function closeNoteModal(save){
+  if(save){
+    const val=document.getElementById("note-modal-inp").value.trim();
+    if(!val){document.getElementById("note-modal-inp").style.border="1px solid #DC2626";return;}
+    const{pid,aid}=S.noteModal;
+    S.notes[`${pid}_${aid}`]=val; S.checks[`${pid}_${aid}`]=true;
+    logAct("📝",`Note: ${val.slice(0,25)}`);
+    checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
+  }
+  document.getElementById("note-modal").style.display="none"; S.noteModal=null;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
@@ -831,40 +708,14 @@ function renderAll(){
 function renderLeft(){
   const list=document.getElementById("plist");list.innerHTML="";
   PROJECTS.forEach(proj=>{
-    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-    const todo=ACTIONS.length-done;
-    const pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
+    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,todo=ACTIONS.length-done,pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
     const d=document.createElement("div");d.className="pbtn aleft";
     d.style.cssText=`border-left-color:${allDone?"#16A34A":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"50":"rgba(255,255,255,0.05)"};background:${isAct?`linear-gradient(135deg,${proj.color}22,${proj.color}08)`:"rgba(255,255,255,0.02)"};box-shadow:${isAct?`0 0 14px ${proj.color}15`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
-    // Status color per action
-    const actionIcons=ACTIONS.map(a=>{
-      const k=`${proj.id}_${a.id}`;
-      const cnt=S.counts[k]||0,chk=S.checks[k];
-      if(chk&&cnt>0)return`<span style="color:#4ADE80;font-size:7px">✓</span>`;
-      if(chk&&cnt===0)return`<span style="color:#4ADE80;font-size:7px">✓</span>`;
-      if(!chk&&cnt>0)return`<span style="color:#EAB308;font-size:7px">◑</span>`;
-      return`<span style="color:rgba(255,255,255,0.15);font-size:7px">○</span>`;
-    }).join("");
-    d.innerHTML=`
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0">
-          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
-          <span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.5)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span>
-        </div>
-        <span style="font-size:10px;font-weight:700;color:${allDone?"#4ADE80":todo>0?"#F7A200":"rgba(255,255,255,0.3)"};margin-left:4px;flex-shrink:0">${allDone?"✓":todo+" left"}</span>
-      </div>
-      <div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:5px">
-        <div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;gap:2px">${actionIcons}</div>
-        <span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span>
-      </div>`;
+    const icons=ACTIONS.map(a=>{const k=`${proj.id}_${a.id}`;const cnt=S.counts[k]||0,chk=S.checks[k];return chk?`<span style="color:#4ADE80;font-size:7px">✓</span>`:cnt>0?`<span style="color:#EAB308;font-size:7px">◑</span>`:`<span style="color:rgba(255,255,255,0.15);font-size:7px">○</span>`;}).join("");
+    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.5)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span></div><span style="font-size:10px;font-weight:700;color:${allDone?"#4ADE80":todo>0?"#F7A200":"rgba(255,255,255,0.3)"};margin-left:4px;flex-shrink:0">${allDone?"✓":todo+" left"}</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:5px"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:2px">${icons}</div><span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span></div>`;
     d.onclick=()=>switchProject(proj.id);
     list.appendChild(d);
   });
-
-  // Totals
   const tl=document.getElementById("totals");tl.innerHTML="";let any=false;
   ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
   if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">No activity yet</div>`;
@@ -875,31 +726,7 @@ function renderCenter(){renderProjHeader();renderActions();}
 function renderProjHeader(){
   const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
   const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
-  document.getElementById("phdr").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="position:relative;width:52px;height:52px;flex-shrink:0">
-        <svg width="52" height="52" style="transform:rotate(-90deg);position:absolute">
-          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
-          <circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
-        </svg>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${pct}%</div>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:7px">
-          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
-          <span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-0.3px;color:#fff">${proj.name}</span>
-        </div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions done · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets hit · <span style="color:#F7A200">⏱ auto-tracking</span></div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.07)">
-        <span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:${S.swR[proj.id]?proj.color:"#fff"};min-width:52px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span>
-        <button onclick="resetSW('${proj.id}')" style="width:24px;height:24px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:10px;display:flex;align-items:center;justify-content:center" title="Reset timer">↺</button>
-      </div>
-      <button onclick="notifyProj('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:7px;padding:6px 11px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button>
-    </div>
-  </div>`;
+  document.getElementById("phdr").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:10px"><div style="position:relative;width:52px;height:52px;flex-shrink:0"><svg width="52" height="52" style="transform:rotate(-90deg);position:absolute"><circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="display:flex;align-items:center;gap:7px"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${proj.name}</span></div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets · <span style="color:#F7A200">⏱ auto-tracking</span></div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.07)"><span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:${S.swR[proj.id]?proj.color:"#fff"};min-width:52px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span><button onclick="resetSW('${proj.id}')" style="width:24px;height:24px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:10px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProj('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:7px;padding:6px 11px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button></div></div>`;
 }
 
 function renderActions(){
@@ -912,77 +739,40 @@ function renderActionRow(pid,aid){
   const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
   const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
   const hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
-
-  // Row status color
   let rowBg,rowBorder,statusIcon;
   if(checked&&count>0){rowBg=`${proj.color}07`;rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
   else if(checked&&count===0){rowBg="rgba(22,163,74,0.06)";rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
   else if(!checked&&count>0){rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";statusIcon=`<span style="font-size:11px">🟡</span>`;}
   else{rowBg="rgba(255,255,255,0.01)";rowBorder="rgba(255,255,255,0.04)";statusIcon=`<span style="font-size:11px;color:rgba(255,255,255,0.15)">○</span>`;}
-
   el.style.cssText=`background:${rowBg};border:1px solid ${rowBorder};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:24px 24px 1fr 200px 150px;align-items:center;gap:8px;transition:all 0.2s`;
-
-  el.innerHTML=`
-    ${statusIcon}
+  el.innerHTML=`${statusIcon}
     <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.15)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 8px ${proj.color}50`:"none"};transition:all 0.15s">${checked?"✓":""}</div>
-    <div>
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
-        <span style="font-size:13px">${a.emoji}</span>
-        <span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.35)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>
-        ${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 5px;border-radius:6px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}
-      </div>
-      <div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EAB308":proj.color};border-radius:2px;transition:width 0.3s"></div>
-      </div>
-      <div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count} / ${a.target} · ${pctA}%</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()">
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',1)"  style="width:28px;height:24px;background:${proj.color}35;color:#fff;font-size:10px">+1</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',5)"  style="width:28px;height:24px;background:${proj.color}55;color:#fff;font-size:10px">+5</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}75;color:#fff;font-size:10px">+10</button>
-      <input type="number" min="0" value="${count}" id="ci-${key}"
-        onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)"
-        onclick="this.select()"
-        style="width:48px;height:24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:#F7A200;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/>
-    </div>
+    <div><div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:13px">${a.emoji}</span><span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.35)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 5px;border-radius:6px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}</div><div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EAB308":proj.color};border-radius:2px;transition:width 0.3s"></div></div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count} / ${a.target} · ${pctA}%</div></div>
+    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()"><button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:28px;height:24px;background:${proj.color}35;color:#fff;font-size:10px">+1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:28px;height:24px;background:${proj.color}55;color:#fff;font-size:10px">+5</button><button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}75;color:#fff;font-size:10px">+10</button><input type="number" min="0" value="${count}" id="ci-${key}" onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)" onclick="this.select()" style="width:48px;height:24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:#F7A200;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/></div>
     <div id="nc-${key}" onclick="event.stopPropagation()"></div>`;
-
   renderNote(key,note);
 }
 
 function renderNote(key,note){
   const el=document.getElementById(`nc-${key}`);if(!el)return;
   const hasNote=note&&note.length>0;
-  el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:${hasNote?"#F7A200":"rgba(255,255,255,0.18)"};font-style:${hasNote?"normal":"italic"};cursor:text;font-weight:${hasNote?600:400};display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0" title="${hasNote?note:"Click to add note"}">${hasNote?note:"+ note"}</span>`;
+  if(hasNote){
+    el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:#F7A200;cursor:text;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0" title="${note}">${note}</span>`;
+  }else{
+    el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:rgba(255,255,255,0.18);font-style:italic;cursor:text;display:block;padding:2px 0">+ note</span>`;
+  }
 }
 
 function editNote(key){
-  const cur=S.notes[key]||"";
-  const val=prompt("Add note:",cur);
-  if(val!==null){
-    S.notes[key]=val;
-    renderNote(key,val);
-    if(val){logAct("📝","Note saved");saveState();}
-  }
+  const val=prompt("Add note:",S.notes[key]||"");
+  if(val!==null){S.notes[key]=val;renderNote(key,val);if(val){logAct("📝","Note saved");saveState();}}
 }
 
 function renderOv(){
   const ol=document.getElementById("ovlist");ol.innerHTML="";
   [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
     const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;
-    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 11px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"};transition:background 0.15s">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-        <div style="display:flex;align-items:center;gap:5px">
-          <span class="prio-badge prio-${proj.prio}">${proj.prio}</span>
-          <span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span>
-        </div>
-        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span>
-      </div>
-      <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div>
-      </div>
-    </div>`;
+    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 11px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="display:flex;align-items:center;gap:5px"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span></div><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span></div><div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div></div>`;
   });
 }
 
@@ -1029,38 +819,31 @@ function showToast(msg,type="info"){
 }
 
 function showResumeBanner(){
-  const banner = document.createElement("div");
-  banner.id = "resume-banner";
-  banner.style.cssText = "position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 20px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:slideIn 0.4s ease";
-  banner.innerHTML = `<span>✅ Progress restored for today!</span><button onclick="this.closest('#resume-banner').remove()" style="background:rgba(255,255,255,0.2);border:none;border-radius:5px;color:#fff;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">✕</button>`;
-  document.body.appendChild(banner);
-  setTimeout(()=>banner.remove(), 5000);
+  const b=document.createElement("div");
+  b.style.cssText="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 20px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:slideIn 0.4s ease";
+  b.innerHTML=`<span>✅ Progress restored for today!</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,0.2);border:none;border-radius:5px;color:#fff;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">✕</button>`;
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(),5000);
 }
 
+// ── INIT ──────────────────────────────────────────────────────────────────────
 setInterval(updateTimer,30000);
 setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
 
-// ── INIT (runs after all functions defined) ──────────────────────────────────
-window.addEventListener("DOMContentLoaded", function(){
-  // Try to restore saved session first
+window.addEventListener("DOMContentLoaded",async function(){
+  // Try restore first
   if(loadState()){
     document.getElementById("setup").style.display="none";
     document.getElementById("app").style.display="flex";
-    document.getElementById("hname").textContent=S.user;
-    if(SELECTED_TEAM){
-      const badge=document.getElementById("hteam-badge");
-      badge.style.display="inline";
-      badge.textContent=SELECTED_TEAM.emoji+" "+SELECTED_TEAM.name;
-      badge.style.background=SELECTED_TEAM.color+"25";
-      badge.style.color=SELECTED_TEAM.color;
-      badge.style.border="1px solid "+SELECTED_TEAM.color+"50";
-    }
+    showTeamBadge();
     showResumeBanner();
+    await loadTargets(); // refresh targets from Supabase
     startSW(S.active);
     renderAll();
+    startPolling();
   } else {
-    // Fresh start — init setup form
-    addPI();
+    // Fresh start
+    await initSetup();
     updateSBtn();
   }
 });
