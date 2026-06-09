@@ -505,6 +505,9 @@ async function pollAssignments(){
     }
   });
   if(added>0){
+    // Re-sort by priority after adding new projects
+    PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
+    PROJECTS.forEach((p,i)=>p.id="p"+i);
     showToast(`📋 ${added} new project(s) assigned by manager!`,"success");
     logAct("📋",`${added} new project(s) added by manager`);
     saveState(); renderAll();
