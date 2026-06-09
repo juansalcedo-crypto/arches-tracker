@@ -660,12 +660,18 @@ function switchProject(pid){
 }
 
 // ── COUNTERS ──────────────────────────────────────────────────────────────────
+let syncTimer = null;
+function scheduleSync(){
+  if(syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(()=>{ if(S.user && PROJECTS.length>0) supaLog(); }, 15000);
+}
+
 function setCount(pid,aid,val){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,val);
   S.counts[key]=next;
   if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
   else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
-  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
 }
 function addCount(pid,aid,delta){setCount(pid,aid,(S.counts[`${pid}_${aid}`]||0)+delta);}
 
@@ -677,7 +683,7 @@ function toggleCheck(pid,aid){
   }else{S.checks[key]=false;}
   const proj=PROJECTS.find(x=>x.id===pid);
   if(S.checks[key])logAct("✅",`${S.user} ✓ ${a.name} · ${proj.short}`);
-  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
+  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
 }
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
@@ -696,7 +702,7 @@ function closeNoteModal(save){
     const{pid,aid}=S.noteModal;
     S.notes[`${pid}_${aid}`]=val; S.checks[`${pid}_${aid}`]=true;
     logAct("📝",`Note: ${val.slice(0,25)}`);
-    checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();
+    checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
   }
   document.getElementById("note-modal").style.display="none"; S.noteModal=null;
 }
