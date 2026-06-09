@@ -3,88 +3,148 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Arches Tracker — War Room</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
+<title>Arches Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--orange:#F7A200;--od:#E07000;--bg:#0D0F1A;--sur:#111320;--bdr:#1E2240;--grn:#16A34A;--red:#DC2626;}
+:root{
+  --bg:#0A0C14;--sur:#10131F;--sur2:#161A28;--bdr:#1E2235;
+  --org:#F7A200;--od:#E07000;--grn:#22C55E;--red:#EF4444;--ylw:#EAB308;--pur:#8B5CF6;--blu:#3B82F6;
+  --txt:#F1F5F9;--txt2:#94A3B8;--txt3:#475569;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100vh;overflow:hidden;}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
-@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes confetti{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 20px 4px rgba(247,162,0,.25)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
 
-/* SETUP */
-#setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.4s ease}
-.sbox{background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:32px 36px;max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto}
-.slbl{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
-.sinp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:border-color 0.2s}
-.sinp:focus{border-color:#F7A200;box-shadow:0 0 0 3px rgba(247,162,0,0.1)}
-.sinp::placeholder{color:rgba(255,255,255,0.2)}
-.prow{display:flex;align-items:center;gap:6px;margin-bottom:8px;animation:slideIn 0.3s ease}
-.pnum{font-size:10px;color:rgba(255,255,255,0.25);width:16px;text-align:right;flex-shrink:0}
-.pinp{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Mono',monospace;outline:none;color:#fff;transition:all 0.2s}
-.pinp:focus{border-color:#F7A200;background:rgba(247,162,0,0.05)}
-.pinp::placeholder{color:rgba(255,255,255,0.15)}
-.pinp.duplicate{border-color:#DC2626;animation:shake 0.3s ease}
-.prio-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 8px;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;outline:none;cursor:pointer;flex-shrink:0}
-.prio-sel option{background:#111320}
-.prm{width:22px;height:22px;border-radius:5px;border:none;background:rgba(220,38,38,0.15);color:#FF6B6B;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.prm:hover{background:rgba(220,38,38,0.3)}
-.badd{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:7px 14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;width:100%;transition:all 0.2s;margin-bottom:20px}
-.badd:hover{border-color:rgba(247,162,0,0.4);color:#F7A200;background:rgba(247,162,0,0.05)}
-.bstart{width:100%;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:12px;padding:13px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 20px rgba(247,162,0,0.4);transition:all 0.2s}
-.bstart:hover{transform:translateY(-1px)}
-.bstart:disabled{opacity:0.4;cursor:not-allowed;transform:none}
-.dup-warn{font-size:10px;color:#FF6B6B;margin:-4px 0 8px 24px;display:none}
-.team-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;width:100%;text-align:left;margin-bottom:10px}
-.member-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.2s;width:100%;text-align:left;margin-bottom:7px}
-.member-btn:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15)}
+/* ── SETUP ─────────────────────────────────────────────────────────── */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .4s ease}
+.scard{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:28px 32px;max-width:520px;width:100%;box-shadow:0 24px 48px rgba(0,0,0,.5);max-height:92vh;overflow-y:auto}
+.scard::-webkit-scrollbar{width:0}
+.flbl{font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;display:block}
+.finp{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--txt);outline:none;transition:border-color .2s}
+.finp:focus{border-color:var(--org);box-shadow:0 0 0 3px rgba(247,162,0,.1)}
+.finp::placeholder{color:var(--txt3)}
+.fsel{background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--txt);outline:none;cursor:pointer}
+.fsel option{background:var(--sur)}
 
-/* APP */
+/* team buttons */
+.team-btn{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:12px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s;margin-bottom:8px;text-align:left}
+.team-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+
+/* member buttons */
+.mbtn{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;margin-bottom:6px;text-align:left}
+.mbtn:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+
+/* project row */
+.prow{display:flex;align-items:center;gap:6px;margin-bottom:7px;animation:fadeIn .25s ease}
+.pnum{font-size:11px;color:var(--txt3);width:14px;text-align:right;flex-shrink:0}
+.pinp{flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--txt);outline:none;transition:all .2s}
+.pinp:focus{border-color:var(--org);background:rgba(247,162,0,.04)}
+.pinp::placeholder{color:var(--txt3)}
+.pinp.dup{border-color:var(--red);animation:shake .3s}
+.psel{background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:7px 9px;font-size:11px;font-weight:700;color:var(--txt);outline:none;cursor:pointer;flex-shrink:0}
+.psel option{background:var(--sur)}
+.prm{width:22px;height:22px;border-radius:6px;border:none;background:rgba(239,68,68,.12);color:#F87171;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.prm:hover{background:rgba(239,68,68,.25)}
+
+/* prev projects */
+.prev-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--bdr);background:var(--sur2);margin-bottom:6px;cursor:pointer;transition:all .15s}
+.prev-item.selected{border-color:var(--org);background:rgba(247,162,0,.06)}
+.prev-item:hover{border-color:rgba(255,255,255,.15)}
+
+.badd{width:100%;background:transparent;border:1px dashed var(--bdr);border-radius:8px;padding:8px;color:var(--txt3);cursor:pointer;font-size:12px;transition:all .2s;margin-bottom:18px}
+.badd:hover{border-color:rgba(247,162,0,.4);color:var(--org)}
+.bstart{width:100%;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:10px;padding:12px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(247,162,0,.35);transition:all .2s;letter-spacing:.3px}
+.bstart:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(247,162,0,.45)}
+.bstart:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.back-btn{background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:5px 12px;color:var(--txt2);font-size:12px;cursor:pointer;transition:all .15s}
+.back-btn:hover{color:var(--txt)}
+.dup-warn{font-size:11px;color:var(--red);margin:-3px 0 7px 20px;display:none}
+
+/* ── APP ───────────────────────────────────────────────────────────── */
 #app{display:none;flex-direction:column;height:100vh}
-#hdr{background:var(--sur);border-bottom:1px solid var(--bdr);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:50;flex-shrink:0}
-#layout{display:grid;grid-template-columns:220px 1fr 240px;flex:1;overflow:hidden}
+#hdr{background:var(--sur);border-bottom:1px solid var(--bdr);height:52px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 0 var(--bdr)}
+#layout{display:grid;grid-template-columns:210px 1fr 240px;flex:1;overflow:hidden}
 #left{background:var(--sur);border-right:1px solid var(--bdr);padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 #center{overflow-y:auto;padding:12px 14px;background:var(--bg)}
-#right{background:var(--sur);border-left:1px solid var(--bdr);padding:10px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+#right{background:var(--sur);border-left:1px solid var(--bdr);padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+#gbar{height:2px;background:var(--bdr);flex-shrink:0}
+#gbf{height:100%;width:0%;background:linear-gradient(90deg,var(--org),var(--od));transition:width .5s;box-shadow:0 0 8px rgba(247,162,0,.4)}
+
+/* header buttons */
+.hbtn{border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;border:1px solid transparent;display:inline-flex;align-items:center;gap:4px}
+.hbtn:disabled{opacity:.45;cursor:not-allowed}
+.hbtn-org{background:rgba(247,162,0,.12);border-color:rgba(247,162,0,.3);color:var(--org)}
+.hbtn-org:hover:not(:disabled){background:rgba(247,162,0,.2)}
+.hbtn-solid{background:linear-gradient(135deg,var(--org),var(--od));color:#fff;border:none;box-shadow:0 2px 8px rgba(247,162,0,.35)}
+.hbtn-solid:hover:not(:disabled){transform:translateY(-1px)}
+.hbtn-ghost{background:rgba(255,255,255,.04);border-color:var(--bdr);color:var(--txt2)}
+.hbtn-ghost:hover:not(:disabled){color:var(--txt);background:rgba(255,255,255,.08)}
+.hbtn-lunch{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:#FBB324}
+.hbtn-lunch:hover{background:rgba(251,191,36,.2)}
+.hbtn-meet{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#A78BFA}
+.hbtn-meet:hover{background:rgba(139,92,246,.2)}
+
+/* stat boxes */
+.sbox{text-align:center;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:4px 9px}
+.sv{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1}
+.sl{font-size:9px;color:var(--txt3);letter-spacing:.5px;margin-top:1px;text-transform:uppercase}
+
+/* ring */
 .rwrap{position:relative;flex-shrink:0}
-.rlbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:900;color:#fff}
-.sbox2{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 9px}
-.sv{font-family:'Syne',sans-serif;font-size:13px;font-weight:900;line-height:1}
-.sl{font-size:8px;color:rgba(255,255,255,0.35);letter-spacing:0.8px;margin-top:1px;text-transform:uppercase}
-.bhdr{border-radius:7px;padding:6px 11px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.15s;border:none}
-.bupd{background:rgba(247,162,0,0.15);border:1px solid rgba(247,162,0,0.35)!important;color:#F7A200}
-.bupd:hover{background:rgba(247,162,0,0.25)}
-.beod{background:linear-gradient(135deg,#F7A200,#E07000);color:#fff;box-shadow:0 3px 10px rgba(247,162,0,0.4)}
-.beod:hover{transform:translateY(-1px)}
-.bnew{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)!important;color:rgba(255,255,255,0.4)}
-.bnew:hover{color:#fff}
-.bhdr:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-.pbtn{transition:all 0.2s;cursor:pointer}.pbtn:hover{transform:translateY(-1px)}
-.cbtn{transition:all 0.1s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'DM Mono',monospace;border-radius:5px}
-.cbtn:active{transform:scale(0.85)}
-.aleft{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-left:3px solid transparent;border-radius:9px;padding:8px 9px}
-.spanel{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;overflow:hidden}
-.shead{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.05);background:linear-gradient(135deg,rgba(247,162,0,0.1),transparent);display:flex;align-items:center;gap:5px}
-.stitle{font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#F7A200;letter-spacing:2px}
-#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;opacity:0;transition:all 0.3s;pointer-events:none;z-index:998;box-shadow:0 6px 24px rgba(0,0,0,0.5);white-space:nowrap;border:1px solid rgba(255,255,255,0.08)}
+.rlbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:var(--txt)}
+
+/* left panel project cards */
+.pcard{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-left:3px solid transparent;border-radius:9px;padding:8px 9px;cursor:pointer;transition:all .2s}
+.pcard:hover{transform:translateY(-1px)}
+
+/* action rows */
+.arow{border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:22px 22px 1fr 210px 160px;align-items:center;gap:8px;transition:all .2s}
+.arow:hover{background:rgba(247,162,0,.03)!important}
+
+/* counter buttons */
+.cbtn{border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:5px;transition:all .1s;font-family:'Inter',sans-serif}
+.cbtn:active{transform:scale(.84)}
+
+/* side panels */
+.spanel{background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+.shead{padding:8px 11px;border-bottom:1px solid var(--bdr);background:linear-gradient(135deg,rgba(247,162,0,.08),transparent);display:flex;align-items:center;gap:5px}
+.stitle{font-size:10px;font-weight:700;color:var(--org);letter-spacing:.8px;text-transform:uppercase}
+
+/* prio badges */
+.pb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;letter-spacing:.3px}
+.pb-P1{background:rgba(239,68,68,.15);color:#F87171;border:1px solid rgba(239,68,68,.25)}
+.pb-P2{background:rgba(247,162,0,.15);color:var(--org);border:1px solid rgba(247,162,0,.25)}
+.pb-P3{background:rgba(34,197,94,.15);color:#4ADE80;border:1px solid rgba(34,197,94,.25)}
+
+/* toast */
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(16px);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:990;box-shadow:0 6px 20px rgba(0,0,0,.5);white-space:nowrap;border:1px solid rgba(255,255,255,.08)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #cfw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
-#gbar{height:2px;background:var(--bdr);flex-shrink:0}
-#gbf{height:100%;width:0%;background:linear-gradient(90deg,#F7A200,#E07000);transition:width 0.6s;box-shadow:0 0 10px rgba(247,162,0,0.5)}
-#note-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center}
-.nbox{background:var(--sur);border:1px solid #F7A200;border-radius:14px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-.prio-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
-.prio-P1{background:rgba(220,38,38,0.2);color:#FF6B6B;border:1px solid rgba(220,38,38,0.3)}
-.prio-P2{background:rgba(247,162,0,0.2);color:#F7A200;border:1px solid rgba(247,162,0,0.3)}
-.prio-P3{background:rgba(74,222,128,0.2);color:#4ADE80;border:1px solid rgba(74,222,128,0.3)}
-.loader{width:14px;height:14px;border:2px solid rgba(255,255,255,0.1);border-top-color:#F7A200;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block}
+
+/* note modal */
+#note-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.nbox{background:var(--sur);border:1px solid var(--org);border-radius:14px;padding:22px;max-width:400px;width:90%;box-shadow:0 20px 50px rgba(0,0,0,.7)}
+
+/* EOD confirm modal */
+#eod-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.eodbox{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:24px;max-width:560px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 50px rgba(0,0,0,.7)}
+
+/* overlay screens */
+.overlay-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;animation:fadeIn .4s ease}
+
+/* sync indicator */
+#sync-ind{font-size:9px;color:var(--txt3);display:flex;align-items:center;gap:4px}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--grn)}
 </style>
 </head>
 <body>
@@ -93,69 +153,89 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 <!-- NOTE MODAL -->
 <div id="note-modal">
   <div class="nbox">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:900;color:#F7A200;margin-bottom:6px">📝 Note Required</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:16px" id="note-modal-sub">To mark this action done with 0, you must explain why.</div>
-    <textarea id="note-modal-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…"
-      style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px;font-family:'DM Mono',monospace;font-size:12px;color:#fff;outline:none;resize:none;line-height:1.5"></textarea>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="closeNoteModal(false)" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">Cancel</button>
-      <button onclick="closeNoteModal(true)" style="flex:2;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;cursor:pointer">Save Note & Mark Done</button>
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--org);margin-bottom:6px">Note Required</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px" id="note-sub">Mark this action as done with 0 — explain why.</div>
+    <textarea id="note-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…"
+      style="width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px;font-size:12px;color:var(--txt);outline:none;resize:none;line-height:1.5;transition:border-color .2s"
+      onfocus="this.style.borderColor='var(--org)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
+    <div style="display:flex;gap:8px;margin-top:11px">
+      <button onclick="closeNote(false)" style="flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px;color:var(--txt2);font-size:12px;cursor:pointer">Cancel</button>
+      <button onclick="closeNote(true)" style="flex:2;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;cursor:pointer">Save & Mark Done</button>
     </div>
   </div>
 </div>
 
-<!-- SETUP — 3 steps -->
+<!-- EOD CONFIRM MODAL -->
+<div id="eod-modal">
+  <div class="eodbox">
+    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:var(--org);margin-bottom:4px">End of Day Report</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:16px">Review before sending to Slack & Dashboard</div>
+    <div id="eod-preview"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button onclick="document.getElementById('eod-modal').style.display='none'" style="flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:10px;color:var(--txt2);font-size:12px;cursor:pointer">← Keep Working</button>
+      <button onclick="confirmEOD()" style="flex:2;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(247,162,0,.4)">🏆 Send Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP -->
 <div id="setup">
   <!-- STEP 1: TEAM -->
-  <div id="step-team" class="sbox" style="max-width:480px">
+  <div id="s-team" class="scard" style="max-width:440px">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-      <svg width="38" height="25" viewBox="0 0 200 130" fill="none">
+      <svg width="34" height="22" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
-        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
-        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/><path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity=".7"/><path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity=".7"/>
         <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
       </svg>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px">ARCHES TRACKER</div>
-        <div style="font-size:10px;color:#F7A200;letter-spacing:2px;margin-top:1px">WAR ROOM · <span id="setup-date"></span></div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:var(--txt)">Arches Tracker</div>
+        <div style="font-size:10px;color:var(--org);letter-spacing:1.5px;margin-top:2px" id="s-date"></div>
       </div>
     </div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px">Which team are you on?</div>
-    <button class="team-btn" id="btn-luis" onclick="selectTeam('luis')">
-      <span style="font-size:28px">🟠</span>
-      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#F7A200">Team Luis</div><div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px" id="luis-count">Loading…</div></div>
+    <div style="font-size:13px;color:var(--txt2);margin-bottom:16px;font-weight:500">Which team are you on?</div>
+    <button class="team-btn" onclick="selTeam('luis')">
+      <span style="font-size:26px">🟠</span>
+      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--org)">Team Luis</div><div style="font-size:11px;color:var(--txt3);margin-top:2px" id="luis-ct">Loading…</div></div>
     </button>
-    <button class="team-btn" id="btn-taiki" onclick="selectTeam('taiki')">
-      <span style="font-size:28px">🔵</span>
-      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:#3B82F6">Team Taiki</div><div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px" id="taiki-count">Loading…</div></div>
+    <button class="team-btn" onclick="selTeam('taiki')">
+      <span style="font-size:26px">🔵</span>
+      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--blu)">Team Taiki</div><div style="font-size:11px;color:var(--txt3);margin-top:2px" id="taiki-ct">Loading…</div></div>
     </button>
   </div>
 
   <!-- STEP 2: MEMBER -->
-  <div id="step-member" class="sbox" style="max-width:480px;display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-      <button onclick="goStep('team')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
-      <div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900" id="team-label">Team</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Who are you?</div></div>
+  <div id="s-member" class="scard" style="max-width:440px;display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <button class="back-btn" onclick="goStep('team')">← Back</button>
+      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800" id="team-lbl">Team</div><div style="font-size:11px;color:var(--txt3)">Select your name</div></div>
     </div>
     <div id="member-list"></div>
   </div>
 
   <!-- STEP 3: PROJECTS -->
-  <div id="step-projects" class="sbox" style="display:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
-      <button onclick="goStep('member')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 12px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">← Back</button>
+  <div id="s-projects" class="scard" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button class="back-btn" onclick="goStep('member')">← Back</button>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:#fff" id="proj-step-title">Today's Projects</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px" id="proj-step-sub">P1 = highest priority · max 8</div>
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--txt)" id="proj-title">Projects</div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:1px" id="proj-sub">Set priority · max 8</div>
       </div>
     </div>
-    <div id="assigned-banner" style="display:none;background:linear-gradient(135deg,rgba(22,163,74,0.15),rgba(22,163,74,0.05));border:1px solid rgba(22,163,74,0.3);border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#4ADE80"></div>
+    <!-- Previous projects section -->
+    <div id="prev-section" style="display:none;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Continue from yesterday?</div>
+      <div id="prev-list"></div>
+      <div style="height:1px;background:var(--bdr);margin:12px 0"></div>
+    </div>
+    <!-- Assigned banner -->
+    <div id="assigned-banner" style="display:none;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:#4ADE80;font-weight:500"></div>
+    <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px" id="new-proj-label">Today's Projects</div>
     <div id="pinputs"></div>
     <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name</div>
     <button class="badd" id="badd" onclick="addPI()">+ Add project</button>
-    <button class="bstart" id="bstart" onclick="startDay()">🚀 START DAY</button>
+    <button class="bstart" id="bstart" onclick="startDay()">🚀 Start Day</button>
   </div>
 </div>
 
@@ -163,90 +243,87 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 <div id="app">
   <div id="hdr">
     <div style="display:flex;align-items:center;gap:10px">
-      <svg width="28" height="18" viewBox="0 0 200 130" fill="none">
+      <svg width="26" height="17" viewBox="0 0 200 130" fill="none">
         <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/>
-        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity="0.7"/>
-        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity="0.7"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/><path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity=".7"/><path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity=".7"/>
         <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
       </svg>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-0.5px">ARCHES TRACKER</div>
-        <div style="font-size:7px;color:#F7A200;letter-spacing:2px" id="hdate">WAR ROOM</div>
+        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-.3px">Arches Tracker</div>
+        <div style="font-size:9px;color:var(--org);letter-spacing:1.5px" id="hdate"></div>
       </div>
     </div>
-    <div style="display:flex;gap:7px;align-items:center">
-      <div class="rwrap" style="width:40px;height:40px">
-        <svg width="40" height="40" style="transform:rotate(-90deg);position:absolute">
-          <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
-          <circle cx="20" cy="20" r="17" fill="none" stroke="#F7A200" stroke-width="4" stroke-dasharray="106.8" stroke-dashoffset="106.8" id="rc" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/>
+    <div style="display:flex;gap:6px;align-items:center">
+      <div class="rwrap" style="width:38px;height:38px">
+        <svg width="38" height="38" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="19" cy="19" r="16" fill="none" stroke="var(--bdr)" stroke-width="3.5"/>
+          <circle cx="19" cy="19" r="16" fill="none" stroke="var(--org)" stroke-width="3.5" stroke-dasharray="100.5" stroke-dashoffset="100.5" id="rc" style="transition:stroke-dashoffset .5s ease" stroke-linecap="round"/>
         </svg>
-        <div class="rlbl" style="font-size:10px" id="rl">0%</div>
+        <div class="rlbl" style="font-size:9px;font-weight:700" id="rl">0%</div>
       </div>
-      <div class="sbox2"><div class="sv" id="s-tgt">0/0</div><div class="sl">Targets</div></div>
-      <div class="sbox2"><div class="sv" id="s-chk">0/0</div><div class="sl">Checks</div></div>
-      <div id="timer" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:4px 10px;text-align:center">
-        <div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase">ENDS 17:00</div>
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:900" id="tv">—</div>
-        <div style="font-size:7px;color:rgba(255,255,255,0.25)" id="tnow">—</div>
+      <div class="sbox"><div class="sv" id="s-tgt">0/0</div><div class="sl">Targets</div></div>
+      <div class="sbox"><div class="sv" id="s-chk">0/0</div><div class="sl">Done</div></div>
+      <div id="timer" style="background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:4px 10px;text-align:center">
+        <div style="font-size:8px;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase">Ends 17:00</div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800" id="tv">—</div>
+        <div style="font-size:8px;color:var(--txt3)" id="tnow">—</div>
       </div>
-      <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <div id="hteam-badge" style="display:none;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px"></div>
-      <span id="hname" style="font-size:10px;color:rgba(255,255,255,0.35);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-      <button class="bhdr bupd" id="bupd" style="border:1px solid" onclick="sendUpdate()">📊 Update</button>
-      <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
-      <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
-      <button id="btn-lunch" class="bhdr" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35)!important;color:#FBB324;font-size:11px" onclick="toggleLunch()">🍽️ Lunch</button>
-      <button id="btn-meeting" class="bhdr" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.35)!important;color:#A78BFA;font-size:11px" onclick="toggleMeeting()">📞 Meeting</button>
+      <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 9px;border-radius:16px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
+      <div id="sync-ind"><div class="sync-dot" id="sync-dot" style="opacity:.4"></div><span id="sync-lbl">synced</span></div>
+      <div id="hbadge" style="display:none;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px"></div>
+      <span id="hname" style="font-size:11px;color:var(--txt2);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="hbtn hbtn-org" id="bupd" onclick="sendUpdate()">📊 Update</button>
+      <button class="hbtn hbtn-solid" id="beod" onclick="showEOD()">🏆 EOD Report</button>
+      <button class="hbtn hbtn-lunch" onclick="toggleLunch()">🍽️ Lunch</button>
+      <button class="hbtn hbtn-meet" onclick="toggleMeeting()">📞 Meeting</button>
+      <button class="hbtn hbtn-ghost" onclick="resetDay()">↺ New Day</button>
     </div>
   </div>
   <div id="gbar"><div id="gbf"></div></div>
   <div id="layout">
     <div id="left">
-      <div style="display:flex;justify-content:space-between;padding:0 2px 6px;border-bottom:1px solid var(--bdr);margin-bottom:4px">
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700">PROJECTS</div>
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;font-weight:700">TO DO</div>
+      <div style="display:flex;justify-content:space-between;padding:0 3px 6px;border-bottom:1px solid var(--bdr);margin-bottom:4px">
+        <span style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase">Projects</span>
+        <span style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase">To Do</span>
       </div>
       <div id="plist"></div>
-      <div style="margin-top:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:8px 9px">
-        <div style="font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;margin-bottom:6px;font-weight:700">TODAY'S TOTALS</div>
+      <div style="margin-top:8px;background:var(--sur2);border:1px solid var(--bdr);border-radius:9px;padding:8px 9px">
+        <div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px">Today's Totals</div>
         <div id="totals"></div>
       </div>
     </div>
     <div id="center"><div id="phdr"></div><div id="alist"></div></div>
     <div id="right">
-      <div style="background:rgba(74,21,75,0.15);border:1px solid rgba(74,21,75,0.35);border-radius:10px;padding:10px 11px">
-        <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:#E879F9;letter-spacing:1.5px;margin-bottom:6px">⚡ AUTO SYNC</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.45);line-height:1.8">
-          🟢 Slack notified on project complete<br>
-          📊 Dashboard updated on EOD<br>
-          🔄 Checks for assignments every 60s
+      <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:10px 11px">
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">⚡ Auto Sync</div>
+        <div style="font-size:11px;color:var(--txt2);line-height:1.7">
+          🟢 Slack on project complete<br>
+          📊 Dashboard updated live<br>
+          🔄 Checks assignments every 60s
         </div>
         <div id="slive" style="margin-top:7px;display:none;align-items:center;gap:5px;border-radius:6px;padding:5px 9px">
-          <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="sdot"></div>
-          <span style="font-size:9px;font-weight:600" id="stxt"></span>
+          <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0" id="sdot"></div>
+          <span style="font-size:10px;font-weight:600" id="stxt"></span>
         </div>
       </div>
       <div class="spanel">
-        <div class="shead"><span style="font-size:11px">⚡</span><span class="stitle">LIVE ACTIVITY</span></div>
-        <div id="afeed" style="max-height:200px;overflow-y:auto;padding:3px 0">
-          <div style="padding:12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">No activity yet…</div>
+        <div class="shead"><span>⚡</span><span class="stitle">Activity</span></div>
+        <div id="afeed" style="max-height:200px;overflow-y:auto;padding:2px 0">
+          <div style="padding:12px;font-size:11px;color:var(--txt3);text-align:center;font-style:italic">No activity yet…</div>
         </div>
       </div>
       <div class="spanel">
-        <div class="shead"><span class="stitle">🗂️ OVERVIEW</span></div>
+        <div class="shead"><span class="stitle">Overview</span></div>
         <div id="ovlist"></div>
       </div>
-      <!-- MANAGER MESSAGES -->
-      <div class="spanel" id="comments-panel" style="display:none">
-        <div class="shead" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),transparent)">
-          <span style="font-size:11px">💬</span>
-          <span class="stitle" style="color:#3B82F6">MANAGER MESSAGES</span>
-          <span id="comments-badge" style="margin-left:auto;background:#3B82F6;color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:10px"></span>
+      <div class="spanel" id="cmts-panel" style="display:none">
+        <div class="shead" style="background:linear-gradient(135deg,rgba(59,130,246,.12),transparent)">
+          <span>💬</span><span class="stitle" style="color:var(--blu)">Manager Messages</span>
+          <span id="cmt-badge" style="margin-left:auto;background:var(--blu);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:10px"></span>
         </div>
-        <div id="comments-feed" style="max-height:180px;overflow-y:auto;padding:3px 0">
-          <div style="padding:12px;font-size:9px;color:rgba(255,255,255,0.2);text-align:center;font-style:italic">No messages yet…</div>
+        <div id="cmts-feed" style="max-height:160px;overflow-y:auto;padding:2px 0">
+          <div style="padding:12px;font-size:11px;color:var(--txt3);text-align:center;font-style:italic">No messages yet</div>
         </div>
       </div>
     </div>
@@ -256,13 +333,18 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const SLACK_API   = "/api/slack";
-const LOG_API     = "/api/log";
-const SUPA_URL    = "https://watgvezsgppjvusotuge.supabase.co";
-const SUPA_KEY    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
+const SLACK_API = "/api/slack";
+const LOG_API   = "/api/log";
+const SUPA_URL  = "https://watgvezsgppjvusotuge.supabase.co";
+const SUPA_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
 const SLACK_GENERAL = "C0B6EGPPC0L";
+const STORE_KEY = "arches_v5";
+const PCOLS = ["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#EF4444","#8B5CF6"];
 
-const PCOLS = ["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#DC2626","#7C3AED"];
+const TEAMS = {
+  luis:  {id:"luis",  name:"Luis",  emoji:"🟠", color:"#F7A200", slack:"C0B8QE4DNBE"},
+  taiki: {id:"taiki", name:"Taiki", emoji:"🔵", color:"#3B82F6", slack:"C0B8EENH60K"},
+};
 
 const ACTIONS = [
   {id:"db_search",    emoji:"🗄️", name:"DB Search (CC+Email)",   target:1  },
@@ -281,50 +363,34 @@ const ACTIONS = [
 ];
 
 let PROJECTS = [];
-const S = {checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null};
-const STORE_KEY = "arches_v4";
-
-// ── SUPABASE HELPERS ──────────────────────────────────────────────────────────
-async function supaGet(table, params=""){
-  try{
-    const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
-      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json"}
-    });
-    return r.ok ? await r.json() : [];
-  }catch{ return []; }
-}
-
-async function supaPost(table, data){
-  try{
-    const r = await fetch(`${SUPA_URL}/rest/v1/${table}`,{
-      method:"POST",
-      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},
-      body: JSON.stringify(data)
-    });
-    return r.ok;
-  }catch{ return false; }
-}
+const S = {
+  checks:{}, counts:{}, notes:{}, active:null,
+  completed:{}, allDone:false,
+  swE:{}, swR:{}, swI:{},
+  actLog:[], user:"", team:null, noteModal:null
+};
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
-function saveState(){
+function save(){
   try{
-    const today = new Date().toDateString();
     localStorage.setItem(STORE_KEY, JSON.stringify({
-      date:today, user:S.user, teamId:S.team?.id,
-      projects:PROJECTS, checks:S.checks, counts:S.counts,
-      notes:S.notes, active:S.active, completed:S.completed,
-      swE:S.swE, actLog:S.actLog.slice(0,20)
+      date: new Date().toDateString(),
+      user: S.user, teamId: S.team?.id,
+      projects: PROJECTS,
+      checks: S.checks, counts: S.counts, notes: S.notes,
+      active: S.active, completed: S.completed,
+      swE: S.swE, actLog: S.actLog.slice(0,20)
     }));
   }catch{}
 }
 
-function loadState(){
+function restore(){
   try{
     const raw = localStorage.getItem(STORE_KEY);
     if(!raw) return false;
     const d = JSON.parse(raw);
     if(d.date !== new Date().toDateString()){ localStorage.removeItem(STORE_KEY); return false; }
-    if(!d.user || !d.projects || !d.projects.length) return false;
+    if(!d.user || !d.projects?.length) return false;
     S.user=d.user; S.checks=d.checks||{}; S.counts=d.counts||{};
     S.notes=d.notes||{}; S.active=d.active; S.completed=d.completed||{};
     S.swE=d.swE||{}; S.actLog=d.actLog||[];
@@ -334,377 +400,98 @@ function loadState(){
   }catch{ return false; }
 }
 
-// ── TEAMS ─────────────────────────────────────────────────────────────────────
-const TEAMS = {
-  luis:  {id:"luis",  name:"Luis",  emoji:"🟠", color:"#F7A200", slack:"C0B8QE4DNBE"},
-  taiki: {id:"taiki", name:"Taiki", emoji:"🔵", color:"#3B82F6", slack:"C0B8EENH60K"},
-};
-
-// Load team members from Supabase
-async function loadTeamMembers(){
-  const data = await supaGet("members","?active=eq.true&select=name,team_id&order=name");
-  const byTeam = {luis:[], taiki:[]};
-  (data||[]).forEach(m=>{ if(byTeam[m.team_id]) byTeam[m.team_id].push(m.name); });
-  document.getElementById("luis-count").textContent = byTeam.luis.length + " members";
-  document.getElementById("taiki-count").textContent = byTeam.taiki.length + " members";
-  return byTeam;
-}
-
-// Load action targets from Supabase
-async function loadTargets(){
-  const data = await supaGet("action_targets","?select=id,target&order=sort_order");
-  if(data && data.length>0){
-    data.forEach(t=>{ const a=ACTIONS.find(x=>x.id===t.id); if(a) a.target=t.target; });
-  }
-}
-
-// ── SETUP ─────────────────────────────────────────────────────────────────────
-document.getElementById("setup-date").textContent = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
-let cachedMembers = null;
-
-async function initSetup(){
-  cachedMembers = await loadTeamMembers();
-  await loadTargets();
-}
-
-function selectTeam(teamId){
-  S.team = TEAMS[teamId];
-  document.getElementById("team-label").textContent = "Team " + S.team.name;
-  document.getElementById("team-label").style.color = S.team.color;
-  // Build member list
-  const ml = document.getElementById("member-list");
-  const members = (cachedMembers||{})[teamId]||[];
-  ml.innerHTML = members.map(name=>`
-    <button class="member-btn" onclick="selectMember('${name}')">
-      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,${S.team.color},${S.team.color}80);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#fff;flex-shrink:0">${name.charAt(0)}</div>
-      <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff">${name}</span>
-    </button>`).join("");
-  goStep("member");
-}
-
-async function selectMember(name){
-  S.user = name;
-  document.getElementById("proj-step-title").textContent = name + "'s Projects";
-  document.getElementById("proj-step-sub").textContent = S.team.emoji + " Team " + S.team.name + " · P1 = highest · max 8";
-  document.getElementById("proj-step-sub").style.color = S.team.color;
-  document.getElementById("pinputs").innerHTML = "";
-  document.getElementById("badd").style.display = "";
-  document.getElementById("assigned-banner").style.display = "none";
-  goStep("projects");
-
-  // Fetch assigned projects from Supabase
-  const today = new Date().toISOString().split("T")[0];
-  const assigned = await supaGet("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`);
-  if(assigned && assigned.length > 0){
-    assigned.forEach(p => addPI(p.project, p.priority||"P2"));
-    const banner = document.getElementById("assigned-banner");
-    banner.style.display = "block";
-    banner.textContent = `📋 ${assigned.length} project(s) assigned by your manager — review and add more if needed`;
-  } else {
-    addPI();
-  }
-  updateSBtn();
-}
-
-function goStep(step){
-  ["team","member","projects"].forEach(s=>{
-    document.getElementById("step-"+s).style.display = s===step ? "block" : "none";
-  });
-}
-
-function addPI(val="", prio="P2"){
-  const c = document.getElementById("pinputs"), n = c.children.length;
-  if(n>=8) return;
-  const row = document.createElement("div"); row.className="prow";
-  const id = "pi-"+Date.now();
-  row.innerHTML=`<span class="pnum">${n+1}</span>
-    <input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/>
-    <select class="prio-sel" id="pr-${id}" onchange="this.className='prio-sel prio-'+this.value">
-      <option value="P1" ${prio==="P1"?"selected":""}>P1</option>
-      <option value="P2" ${prio==="P2"?"selected":""}>P2</option>
-      <option value="P3" ${prio==="P3"?"selected":""}>P3</option>
-    </select>
-    <button class="prm" onclick="removePI(this)">×</button>`;
-  c.appendChild(row);
-  const inp = document.getElementById(id);
-  if(!val) inp.focus();
-  inp.addEventListener("input",()=>{checkDups();updateSBtn();});
-  if(c.children.length>=8) document.getElementById("badd").style.display="none";
-  updateSBtn();
-}
-
-function removePI(btn){
-  const c=document.getElementById("pinputs");
-  btn.closest(".prow").remove();
-  Array.from(c.children).forEach((r,i)=>r.querySelector(".pnum").textContent=i+1);
-  document.getElementById("badd").style.display="";
-  checkDups(); updateSBtn();
-}
-
-function checkDups(){
-  const inputs=Array.from(document.querySelectorAll(".pinp"));
-  const vals=inputs.map(i=>i.value.trim().toLowerCase());
-  const warn=document.getElementById("dup-warn");
-  let hasDup=false;
-  inputs.forEach(inp=>{const v=inp.value.trim().toLowerCase();if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("duplicate");hasDup=true;}else inp.classList.remove("duplicate");});
-  warn.style.display=hasDup?"block":"none";
-  return hasDup;
-}
-
-function updateSBtn(){
-  const inputs=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean);
-  const hasDup=checkDups();
-  const btn=document.getElementById("bstart");
-  if(btn) btn.disabled=inputs.length===0||hasDup;
-}
-
-function startDay(){
-  const rows=Array.from(document.getElementById("pinputs").children);
-  const projData=rows.map(r=>{const inp=r.querySelector(".pinp"),sel=r.querySelector(".prio-sel");return{name:inp.value.trim(),prio:sel?sel.value:"P2"};}).filter(p=>p.name);
-  if(!S.user||projData.length===0) return;
-  PROJECTS=projData.map((p,i)=>({id:"p"+i,name:p.name,short:p.name.length>16?p.name.substring(0,14)+"…":p.name,color:PCOLS[i%PCOLS.length],prio:p.prio}));
-  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
-  PROJECTS.forEach((p,i)=>p.id="p"+i);
-  S.active=PROJECTS[0].id;
-  document.getElementById("setup").style.display="none";
-  document.getElementById("app").style.display="flex";
-  showTeamBadge();
-  startSW(S.active);
-  saveState();
-  renderAll();
-  startPolling();
-}
-
-function showTeamBadge(){
-  document.getElementById("hname").textContent=S.user;
-  if(S.team){
-    const b=document.getElementById("hteam-badge");
-    b.style.display="inline"; b.textContent=S.team.emoji+" "+S.team.name;
-    b.style.background=S.team.color+"25"; b.style.color=S.team.color;
-    b.style.border=`1px solid ${S.team.color}50`;
-  }
-}
-
-function resetDay(){
-  if(!confirm("Start a new day? Current progress will be cleared.")) return;
-  localStorage.removeItem(STORE_KEY);
-  PROJECTS=[];
-  Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
-  if(pollInterval) clearInterval(pollInterval);
-  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null});
-  document.getElementById("pinputs").innerHTML="";
-  document.getElementById("badd").style.display="";
-  goStep("team");
-  document.getElementById("app").style.display="none";
-  document.getElementById("setup").style.display="flex";
-  initSetup();
-}
-
-// ── MEETING ───────────────────────────────────────────────────────────────────
-let onMeeting = false;
-
-function toggleMeeting(){
-  if(!onMeeting){
-    onMeeting = true;
-    PROJECTS.forEach(p=>{ if(S.swR[p.id]) stopSW(p.id); });
-    logAct("📞","Meeting started — timers paused");
-    showMeetingScreen();
-  } else {
-    onMeeting = false;
-    hideMeetingScreen();
-    if(S.active) startSW(S.active);
-    logAct("✅","Back from meeting — timer resumed");
-    renderLeft();
-  }
-}
-
-function showMeetingScreen(){
-  const overlay = document.createElement("div");
-  overlay.id = "meeting-overlay";
-  overlay.style.cssText = "position:fixed;inset:0;background:#0D0F1A;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;animation:fadeIn 0.5s ease";
-  overlay.innerHTML = `
-    <div style="font-size:80px;line-height:1">📞</div>
-    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:900;color:#A78BFA;letter-spacing:-1px">In a Meeting</div>
-    <div style="font-size:14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace">All timers are paused</div>
-    <button onclick="toggleMeeting()" style="margin-top:12px;background:linear-gradient(135deg,#8B5CF6,#6D28D9);border:none;border-radius:14px;padding:16px 40px;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 6px 24px rgba(139,92,246,0.5);letter-spacing:0.5px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-      ▶ Back to Work
-    </button>`;
-  document.body.appendChild(overlay);
-}
-
-function hideMeetingScreen(){
-  const overlay = document.getElementById("meeting-overlay");
-  if(overlay){ overlay.style.animation="fadeOut 0.3s ease forwards"; setTimeout(()=>overlay.remove(),300); }
-}
-
-// ── POLL SUPABASE FOR ASSIGNMENTS (every 60s) ─────────────────────────────────
-let pollInterval = null;
-async function pollAssignments(){
-  if(!S.user) return;
-  const today = new Date().toISOString().split("T")[0];
-  const assigned = await supaGet("assigned_projects",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*`);
-  if(!assigned || assigned.length===0) return;
-  // Check for new projects not already in PROJECTS
-  let added=0;
-  assigned.forEach(a=>{
-    if(!PROJECTS.find(p=>p.name===a.project)){
-      // Use timestamp-based unique ID to avoid collisions with existing projects
-      const newId = "pa_" + Date.now() + "_" + Math.random().toString(36).substr(2,5);
-      const colorIdx = PROJECTS.length % PCOLS.length;
-      PROJECTS.push({
-        id: newId,
-        name: a.project,
-        short: a.project.length>16 ? a.project.substring(0,14)+"…" : a.project,
-        color: PCOLS[colorIdx],
-        prio: a.priority||"P2"
-      });
-      added++;
-    }
-  });
-  if(added>0){
-    // Re-sort by priority after adding new projects
-    PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
-    PROJECTS.forEach((p,i)=>p.id="p"+i);
-    showToast(`📋 ${added} new project(s) assigned by manager!`,"success");
-    playNotifSound("project");
-    logAct("📋",`${added} new project(s) added by manager`);
-    saveState(); renderAll();
-  }
-}
-
-let seenCommentIds = new Set();
-
-async function pollComments(){
-  if(!S.user) return;
-  const today = new Date().toISOString().split("T")[0];
-  const data = await supaGet("comments",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*&order=created_at.desc`);
-  if(!data || data.length===0) return;
-
-  const panel = document.getElementById("comments-panel");
-  const feed = document.getElementById("comments-feed");
-  const badge = document.getElementById("comments-badge");
-  panel.style.display = "block";
-  badge.textContent = data.length;
-
-  // Check for new comments to show popup
-  data.forEach(c=>{
-    if(!seenCommentIds.has(c.id)){
-      seenCommentIds.add(c.id);
-      if(seenCommentIds.size > 1){
-        // Show popup notification for new messages
-        showCommentPopup(c.manager, c.comment);
-      }
-    }
-  });
-
-  feed.innerHTML = data.map(c=>`
-    <div style="padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.04);animation:slideIn 0.3s ease">
-      <div style="font-size:9px;color:#3B82F6;font-weight:700;margin-bottom:3px">💬 ${c.manager}</div>
-      <div style="font-size:10px;color:rgba(255,255,255,0.75);line-height:1.4">${c.comment}</div>
-      <div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:3px">${new Date(c.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div>
-    </div>`).join("");
-}
-
-function playNotifSound(type="message"){
+function getPrevProjects(){
   try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    if(type==="message"){
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.setValueAtTime(1100, ctx.currentTime+0.1);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.4);
-    } else {
-      // project assigned — two tones
-      osc.frequency.setValueAtTime(660, ctx.currentTime);
-      osc.frequency.setValueAtTime(880, ctx.currentTime+0.15);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.5);
-    }
+    // Look for yesterday's data in a separate key
+    const raw = localStorage.getItem(STORE_KEY+"_prev");
+    if(!raw) return [];
+    const d = JSON.parse(raw);
+    return d.projects||[];
+  }catch{ return []; }
+}
+
+function savePrevProjects(){
+  try{
+    localStorage.setItem(STORE_KEY+"_prev", JSON.stringify({
+      projects: PROJECTS.map(p=>({name:p.name, prio:p.prio}))
+    }));
   }catch{}
 }
 
-function showCommentPopup(manager, comment){
-  const popup = document.createElement("div");
-  popup.style.cssText = "position:fixed;top:70px;right:20px;background:linear-gradient(135deg,#1E3A5F,#111320);border:1px solid #3B82F6;border-radius:12px;padding:14px 18px;max-width:280px;z-index:500;box-shadow:0 8px 30px rgba(59,130,246,0.3);animation:slideIn 0.4s ease";
-  popup.innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <span style="font-size:16px">💬</span>
-      <span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#3B82F6">Message from ${manager}</span>
-      <button onclick="this.parentNode.parentNode.remove()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:14px">✕</button>
-    </div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.8);line-height:1.5">${comment}</div>`;
-  document.body.appendChild(popup);
-  playNotifSound("message");
-  setTimeout(()=>{ if(popup.parentNode) popup.style.animation="fadeOut 0.3s ease forwards"; setTimeout(()=>popup.remove(),300); }, 6000);
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+async function supa(table, params=""){
+  try{
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
+      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`}
+    });
+    return r.ok ? r.json() : [];
+  }catch{ return []; }
 }
 
-function startPolling(){
-  if(pollInterval) clearInterval(pollInterval);
-  pollInterval = setInterval(pollAssignments, 60000);
-  setInterval(pollComments, 30000);
-  // Poll immediately on start
-  setTimeout(pollComments, 2000);
+async function supaLog(){
+  try{
+    const payload = {
+      person: S.user, teamId: S.team?.id||null,
+      projects: PROJECTS.map(proj=>{
+        const done = ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+        const cnts = {}; ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+        const notes = {}; ACTIONS.forEach(a=>{const n=S.notes[`${proj.id}_${a.id}`];if(n)notes[a.id]=n;});
+        return {name:proj.name, prio:proj.prio, counts:cnts, notes, actionsDone:done, pct:Math.round(done/ACTIONS.length*100)};
+      })
+    };
+    const r = await fetch(LOG_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    setSyncInd(r.ok?"ok":"err");
+    return r.ok;
+  }catch{ setSyncInd("err"); return false; }
+}
+
+function setSyncInd(state){
+  const dot=document.getElementById("sync-dot"), lbl=document.getElementById("sync-lbl");
+  if(state==="syncing"){dot.style.background="var(--org)";dot.style.opacity="1";lbl.textContent="syncing…";}
+  else if(state==="ok"){dot.style.background="var(--grn)";dot.style.opacity="1";lbl.textContent="synced";setTimeout(()=>{dot.style.opacity=".4";},3000);}
+  else{dot.style.background="var(--red)";dot.style.opacity="1";lbl.textContent="sync failed";}
+}
+
+let syncTimer=null;
+function scheduleSync(){
+  setSyncInd("syncing");
+  if(syncTimer) clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>{if(S.user&&PROJECTS.length>0)supaLog();},15000);
 }
 
 // ── SLACK ─────────────────────────────────────────────────────────────────────
 async function slackSend(text){
   try{
-    const teamCh = S.team?.slack || SLACK_GENERAL;
-    const r = await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:teamCh})});
-    const d = await r.json();
-    if(d.ok && teamCh!==SLACK_GENERAL){
-      fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:SLACK_GENERAL})});
-    }
+    const ch=S.team?.slack||SLACK_GENERAL;
+    const r=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:ch})});
+    const d=await r.json();
+    if(d.ok&&ch!==SLACK_GENERAL) fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:SLACK_GENERAL})});
     return d.ok;
-  }catch{ return false; }
+  }catch{return false;}
 }
 
-async function supaLog(){
-  try{
-    const now=new Date();
-    const payload={
-      person:S.user, teamId:S.team?.id||null,
-      projects:PROJECTS.map(proj=>{
-        const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-        const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-        // Collect notes per action for this project
-        const notes={};ACTIONS.forEach(a=>{const n=S.notes[`${proj.id}_${a.id}`];if(n)notes[a.id]=n;});
-        return{name:proj.name,prio:proj.prio,counts:cnts,notes,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
-      }),
-      date:now.toISOString().split("T")[0],
-      time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
-    };
-    const r=await fetch(LOG_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    return r.ok;
-  }catch{ return false; }
-}
-
-function setSUI(status,detail){
+function setSUI(s,detail){
   const cfg={
-    sending:{bg:"rgba(247,162,0,0.12)",bc:"rgba(247,162,0,0.3)",dot:"#F7A200",color:"#F7A200",lbl:"Sending…",an:"pulse 1s infinite"},
-    success:{bg:"rgba(22,163,74,0.12)",bc:"rgba(22,163,74,0.3)",dot:"#4ADE80",color:"#4ADE80",lbl:"✅ Sent!",an:"none"},
-    error:{bg:"rgba(220,38,38,0.12)",bc:"rgba(220,38,38,0.3)",dot:"#FF6B6B",color:"#FF6B6B",lbl:`⚠️ ${detail||"Error"}`,an:"none"},
-  }[status];
+    sending:{bg:"rgba(247,162,0,.1)",bc:"rgba(247,162,0,.3)",dot:"var(--org)",color:"var(--org)",lbl:"Sending…"},
+    success:{bg:"rgba(34,197,94,.1)",bc:"rgba(34,197,94,.3)",dot:"var(--grn)",color:"var(--grn)",lbl:"✅ Sent!"},
+    error:{bg:"rgba(239,68,68,.1)",bc:"rgba(239,68,68,.3)",dot:"var(--red)",color:"var(--red)",lbl:`⚠️ ${detail||"Error"}`},
+  }[s];
   const i=document.getElementById("sind");
-  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid ${cfg.bc};background:${cfg.bg};color:${cfg.color};animation:${cfg.an}`;
+  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;border:1px solid ${cfg.bc};background:${cfg.bg};color:${cfg.color}`;
   i.textContent=cfg.lbl;
   const l=document.getElementById("slive");l.style.display="flex";l.style.background=cfg.bg;
-  document.getElementById("sdot").style.cssText=`width:6px;height:6px;border-radius:50%;background:${cfg.dot};box-shadow:0 0 6px ${cfg.dot};flex-shrink:0`;
-  document.getElementById("stxt").style.color=cfg.color; document.getElementById("stxt").textContent=cfg.lbl;
-  ["bupd","beod"].forEach(id=>document.getElementById(id).disabled=status==="sending");
-  if(status!=="sending") setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
+  document.getElementById("sdot").style.cssText=`width:5px;height:5px;border-radius:50%;background:${cfg.dot};flex-shrink:0`;
+  document.getElementById("stxt").style.color=cfg.color;document.getElementById("stxt").textContent=cfg.lbl;
+  ["bupd","beod"].forEach(id=>document.getElementById(id).disabled=s==="sending");
+  if(s!=="sending")setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
 }
 
+// ── MESSAGES ──────────────────────────────────────────────────────────────────
 function buildProjMsg(proj){
   let m=`🎉 *Project Complete!*\n*${S.user}* finished *${proj.name}* [${proj.prio}]\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
   ACTIONS.forEach(a=>{
     const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k],chk=S.checks[k];
-    const hitTgt=cnt>=a.target; const icon=chk&&cnt>0&&hitTgt?"✅":chk&&cnt>0&&!hitTgt?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
+    const icon=chk&&cnt>0&&cnt>=a.target?"✅":chk&&cnt>0?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
     m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
   });
   return m;
@@ -713,13 +500,13 @@ function buildProjMsg(proj){
 function buildEODMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`🏆 *END OF DAY — ${S.user}*\n*${date}* | *${pct}% complete*\n\n`;
+  let m=`🏆 *End of Day — ${S.user}*\n*${date}* | *${pct}% complete*\n\n`;
   [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
     const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swE[proj.id]||0)/60000);
     m+=`*[${proj.prio}] ${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
     ACTIONS.forEach(a=>{
       const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`],chk=S.checks[`${proj.id}_${a.id}`];
-      const hitTgt=cnt>=a.target; const icon=chk&&cnt>0&&hitTgt?"✅":chk&&cnt>0&&!hitTgt?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
+      const icon=chk&&cnt>0&&cnt>=a.target?"✅":chk&&cnt>0?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
       m+=`  ${icon} ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;
     });
     m+="\n";
@@ -742,30 +529,60 @@ function buildUpdateMsg(){
   return m;
 }
 
-async function sendUpdate(){setSUI("sending");const ok=await slackSend(buildUpdateMsg());setSUI(ok?"success":"error");showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");}
-async function sendEOD(){
-  setSUI("sending");
-  const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
-  setSUI(sOk?"success":"error");
-  showToast(sOk&&gOk?"🏆 Slack & Dashboard updated!":sOk?"🏆 Sent! (Dashboard ⚠️)":"⚠️ Error",sOk?"success":"error");
-  logAct("📊","EOD report sent");
-}
-async function notifyProj(pid){
-  const proj=PROJECTS.find(p=>p.id===pid); setSUI("sending");
-  const ok=await slackSend(buildProjMsg(proj)); setSUI(ok?"success":"error");
-  showToast(ok?`✅ ${proj.short} notified!`:"⚠️ Error",ok?"success":"error");
+// ── EOD CONFIRM ───────────────────────────────────────────────────────────────
+function showEOD(){
+  const projects = [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio));
+  const totalPct = PROJECTS.length>0 ? Math.round(Object.values(S.checks).filter(Boolean).length/(PROJECTS.length*ACTIONS.length)*100) : 0;
+  document.getElementById("eod-preview").innerHTML=`
+    <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:12px;display:flex;gap:16px">
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:${totalPct>=80?"var(--grn)":totalPct>=50?"var(--ylw)":"var(--red)"}">${totalPct}%</div><div style="font-size:10px;color:var(--txt3)">Overall</div></div>
+      <div style="flex:1">${projects.map(proj=>{
+        const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(pd/ACTIONS.length*100);
+        return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="pb pb-${proj.prio}">${proj.prio}</span><span style="font-size:11px;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${proj.name}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:${pct>=80?"var(--grn)":pct>=50?"var(--ylw)":"var(--red)"};flex-shrink:0">${pct}%</span></div>`;
+      }).join("")}</div>
+    </div>
+    ${ACTIONS.some(a=>PROJECTS.some(p=>S.notes[`${p.id}_${a.id}`]))?`<div style="font-size:11px;color:var(--txt2);margin-bottom:8px;font-weight:500">📝 Notes included in report</div>`:""}
+    <div style="font-size:11px;color:var(--txt3)">This will send to Slack and update the manager dashboard.</div>`;
+  document.getElementById("eod-modal").style.display="flex";
 }
 
+async function confirmEOD(){
+  document.getElementById("eod-modal").style.display="none";
+  setSUI("sending");
+  savePrevProjects();
+  const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
+  setSUI(sOk?"success":"error");
+  showToast(sOk&&gOk?"🏆 Slack & Dashboard updated!":sOk?"🏆 Sent (Dashboard ⚠️)":"⚠️ Error",sOk?"success":"error");
+  logAct("📊","EOD report sent");
+}
+
+async function sendUpdate(){
+  setSUI("sending");
+  const ok=await slackSend(buildUpdateMsg());
+  setSUI(ok?"success":"error");
+  showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");
+}
+
+async function notifyProj(pid){
+  const proj=PROJECTS.find(p=>p.id===pid);
+  setSUI("sending");
+  const ok=await slackSend(buildProjMsg(proj));
+  setSUI(ok?"success":"error");
+  showToast(ok?`✅ ${proj.short} sent!`:"⚠️ Error",ok?"success":"error");
+}
+
+// ── PROJECT COMPLETE ──────────────────────────────────────────────────────────
 function checkComplete(pid){
   const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
   if(done&&!S.completed[pid]){
-    S.completed[pid]=true; logAct("🎉",`${proj.short} 100% complete!`);
-    fireConfetti(); showToast(`🎉 ${proj.short} done! Notifying Slack…`,"success");
+    S.completed[pid]=true;logAct("🎉",`${proj.short} 100% complete!`);
+    fireConfetti();showToast(`🎉 ${proj.short} done!`,"success");
     slackSend(buildProjMsg(proj)).then(ok=>setSUI(ok?"success":"error"));
     if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
-      S.allDone=true; fireConfetti(true);
+      S.allDone=true;fireConfetti(true);
       setTimeout(async()=>{
-        showToast("🏆 ALL DONE! Sending final report…","success");
+        showToast("🏆 All done! Sending report…","success");
+        savePrevProjects();
         const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
         showToast(sOk&&gOk?"🏆 Slack & Dashboard done!":"🏆 Done!","success");
         logAct("🏆","Full debrief sent");
@@ -776,9 +593,9 @@ function checkComplete(pid){
 
 // ── STOPWATCH ─────────────────────────────────────────────────────────────────
 function startSW(pid){
-  if(S.swR[pid]) return;
-  const elapsed = S.swE[pid]||0;
-  const t0 = Date.now() - elapsed;
+  if(S.swR[pid])return;
+  const elapsed=S.swE[pid]||0;
+  const t0=Date.now()-elapsed;
   S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);
   S.swR[pid]=true;
 }
@@ -788,83 +605,409 @@ function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/
 function updSW(pid){
   const el1=document.getElementById(`swl-${pid}`),el2=document.getElementById("swc");
   const col=PROJECTS.find(p=>p.id===pid)?.color||"#fff";
-  if(el1){el1.textContent=fmtT(S.swE[pid]||0);el1.style.color=S.swR[pid]?col:"rgba(255,255,255,0.3)";}
-  if(el2&&S.active===pid){el2.textContent=fmtT(S.swE[pid]||0);el2.style.color=S.swR[pid]?col:"#fff";}
+  if(el1){el1.textContent=fmtT(S.swE[pid]||0);el1.style.color=S.swR[pid]?col:"var(--txt3)";}
+  if(el2&&S.active===pid){el2.textContent=fmtT(S.swE[pid]||0);el2.style.color=S.swR[pid]?col:"var(--txt)";}
 }
 function switchProject(pid){
-  if(S.active===pid) return;
-  stopSW(S.active); S.active=pid; startSW(pid);
-  saveState(); renderAll();
+  if(S.active===pid)return;
+  stopSW(S.active);S.active=pid;startSW(pid);
+  save();renderAll();
 }
 
 // ── COUNTERS ──────────────────────────────────────────────────────────────────
-let syncTimer = null;
-function scheduleSync(){
-  if(syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(()=>{ if(S.user && PROJECTS.length>0) supaLog(); }, 15000);
-}
-
 function setCount(pid,aid,val){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,val);
   S.counts[key]=next;
-  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`Target! ${a.emoji} ${a.name} (${next}/${a.target})`);checkComplete(pid);}
+  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`${a.emoji} ${a.name} target hit! (${next})`);checkComplete(pid);}
   else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
-  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
 }
 function addCount(pid,aid,delta){setCount(pid,aid,(S.counts[`${pid}_${aid}`]||0)+delta);}
 
 function toggleCheck(pid,aid){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
   if(!S.checks[key]){
-    if((S.counts[key]||0)===0){openNoteModal(pid,aid);return;}
+    if((S.counts[key]||0)===0){openNote(pid,aid);return;}
     S.checks[key]=true;
   }else{S.checks[key]=false;}
   const proj=PROJECTS.find(x=>x.id===pid);
-  if(S.checks[key])logAct("✅",`${S.user} ✓ ${a.name} · ${proj.short}`);
-  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
+  if(S.checks[key])logAct("✅",`${a.name} · ${proj.short}`);
+  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
 }
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
-function openNoteModal(pid,aid){
+function openNote(pid,aid){
   S.noteModal={pid,aid};
   const a=ACTIONS.find(x=>x.id===aid);
-  document.getElementById("note-modal-sub").textContent=`"${a.name}" — enter reason to mark done with 0.`;
-  document.getElementById("note-modal-inp").value=S.notes[`${pid}_${aid}`]||"";
+  document.getElementById("note-sub").textContent=`"${a.name}" — enter reason to mark done with 0.`;
+  document.getElementById("note-inp").value=S.notes[`${pid}_${aid}`]||"";
   document.getElementById("note-modal").style.display="flex";
-  setTimeout(()=>document.getElementById("note-modal-inp").focus(),100);
+  setTimeout(()=>document.getElementById("note-inp").focus(),80);
 }
-function closeNoteModal(save){
-  if(save){
-    const val=document.getElementById("note-modal-inp").value.trim();
-    if(!val){document.getElementById("note-modal-inp").style.border="1px solid #DC2626";return;}
+function closeNote(save_note){
+  if(save_note){
+    const val=document.getElementById("note-inp").value.trim();
+    if(!val){document.getElementById("note-inp").style.borderColor="var(--red)";return;}
     const{pid,aid}=S.noteModal;
-    S.notes[`${pid}_${aid}`]=val; S.checks[`${pid}_${aid}`]=true;
-    logAct("📝",`Note: ${val.slice(0,25)}`);
-    checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();saveState();scheduleSync();
+    S.notes[`${pid}_${aid}`]=val;S.checks[`${pid}_${aid}`]=true;
+    logAct("📝",`Note: ${val.slice(0,28)}`);
+    checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
   }
-  document.getElementById("note-modal").style.display="none"; S.noteModal=null;
+  document.getElementById("note-modal").style.display="none";S.noteModal=null;
+}
+
+// ── LUNCH / MEETING ───────────────────────────────────────────────────────────
+let onLunch=false, onMeeting=false;
+
+function toggleLunch(){
+  if(!onLunch){
+    onLunch=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});
+    logAct("🍽️","Lunch break — timers paused");showOverlayScreen("lunch");
+  }else{
+    onLunch=false;hideOverlayScreen("lunch-overlay");
+    if(S.active)startSW(S.active);logAct("✅","Back from lunch");renderLeft();
+  }
+}
+function toggleMeeting(){
+  if(!onMeeting){
+    onMeeting=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});
+    logAct("📞","Meeting started — timers paused");showOverlayScreen("meeting");
+  }else{
+    onMeeting=false;hideOverlayScreen("meeting-overlay");
+    if(S.active)startSW(S.active);logAct("✅","Back from meeting");renderLeft();
+  }
+}
+
+function showOverlayScreen(type){
+  const isLunch=type==="lunch";
+  const id=isLunch?"lunch-overlay":"meeting-overlay";
+  const color=isLunch?"var(--org)":"#A78BFA";
+  const emoji=isLunch?"🍽️":"📞";
+  const title=isLunch?"Have a good lunch!":"In a Meeting";
+  const btnLabel=isLunch?"▶ Continue Working":"▶ Back to Work";
+  const btnStyle=isLunch?"background:linear-gradient(135deg,var(--org),var(--od));box-shadow:0 6px 20px rgba(247,162,0,.4)":"background:linear-gradient(135deg,#8B5CF6,#6D28D9);box-shadow:0 6px 20px rgba(139,92,246,.4)";
+  const div=document.createElement("div");div.id=id;div.className="overlay-screen";
+  div.innerHTML=`<div style="font-size:80px;line-height:1">${emoji}</div>
+    <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:900;color:${color};letter-spacing:-.5px">${title}</div>
+    <div style="font-size:13px;color:var(--txt2)">All timers are paused</div>
+    <button onclick="${isLunch?"toggleLunch":"toggleMeeting"}()" style="${btnStyle};border:none;border-radius:12px;padding:14px 36px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">${btnLabel}</button>`;
+  document.body.appendChild(div);
+}
+function hideOverlayScreen(id){
+  const el=document.getElementById(id);
+  if(el){el.style.animation="fadeOut .3s ease forwards";setTimeout(()=>el.remove(),300);}
+}
+
+// ── SETUP ─────────────────────────────────────────────────────────────────────
+document.getElementById("s-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
+let cachedMembers=null;
+
+async function initSetup(){
+  const data=await supa("members","?active=eq.true&select=name,team_id&order=name");
+  cachedMembers={luis:[],taiki:[]};
+  (data||[]).forEach(m=>{if(cachedMembers[m.team_id])cachedMembers[m.team_id].push(m.name);});
+  document.getElementById("luis-ct").textContent=cachedMembers.luis.length+" members";
+  document.getElementById("taiki-ct").textContent=cachedMembers.taiki.length+" members";
+  await loadTargets();
+}
+
+async function loadTargets(){
+  const data=await supa("action_targets","?select=id,target&order=sort_order");
+  if(data&&data.length>0) data.forEach(t=>{const a=ACTIONS.find(x=>x.id===t.id);if(a)a.target=t.target;});
+}
+
+function selTeam(tid){
+  S.team=TEAMS[tid];
+  document.getElementById("team-lbl").textContent="Team "+S.team.name;
+  document.getElementById("team-lbl").style.color=S.team.color;
+  const ml=document.getElementById("member-list");ml.innerHTML="";
+  (cachedMembers[tid]||[]).forEach(name=>{
+    const b=document.createElement("button");b.className="mbtn";
+    b.innerHTML=`<div style="width:32px;height:32px;border-radius:50%;background:${S.team.color}30;border:1px solid ${S.team.color}50;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:${S.team.color};flex-shrink:0">${name.charAt(0)}</div><span style="font-size:13px;font-weight:600;color:var(--txt)">${name}</span>`;
+    b.onclick=()=>selectMember(name);
+    ml.appendChild(b);
+  });
+  goStep("member");
+}
+
+async function selectMember(name){
+  S.user=name;
+  document.getElementById("proj-title").textContent=name+"'s Projects";
+  document.getElementById("proj-sub").textContent=S.team.emoji+" Team "+S.team.name+" · P1 = highest priority · max 8";
+  document.getElementById("proj-sub").style.color=S.team.color;
+  document.getElementById("pinputs").innerHTML="";
+  document.getElementById("badd").style.display="";
+  document.getElementById("assigned-banner").style.display="none";
+  document.getElementById("prev-section").style.display="none";
+  goStep("projects");
+
+  // Load previous projects
+  const prev=getPrevProjects();
+  if(prev.length>0){
+    const ps=document.getElementById("prev-section");
+    const pl=document.getElementById("prev-list");
+    ps.style.display="block";
+    pl.innerHTML=prev.map((p,i)=>`
+      <div class="prev-item" id="prev-${i}" onclick="togglePrev(${i},'${p.name}','${p.prio}')">
+        <div style="width:16px;height:16px;border-radius:4px;border:2px solid var(--bdr);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px" id="prev-chk-${i}"></div>
+        <span style="font-size:12px;font-weight:500;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
+        <select class="psel" style="font-size:10px;padding:4px 6px" id="prev-prio-${i}" onclick="event.stopPropagation()" onchange="updatePrevPrio(${i})">
+          <option value="P1" ${p.prio==="P1"?"selected":""}>P1</option>
+          <option value="P2" ${p.prio==="P2"?"selected":""}>P2</option>
+          <option value="P3" ${p.prio==="P3"?"selected":""}>P3</option>
+        </select>
+      </div>`).join("");
+    document.getElementById("new-proj-label").textContent="Add New Projects";
+  }
+
+  // Load assigned from Supabase
+  const today=new Date().toISOString().split("T")[0];
+  const assigned=await supa("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`);
+  if(assigned&&assigned.length>0){
+    assigned.forEach(p=>addPI(p.project,p.priority||"P2"));
+    const b=document.getElementById("assigned-banner");
+    b.style.display="block";
+    b.textContent=`📋 ${assigned.length} project(s) pre-loaded from manager`;
+  } else {
+    addPI();
+  }
+  updateSBtn();
+}
+
+const prevSelected=new Set();
+function togglePrev(i, name, prio){
+  const item=document.getElementById(`prev-${i}`);
+  const chk=document.getElementById(`prev-chk-${i}`);
+  if(prevSelected.has(i)){
+    prevSelected.delete(i);
+    item.classList.remove("selected");
+    chk.style.cssText="border:2px solid var(--bdr);background:transparent;";
+    chk.textContent="";
+  }else{
+    prevSelected.add(i);
+    item.classList.add("selected");
+    chk.style.cssText=`border:2px solid var(--org);background:var(--org);`;
+    chk.textContent="✓";chk.style.color="#fff";chk.style.fontSize="9px";
+  }
+}
+function updatePrevPrio(i){} // priority updated via select directly
+
+function goStep(step){
+  ["team","member","projects"].forEach(s=>document.getElementById("s-"+s).style.display=s===step?"block":"none");
+  if(step==="projects") prevSelected.clear();
+}
+
+function addPI(val="",prio="P2"){
+  const c=document.getElementById("pinputs"),n=c.children.length;
+  if(n>=8)return;
+  const row=document.createElement("div");row.className="prow";
+  const id="pi-"+Date.now();
+  row.innerHTML=`<span class="pnum">${n+1}</span>
+    <input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/>
+    <select class="psel" id="pr-${id}">
+      <option value="P1" ${prio==="P1"?"selected":""}>P1</option>
+      <option value="P2" ${prio==="P2"?"selected":""}>P2</option>
+      <option value="P3" ${prio==="P3"?"selected":""}>P3</option>
+    </select>
+    <button class="prm" onclick="removePI(this)">×</button>`;
+  c.appendChild(row);
+  if(!val) document.getElementById(id).focus();
+  document.getElementById(id).addEventListener("input",()=>{checkDups();updateSBtn();});
+  if(c.children.length>=8) document.getElementById("badd").style.display="none";
+  updateSBtn();
+}
+
+function removePI(btn){
+  const c=document.getElementById("pinputs");
+  btn.closest(".prow").remove();
+  Array.from(c.children).forEach((r,i)=>r.querySelector(".pnum").textContent=i+1);
+  document.getElementById("badd").style.display="";
+  checkDups();updateSBtn();
+}
+
+function checkDups(){
+  const inputs=Array.from(document.querySelectorAll(".pinp"));
+  const vals=inputs.map(i=>i.value.trim().toLowerCase());
+  const warn=document.getElementById("dup-warn");
+  let hasDup=false;
+  inputs.forEach(inp=>{const v=inp.value.trim().toLowerCase();if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("dup");hasDup=true;}else inp.classList.remove("dup");});
+  warn.style.display=hasDup?"block":"none";
+  return hasDup;
+}
+
+function updateSBtn(){
+  const newProjs=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean);
+  const hasDup=checkDups();
+  const total=newProjs.length+prevSelected.size;
+  const btn=document.getElementById("bstart");
+  if(btn) btn.disabled=total===0||hasDup;
+}
+
+function startDay(){
+  // Collect previous selected projects
+  const prevData=getPrevProjects();
+  const selectedPrev=[...prevSelected].map(i=>{
+    const prio=document.getElementById(`prev-prio-${i}`)?.value||prevData[i]?.prio||"P2";
+    return{name:prevData[i].name,prio};
+  });
+  // Collect new projects
+  const rows=Array.from(document.getElementById("pinputs").children);
+  const newProjs=rows.map(r=>{
+    const inp=r.querySelector(".pinp"),sel=r.querySelector(".psel");
+    return{name:inp.value.trim(),prio:sel?sel.value:"P2"};
+  }).filter(p=>p.name);
+  const allProjs=[...selectedPrev,...newProjs];
+  if(!S.user||allProjs.length===0) return;
+
+  PROJECTS=allProjs.map((p,i)=>({
+    id:"p"+i, name:p.name,
+    short:p.name.length>16?p.name.substring(0,14)+"…":p.name,
+    color:PCOLS[i%PCOLS.length], prio:p.prio
+  }));
+  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
+  PROJECTS.forEach((p,i)=>p.id="p"+i);
+  S.active=PROJECTS[0].id;
+
+  document.getElementById("setup").style.display="none";
+  document.getElementById("app").style.display="flex";
+  showBadge();startSW(S.active);save();renderAll();startPolling();
+}
+
+function showBadge(){
+  document.getElementById("hname").textContent=S.user;
+  if(S.team){
+    const b=document.getElementById("hbadge");
+    b.style.display="inline";b.textContent=S.team.emoji+" "+S.team.name;
+    b.style.background=S.team.color+"25";b.style.color=S.team.color;
+    b.style.border=`1px solid ${S.team.color}50`;
+  }
+}
+
+function resetDay(){
+  if(!confirm("Start a new day? Current progress will be cleared.")) return;
+  savePrevProjects();
+  localStorage.removeItem(STORE_KEY);
+  PROJECTS=[];
+  Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
+  if(pollInterval) clearInterval(pollInterval);
+  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null});
+  prevSelected.clear();
+  document.getElementById("pinputs").innerHTML="";
+  document.getElementById("badd").style.display="";
+  document.getElementById("prev-section").style.display="none";
+  document.getElementById("new-proj-label").textContent="Today's Projects";
+  goStep("team");
+  document.getElementById("app").style.display="none";
+  document.getElementById("setup").style.display="flex";
+  initSetup();
+}
+
+// ── POLLING ───────────────────────────────────────────────────────────────────
+let pollInterval=null, seenCmtIds=new Set();
+
+async function pollAssignments(){
+  if(!S.user) return;
+  const today=new Date().toISOString().split("T")[0];
+  const assigned=await supa("assigned_projects",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*`);
+  if(!assigned||assigned.length===0) return;
+  let added=0;
+  assigned.forEach(a=>{
+    if(!PROJECTS.find(p=>p.name===a.project)){
+      const newId="pa_"+Date.now()+"_"+Math.random().toString(36).substr(2,4);
+      PROJECTS.push({id:newId,name:a.project,short:a.project.length>16?a.project.substring(0,14)+"…":a.project,color:PCOLS[PROJECTS.length%PCOLS.length],prio:a.priority||"P2"});
+      added++;
+    }
+  });
+  if(added>0){
+    PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));PROJECTS.forEach((p,i)=>p.id="p"+i);
+    showToast(`📋 ${added} new project(s) assigned!`,"success");
+    playSound("project");logAct("📋",`${added} project(s) assigned by manager`);
+    save();renderAll();
+  }
+}
+
+async function pollComments(){
+  if(!S.user) return;
+  const today=new Date().toISOString().split("T")[0];
+  const data=await supa("comments",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*&order=created_at.desc`);
+  if(!data||data.length===0) return;
+  const panel=document.getElementById("cmts-panel");
+  const feed=document.getElementById("cmts-feed");
+  const badge=document.getElementById("cmt-badge");
+  panel.style.display="block";badge.textContent=data.length;
+  data.forEach(c=>{
+    if(!seenCmtIds.has(c.id)){seenCmtIds.add(c.id);if(seenCmtIds.size>0)showCmtPopup(c.manager,c.comment);}
+  });
+  feed.innerHTML=data.map(c=>`
+    <div style="padding:8px 10px;border-bottom:1px solid var(--bdr)">
+      <div style="font-size:10px;font-weight:700;color:var(--blu);margin-bottom:2px">${c.manager}</div>
+      <div style="font-size:11px;color:var(--txt2);line-height:1.4">${c.comment}</div>
+      <div style="font-size:9px;color:var(--txt3);margin-top:2px">${new Date(c.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div>
+    </div>`).join("");
+}
+
+function showCmtPopup(manager,comment){
+  const el=document.createElement("div");
+  el.style.cssText="position:fixed;top:62px;right:16px;background:var(--sur);border:1px solid var(--blu);border-radius:12px;padding:12px 16px;max-width:280px;z-index:500;box-shadow:0 8px 24px rgba(59,130,246,.25);animation:slideRight .4s ease";
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span>💬</span><span style="font-size:11px;font-weight:700;color:var(--blu)">Message from ${manager}</span><button onclick="this.parentNode.parentNode.remove()" style="margin-left:auto;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px">✕</button></div><div style="font-size:11px;color:var(--txt2);line-height:1.5">${comment}</div>`;
+  document.body.appendChild(el);
+  playSound("message");
+  setTimeout(()=>{if(el.parentNode){el.style.animation="fadeOut .3s ease forwards";setTimeout(()=>el.remove(),300);}},6000);
+}
+
+function startPolling(){
+  if(pollInterval)clearInterval(pollInterval);
+  pollInterval=setInterval(pollAssignments,60000);
+  setInterval(pollComments,30000);
+  setTimeout(pollComments,2000);
+}
+
+function playSound(type){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    if(type==="message"){o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(1100,ctx.currentTime+.1);g.gain.setValueAtTime(.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o.start(ctx.currentTime);o.stop(ctx.currentTime+.4);}
+    else{o.frequency.setValueAtTime(660,ctx.currentTime);o.frequency.setValueAtTime(880,ctx.currentTime+.15);g.gain.setValueAtTime(.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5);o.start(ctx.currentTime);o.stop(ctx.currentTime+.5);}
+  }catch{}
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll(){
-  document.getElementById("hdate").textContent="WAR ROOM · "+new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
+  document.getElementById("hdate").textContent=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}).toUpperCase();
   renderLeft();renderCenter();renderOv();updateGlobal();updateTimer();
 }
 
 function renderLeft(){
   const list=document.getElementById("plist");list.innerHTML="";
   PROJECTS.forEach(proj=>{
-    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,todo=ACTIONS.length-done,pct=Math.round(done/ACTIONS.length*100),isAct=S.active===proj.id,allDone=done===ACTIONS.length;
-    const d=document.createElement("div");d.className="pbtn aleft";
-    d.style.cssText=`border-left-color:${allDone?"#16A34A":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"50":"rgba(255,255,255,0.05)"};background:${isAct?`linear-gradient(135deg,${proj.color}22,${proj.color}08)`:"rgba(255,255,255,0.02)"};box-shadow:${isAct?`0 0 14px ${proj.color}15`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
-    const icons=ACTIONS.map(a=>{const k=`${proj.id}_${a.id}`;const cnt=S.counts[k]||0,chk=S.checks[k];return chk?`<span style="color:#4ADE80;font-size:7px">✓</span>`:cnt>0?`<span style="color:#EAB308;font-size:7px">◑</span>`:`<span style="color:rgba(255,255,255,0.15);font-size:7px">○</span>`;}).join("");
-    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-size:9px;font-weight:700;color:${isAct?proj.color:allDone?"#4ADE80":"rgba(255,255,255,0.5)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span></div><span style="font-size:10px;font-weight:700;color:${allDone?"#4ADE80":todo>0?"#F7A200":"rgba(255,255,255,0.3)"};margin-left:4px;flex-shrink:0">${allDone?"✓":todo+" left"}</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:5px"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:2px">${icons}</div><span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"rgba(255,255,255,0.2)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span></div>`;
+    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+    const todo=ACTIONS.length-done,pct=Math.round(done/ACTIONS.length*100);
+    const isAct=S.active===proj.id,allDone=done===ACTIONS.length;
+    const d=document.createElement("div");d.className="pcard";
+    d.style.cssText=`border-left-color:${allDone?"var(--grn)":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"60":"var(--bdr)"};background:${isAct?`${proj.color}12`:"rgba(255,255,255,.01)"};box-shadow:${isAct?`0 0 12px ${proj.color}18`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
+    const icons=ACTIONS.map(a=>{const k=`${proj.id}_${a.id}`;const cnt=S.counts[k]||0,chk=S.checks[k];const hitTgt=cnt>=a.target;return chk&&hitTgt?`<span style="color:var(--grn);font-size:7px">✓</span>`:chk?`<span style="color:var(--ylw);font-size:7px">◑</span>`:cnt>0?`<span style="color:var(--ylw);font-size:7px">◑</span>`:`<span style="color:var(--bdr);font-size:7px">○</span>`;}).join("");
+    d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+      <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0">
+        <span class="pb pb-${proj.prio}">${proj.prio}</span>
+        <span style="font-size:11px;font-weight:600;color:${isAct?proj.color:allDone?"var(--grn)":"var(--txt2)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span>
+      </div>
+      <span style="font-size:11px;font-weight:700;color:${allDone?"var(--grn)":todo>0?"var(--org)":"var(--txt3)"};margin-left:4px;flex-shrink:0">${allDone?"✓":todo}</span>
+    </div>
+    <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:5px">
+      <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:1px">${icons}</div>
+      <span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"var(--txt3)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span>
+    </div>`;
     d.onclick=()=>switchProject(proj.id);
     list.appendChild(d);
   });
+
   const tl=document.getElementById("totals");tl.innerHTML="";let any=false;
-  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px;color:rgba(255,255,255,0.35)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#F7A200">${t}</span></div>`;}});
-  if(!any)tl.innerHTML=`<div style="font-size:9px;color:rgba(255,255,255,0.2);font-style:italic">No activity yet</div>`;
+  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt2)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--org)">${t}</span></div>`;}});
+  if(!any)tl.innerHTML=`<div style="font-size:11px;color:var(--txt3);font-style:italic">No activity yet</div>`;
 }
 
 function renderCenter(){renderProjHeader();renderActions();}
@@ -872,7 +1015,31 @@ function renderCenter(){renderProjHeader();renderActions();}
 function renderProjHeader(){
   const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
   const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
-  document.getElementById("phdr").innerHTML=`<div style="background:linear-gradient(135deg,${proj.color}15,${proj.color}05);border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:10px"><div style="position:relative;width:52px;height:52px;flex-shrink:0"><svg width="52" height="52" style="transform:rotate(-90deg);position:absolute"><circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/><circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset 0.6s ease" stroke-linecap="round"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${pct}%</div></div><div><div style="display:flex;align-items:center;gap:7px"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff">${proj.name}</span></div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets · <span style="color:#F7A200">⏱ auto-tracking</span></div></div></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;border:1px solid rgba(255,255,255,0.07)"><span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:${S.swR[proj.id]?proj.color:"#fff"};min-width:52px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span><button onclick="resetSW('${proj.id}')" style="width:24px;height:24px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);font-size:10px;display:flex;align-items:center;justify-content:center">↺</button></div><button onclick="notifyProj('${proj.id}')" style="background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:7px;padding:6px 11px;color:#E879F9;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button></div></div>`;
+  document.getElementById("phdr").innerHTML=`<div style="background:${proj.color}10;border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative;width:52px;height:52px;flex-shrink:0">
+        <svg width="52" height="52" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="var(--bdr)" stroke-width="5"/>
+          <circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset .5s ease" stroke-linecap="round"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--txt)">${pct}%</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="pb pb-${proj.prio}">${proj.prio}</span>
+          <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)">${proj.name}</span>
+        </div>
+        <div style="font-size:10px;color:var(--txt3);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets · <span style="color:var(--org)">⏱ auto-tracking</span></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:6px;background:var(--sur2);border-radius:8px;padding:6px 10px;border:1px solid var(--bdr)">
+        <span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${S.swR[proj.id]?proj.color:"var(--txt)"};min-width:50px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span>
+        <button onclick="resetSW('${proj.id}')" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--bdr);cursor:pointer;background:transparent;color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center">↺</button>
+      </div>
+      <button onclick="notifyProj('${proj.id}')" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:7px;padding:6px 11px;color:#A78BFA;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button>
+    </div>
+  </div>`;
 }
 
 function renderActions(){
@@ -884,66 +1051,74 @@ function renderActionRow(pid,aid){
   const el=document.getElementById(`ar-${pid}-${aid}`);if(!el)return;
   const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
   const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
-  const hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
-  let rowBg,rowBorder,statusIcon;
-  const hitTarget = count >= a.target;
-  if(checked && count > 0 && hitTarget){
-    // Done and hit target ✅
-    rowBg=`${proj.color}07`;rowBorder="rgba(22,163,74,0.3)";
-    statusIcon=`<span style="font-size:11px">✅</span>`;
-  } else if(checked && count > 0 && !hitTarget){
-    // Checked but didn't hit minimum 🟡
-    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
-    statusIcon=`<span style="font-size:13px">🟡</span>`;
-  } else if(checked && count===0){
-    // Done with 0 + note 🟡
-    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
-    statusIcon=`<span style="font-size:13px">🟡</span>`;
-  } else if(!checked && count>0){
-    // Has counts but not marked done 🟡
-    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
-    statusIcon=`<span style="font-size:11px">🟡</span>`;
-  } else {
-    // Not touched ○
-    rowBg="rgba(255,255,255,0.01)";rowBorder="rgba(255,255,255,0.04)";
-    statusIcon=`<span style="font-size:11px;color:rgba(255,255,255,0.15)">○</span>`;
-  }
-  el.style.cssText=`background:${rowBg};border:1px solid ${rowBorder};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:24px 24px 1fr 200px 150px;align-items:center;gap:8px;transition:all 0.2s`;
+  const hitTarget=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
+  let rowBg,rowBdr,statusIcon;
+  if(checked&&count>0&&hitTarget){rowBg="rgba(34,197,94,.05)";rowBdr="rgba(34,197,94,.2)";statusIcon=`<span style="font-size:12px">✅</span>`;}
+  else if(checked&&count>0&&!hitTarget){rowBg="rgba(234,179,8,.05)";rowBdr="rgba(234,179,8,.2)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
+  else if(checked&&count===0){rowBg="rgba(234,179,8,.05)";rowBdr="rgba(234,179,8,.2)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
+  else if(!checked&&count>0){rowBg="rgba(234,179,8,.04)";rowBdr="rgba(234,179,8,.15)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
+  else{rowBg="rgba(255,255,255,.01)";rowBdr="var(--bdr)";statusIcon=`<span style="font-size:12px;color:var(--txt3)">○</span>`;}
+
+  el.className="arow";
+  el.style.cssText=`background:${rowBg};border:1px solid ${rowBdr};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:22px 22px 1fr 210px 160px;align-items:center;gap:8px`;
   el.innerHTML=`${statusIcon}
-    <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.15)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 8px ${proj.color}50`:"none"};transition:all 0.15s">${checked?"✓":""}</div>
-    <div><div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:13px">${a.emoji}</span><span style="font-size:11px;font-weight:600;color:${checked?"rgba(255,255,255,0.35)":"rgba(255,255,255,0.85)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>${hit?`<span style="font-size:8px;background:rgba(22,163,74,0.15);color:#4ADE80;padding:1px 5px;border-radius:6px;font-weight:700;border:1px solid rgba(22,163,74,0.25)">✓ TARGET</span>`:""}</div><div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pctA}%;background:${hit?"#16A34A":pctA>=50?"#EAB308":proj.color};border-radius:2px;transition:width 0.3s"></div></div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:2px">${count} / ${a.target} · ${pctA}%</div></div>
-    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()"><button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:10px">−1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:28px;height:24px;background:${proj.color}35;color:#fff;font-size:10px">+1</button><button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:28px;height:24px;background:${proj.color}55;color:#fff;font-size:10px">+5</button><button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}75;color:#fff;font-size:10px">+10</button><input type="number" min="0" value="${count}" id="ci-${key}" onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)" onclick="this.select()" style="width:48px;height:24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:#F7A200;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/></div>
+    <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:1.5px solid ${checked?proj.color:"var(--bdr)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;transition:all .15s">${checked?"✓":""}</div>
+    <div>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <span style="font-size:13px">${a.emoji}</span>
+        <span style="font-size:12px;font-weight:${checked?500:600};color:${checked?"var(--txt3)":"var(--txt)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>
+        ${hitTarget?`<span style="font-size:9px;background:rgba(34,197,94,.12);color:#4ADE80;padding:1px 5px;border-radius:5px;font-weight:600;border:1px solid rgba(34,197,94,.2)">Target</span>`:""}
+      </div>
+      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pctA}%;background:${hitTarget?"var(--grn)":pctA>=50?"var(--ylw)":proj.color};border-radius:2px;transition:width .3s"></div>
+      </div>
+      <div style="font-size:9px;color:var(--txt3);margin-top:2px">${count} / ${a.target} · ${pctA}%</div>
+      ${note?`<div style="font-size:10px;color:var(--ylw);margin-top:2px;font-style:italic">💬 "${note}"</div>`:""}
+    </div>
+    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()">
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:var(--sur2);color:var(--txt3);font-size:10px;border:1px solid var(--bdr)">−1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:28px;height:24px;background:${proj.color}25;color:var(--txt);font-size:10px">+1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:28px;height:24px;background:${proj.color}40;color:var(--txt);font-size:10px">+5</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}60;color:var(--txt);font-size:10px">+10</button>
+      <input type="number" min="0" value="${count}" id="ci-${key}"
+        onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)"
+        onclick="this.select()"
+        style="width:46px;height:24px;background:var(--sur2);border:1px solid var(--bdr);border-radius:5px;color:var(--org);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/>
+    </div>
     <div id="nc-${key}" onclick="event.stopPropagation()"></div>`;
   renderNote(key,note);
 }
 
 function renderNote(key,note){
   const el=document.getElementById(`nc-${key}`);if(!el)return;
-  const hasNote=note&&note.length>0;
-  if(hasNote){
-    el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:#F7A200;cursor:text;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0" title="${note}">${note}</span>`;
-  }else{
-    el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:10px;color:rgba(255,255,255,0.18);font-style:italic;cursor:text;display:block;padding:2px 0">+ note</span>`;
-  }
+  el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:11px;color:${note?"var(--ylw)":"var(--txt3)"};font-style:${note?"normal":"italic"};cursor:text;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0">${note||"+ note"}</span>`;
 }
 
 function editNote(key){
-  const val=prompt("Add note:",S.notes[key]||"");
-  if(val!==null){S.notes[key]=val;renderNote(key,val);if(val){logAct("📝","Note saved");saveState();}}
+  const val=prompt("Note:",S.notes[key]||"");
+  if(val!==null){S.notes[key]=val;const[p,a]=key.split("_");renderActionRow(p,a);if(val)logAct("📝","Note saved");save();}
 }
 
 function renderOv(){
   const ol=document.getElementById("ovlist");ol.innerHTML="";
   [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
     const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;
-    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 11px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${isAct?"rgba(247,162,0,0.04)":"transparent"}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="display:flex;align-items:center;gap:5px"><span class="prio-badge prio-${proj.prio}">${proj.prio}</span><span style="font-size:9px;font-weight:600;color:${allDone?"#4ADE80":isAct?"#F7A200":"rgba(255,255,255,0.45)"}">${proj.short}</span></div><span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"#4ADE80":"#fff"}">${pct}%</span></div><div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${allDone?"#16A34A":proj.color};border-radius:2px;transition:width 0.4s"></div></div></div>`;
+    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 10px;border-bottom:1px solid var(--bdr);cursor:pointer;background:${isAct?"rgba(247,162,0,.04)":"transparent"};transition:background .15s">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div style="display:flex;align-items:center;gap:5px"><span class="pb pb-${proj.prio}">${proj.prio}</span><span style="font-size:10px;font-weight:600;color:${allDone?"var(--grn)":isAct?"var(--org)":"var(--txt2)"}">${proj.short}</span></div>
+        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"var(--grn)":"var(--txt)"}">${pct}%</span>
+      </div>
+      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
+      </div>
+    </div>`;
   });
 }
 
 function updateGlobal(){
   const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=ti>0?Math.round(tc/ti*100):0;
   const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
-  document.getElementById("rc").setAttribute("stroke-dashoffset",(106.8-(pct/100)*106.8).toFixed(1));
+  document.getElementById("rc").setAttribute("stroke-dashoffset",(100.5-(pct/100)*100.5).toFixed(1));
   document.getElementById("rl").textContent=pct+"%";
   document.getElementById("s-tgt").textContent=`${th}/${ti}`;
   document.getElementById("s-chk").textContent=`${tc}/${ti}`;
@@ -954,11 +1129,11 @@ function updateTimer(){
   const now=new Date(),dl=new Date();dl.setHours(17,0,0,0);
   const ms=dl-now,h=Math.max(0,Math.floor(ms/3600000)),m=Math.max(0,Math.floor((ms%3600000)/60000)),urgent=h<2&&ms>0;
   const t=document.getElementById("timer");
-  t.style.background=urgent?"rgba(220,38,38,0.15)":"rgba(255,255,255,0.04)";
-  t.style.border=urgent?"1px solid rgba(220,38,38,0.4)":"1px solid rgba(255,255,255,0.08)";
+  t.style.borderColor=urgent?"rgba(239,68,68,.4)":"var(--bdr)";
+  t.style.background=urgent?"rgba(239,68,68,.08)":"var(--sur2)";
   t.style.animation=urgent?"pulse 1.5s infinite":"none";
   document.getElementById("tv").textContent=ms<=0?"⏰ UP":`${h}h${m}m`;
-  document.getElementById("tv").style.color=urgent?"#FF6B6B":"#fff";
+  document.getElementById("tv").style.color=urgent?"var(--red)":"var(--txt)";
   document.getElementById("tnow").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
 }
 
@@ -966,68 +1141,28 @@ function logAct(emoji,text){
   const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
   S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
   const f=document.getElementById("afeed");f.innerHTML="";
-  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:5px 11px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:5px;opacity:${Math.max(0.15,1-i*0.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4">${ev.text}</div><div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:1px">${ev.time}</div></div></div>`);
+  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:5px 10px;border-bottom:1px solid var(--bdr);display:flex;gap:5px;opacity:${Math.max(.15,1-i*.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:10px;color:var(--txt2);line-height:1.4">${ev.text}</div><div style="font-size:9px;color:var(--txt3);margin-top:1px">${ev.time}</div></div></div>`);
 }
 
 function fireConfetti(big=false){
   const w=document.getElementById("cfw");w.innerHTML="";
-  const cols=["#F7A200","#E07000","#FFD60A","#FF6B6B","#51CF66","#4DABF7","#CC5DE8"];
-  for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*9}px;height:${5+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>0.5?"50%":"2px"};animation:confettiFall ${1.5+Math.random()*1.2}s ${Math.random()*0.8}s ease-in forwards`;w.appendChild(el);}
+  const cols=["#F7A200","#E07000","#FFD60A","#EF4444","#22C55E","#3B82F6","#8B5CF6"];
+  for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?"50%":"2px"};animation:confetti ${1.5+Math.random()*1.2}s ${Math.random()*.8}s ease-in forwards`;w.appendChild(el);}
   setTimeout(()=>w.innerHTML="",big?5000:3500);
 }
 
 function showToast(msg,type="info"){
   const t=document.getElementById("toast");
-  t.style.background=type==="success"?"linear-gradient(135deg,#16A34A,#15803D)":type==="error"?"linear-gradient(135deg,#DC2626,#B91C1C)":"linear-gradient(135deg,#1E2240,#111320)";
-  t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),4500);
+  t.style.background=type==="success"?"linear-gradient(135deg,#16A34A,#15803D)":type==="error"?"linear-gradient(135deg,#DC2626,#B91C1C)":"var(--sur2)";
+  t.style.color="#fff";t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),4500);
 }
 
 function showResumeBanner(){
   const b=document.createElement("div");
-  b.style.cssText="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:10px 20px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 20px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:slideIn 0.4s ease";
-  b.innerHTML=`<span>✅ Progress restored for today!</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,0.2);border:none;border-radius:5px;color:#fff;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">✕</button>`;
-  document.body.appendChild(b);
-  setTimeout(()=>b.remove(),5000);
-}
-
-// ── LUNCH ────────────────────────────────────────────────────────────────────
-let onLunch = false;
-
-function toggleLunch(){
-  if(!onLunch){
-    onLunch = true;
-    PROJECTS.forEach(p=>{ if(S.swR[p.id]) stopSW(p.id); });
-    logAct("🍽️","Lunch break — timers paused");
-    showLunchScreen();
-  } else {
-    onLunch = false;
-    hideLunchScreen();
-    if(S.active) startSW(S.active);
-    logAct("✅","Back from lunch — timer resumed");
-    renderLeft();
-  }
-}
-
-function showLunchScreen(){
-  const overlay = document.createElement("div");
-  overlay.id = "lunch-overlay";
-  overlay.style.cssText = "position:fixed;inset:0;background:#0D0F1A;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;animation:fadeIn 0.5s ease";
-  overlay.innerHTML = `
-    <div style="font-size:80px;line-height:1">🍽️</div>
-    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:900;color:#F7A200;letter-spacing:-1px">Have a good lunch!</div>
-    <div style="font-size:14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace">All timers are paused</div>
-    <button onclick="toggleLunch()" style="margin-top:12px;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:14px;padding:16px 40px;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 6px 24px rgba(247,162,0,0.5);letter-spacing:0.5px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-      ▶ Continue Working
-    </button>`;
-  document.body.appendChild(overlay);
-}
-
-function hideLunchScreen(){
-  const overlay = document.getElementById("lunch-overlay");
-  if(overlay){
-    overlay.style.animation = "fadeOut 0.3s ease forwards";
-    setTimeout(()=>overlay.remove(), 300);
-  }
+  b.style.cssText="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px;animation:fadeIn .4s ease";
+  b.innerHTML=`<span>✅ Progress restored for today</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.2);border:none;border-radius:5px;color:#fff;padding:1px 7px;cursor:pointer;font-size:11px">✕</button>`;
+  document.body.appendChild(b);setTimeout(()=>b.remove(),5000);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -1035,18 +1170,14 @@ setInterval(updateTimer,30000);
 setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
 
 window.addEventListener("DOMContentLoaded",async function(){
-  // Try restore first
-  if(loadState()){
+  if(restore()){
     document.getElementById("setup").style.display="none";
     document.getElementById("app").style.display="flex";
-    showTeamBadge();
-    showResumeBanner();
-    await loadTargets(); // refresh targets from Supabase
+    showBadge();showResumeBanner();
+    await loadTargets();
     startSW(S.active);
-    renderAll();
-    startPolling();
+    renderAll();startPolling();
   } else {
-    // Fresh start
     await initSetup();
     updateSBtn();
   }
