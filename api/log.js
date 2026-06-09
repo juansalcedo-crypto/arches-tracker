@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
     const logDate = new Date().toISOString().split("T")[0];
 
-    // Delete today's existing logs for this person first (avoid duplicates)
+    // Delete today's existing logs for this person first
     await fetch(`${SUPA_URL}/rest/v1/daily_logs?date=eq.${logDate}&person=eq.${encodeURIComponent(person)}`, {
       method: "DELETE",
       headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` }
@@ -41,6 +41,7 @@ export default async function handler(req, res) {
       other:        proj.counts?.other        || 0,
       actions_done: proj.actionsDone || 0,
       pct:          proj.pct || 0,
+      action_notes: proj.notes || {},  // ← notes per action
     }));
 
     const response = await fetch(`${SUPA_URL}/rest/v1/daily_logs`, {
