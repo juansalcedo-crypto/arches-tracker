@@ -198,6 +198,7 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
       <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
       <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
       <button id="btn-lunch" class="bhdr" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35)!important;color:#FBB324;font-size:11px" onclick="toggleLunch()">🍽️ Lunch</button>
+      <button id="btn-meeting" class="bhdr" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.35)!important;color:#A78BFA;font-size:11px" onclick="toggleMeeting()">📞 Meeting</button>
     </div>
   </div>
   <div id="gbar"><div id="gbf"></div></div>
@@ -499,6 +500,43 @@ function resetDay(){
   initSetup();
 }
 
+// ── MEETING ───────────────────────────────────────────────────────────────────
+let onMeeting = false;
+
+function toggleMeeting(){
+  if(!onMeeting){
+    onMeeting = true;
+    PROJECTS.forEach(p=>{ if(S.swR[p.id]) stopSW(p.id); });
+    logAct("📞","Meeting started — timers paused");
+    showMeetingScreen();
+  } else {
+    onMeeting = false;
+    hideMeetingScreen();
+    if(S.active) startSW(S.active);
+    logAct("✅","Back from meeting — timer resumed");
+    renderLeft();
+  }
+}
+
+function showMeetingScreen(){
+  const overlay = document.createElement("div");
+  overlay.id = "meeting-overlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:#0D0F1A;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;animation:fadeIn 0.5s ease";
+  overlay.innerHTML = `
+    <div style="font-size:80px;line-height:1">📞</div>
+    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:900;color:#A78BFA;letter-spacing:-1px">In a Meeting</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace">All timers are paused</div>
+    <button onclick="toggleMeeting()" style="margin-top:12px;background:linear-gradient(135deg,#8B5CF6,#6D28D9);border:none;border-radius:14px;padding:16px 40px;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 6px 24px rgba(139,92,246,0.5);letter-spacing:0.5px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+      ▶ Back to Work
+    </button>`;
+  document.body.appendChild(overlay);
+}
+
+function hideMeetingScreen(){
+  const overlay = document.getElementById("meeting-overlay");
+  if(overlay){ overlay.style.animation="fadeOut 0.3s ease forwards"; setTimeout(()=>overlay.remove(),300); }
+}
+
 // ── POLL SUPABASE FOR ASSIGNMENTS (every 60s) ─────────────────────────────────
 let pollInterval = null;
 async function pollAssignments(){
@@ -510,8 +548,16 @@ async function pollAssignments(){
   let added=0;
   assigned.forEach(a=>{
     if(!PROJECTS.find(p=>p.name===a.project)){
-      const idx=PROJECTS.length;
-      PROJECTS.push({id:"p"+idx,name:a.project,short:a.project.length>16?a.project.substring(0,14)+"…":a.project,color:PCOLS[idx%PCOLS.length],prio:a.priority||"P2"});
+      // Use timestamp-based unique ID to avoid collisions with existing projects
+      const newId = "pa_" + Date.now() + "_" + Math.random().toString(36).substr(2,5);
+      const colorIdx = PROJECTS.length % PCOLS.length;
+      PROJECTS.push({
+        id: newId,
+        name: a.project,
+        short: a.project.length>16 ? a.project.substring(0,14)+"…" : a.project,
+        color: PCOLS[colorIdx],
+        prio: a.priority||"P2"
+      });
       added++;
     }
   });
@@ -520,6 +566,7 @@ async function pollAssignments(){
     PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
     PROJECTS.forEach((p,i)=>p.id="p"+i);
     showToast(`📋 ${added} new project(s) assigned by manager!`,"success");
+    playNotifSound("project");
     logAct("📋",`${added} new project(s) added by manager`);
     saveState(); renderAll();
   }
@@ -558,6 +605,29 @@ async function pollComments(){
     </div>`).join("");
 }
 
+function playNotifSound(type="message"){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if(type==="message"){
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime+0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.4);
+    } else {
+      // project assigned — two tones
+      osc.frequency.setValueAtTime(660, ctx.currentTime);
+      osc.frequency.setValueAtTime(880, ctx.currentTime+0.15);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.5);
+    }
+  }catch{}
+}
+
 function showCommentPopup(manager, comment){
   const popup = document.createElement("div");
   popup.style.cssText = "position:fixed;top:70px;right:20px;background:linear-gradient(135deg,#1E3A5F,#111320);border:1px solid #3B82F6;border-radius:12px;padding:14px 18px;max-width:280px;z-index:500;box-shadow:0 8px 30px rgba(59,130,246,0.3);animation:slideIn 0.4s ease";
@@ -569,6 +639,7 @@ function showCommentPopup(manager, comment){
     </div>
     <div style="font-size:11px;color:rgba(255,255,255,0.8);line-height:1.5">${comment}</div>`;
   document.body.appendChild(popup);
+  playNotifSound("message");
   setTimeout(()=>{ if(popup.parentNode) popup.style.animation="fadeOut 0.3s ease forwards"; setTimeout(()=>popup.remove(),300); }, 6000);
 }
 
@@ -601,7 +672,9 @@ async function supaLog(){
       projects:PROJECTS.map(proj=>{
         const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
         const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-        return{name:proj.name,prio:proj.prio,counts:cnts,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
+        // Collect notes per action for this project
+        const notes={};ACTIONS.forEach(a=>{const n=S.notes[`${proj.id}_${a.id}`];if(n)notes[a.id]=n;});
+        return{name:proj.name,prio:proj.prio,counts:cnts,notes,actionsDone:done,pct:Math.round(done/ACTIONS.length*100)};
       }),
       date:now.toISOString().split("T")[0],
       time:now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
@@ -704,7 +777,8 @@ function checkComplete(pid){
 // ── STOPWATCH ─────────────────────────────────────────────────────────────────
 function startSW(pid){
   if(S.swR[pid]) return;
-  const t0=Date.now()-(S.swE[pid]||0);
+  const elapsed = S.swE[pid]||0;
+  const t0 = Date.now() - elapsed;
   S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);
   S.swR[pid]=true;
 }
