@@ -567,7 +567,7 @@ function buildProjMsg(proj){
   let m=`🎉 *Project Complete!*\n*${S.user}* finished *${proj.name}* [${proj.prio}]\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
   ACTIONS.forEach(a=>{
     const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k],chk=S.checks[k];
-    const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":cnt>0?"🟡":"❌";
+    const hitTgt=cnt>=a.target; const icon=chk&&cnt>0&&hitTgt?"✅":chk&&cnt>0&&!hitTgt?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
     m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
   });
   return m;
@@ -582,7 +582,7 @@ function buildEODMsg(){
     m+=`*[${proj.prio}] ${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
     ACTIONS.forEach(a=>{
       const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`],chk=S.checks[`${proj.id}_${a.id}`];
-      const icon=chk&&cnt>0?"✅":chk&&cnt===0?"✅ (0)":cnt>0?"🟡":"❌";
+      const hitTgt=cnt>=a.target; const icon=chk&&cnt>0&&hitTgt?"✅":chk&&cnt>0&&!hitTgt?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
       m+=`  ${icon} ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;
     });
     m+="\n";
@@ -742,10 +742,28 @@ function renderActionRow(pid,aid){
   const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
   const hit=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
   let rowBg,rowBorder,statusIcon;
-  if(checked&&count>0){rowBg=`${proj.color}07`;rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
-  else if(checked&&count===0){rowBg="rgba(22,163,74,0.06)";rowBorder="rgba(22,163,74,0.3)";statusIcon=`<span style="font-size:11px">✅</span>`;}
-  else if(!checked&&count>0){rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";statusIcon=`<span style="font-size:11px">🟡</span>`;}
-  else{rowBg="rgba(255,255,255,0.01)";rowBorder="rgba(255,255,255,0.04)";statusIcon=`<span style="font-size:11px;color:rgba(255,255,255,0.15)">○</span>`;}
+  const hitTarget = count >= a.target;
+  if(checked && count > 0 && hitTarget){
+    // Done and hit target ✅
+    rowBg=`${proj.color}07`;rowBorder="rgba(22,163,74,0.3)";
+    statusIcon=`<span style="font-size:11px">✅</span>`;
+  } else if(checked && count > 0 && !hitTarget){
+    // Checked but didn't hit minimum 🟡
+    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
+    statusIcon=`<span style="font-size:13px">🟡</span>`;
+  } else if(checked && count===0){
+    // Done with 0 + note 🟡
+    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
+    statusIcon=`<span style="font-size:13px">🟡</span>`;
+  } else if(!checked && count>0){
+    // Has counts but not marked done 🟡
+    rowBg="rgba(234,179,8,0.06)";rowBorder="rgba(234,179,8,0.3)";
+    statusIcon=`<span style="font-size:11px">🟡</span>`;
+  } else {
+    // Not touched ○
+    rowBg="rgba(255,255,255,0.01)";rowBorder="rgba(255,255,255,0.04)";
+    statusIcon=`<span style="font-size:11px;color:rgba(255,255,255,0.15)">○</span>`;
+  }
   el.style.cssText=`background:${rowBg};border:1px solid ${rowBorder};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:24px 24px 1fr 200px 150px;align-items:center;gap:8px;transition:all 0.2s`;
   el.innerHTML=`${statusIcon}
     <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid ${checked?proj.color:"rgba(255,255,255,0.15)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;box-shadow:${checked?`0 0 8px ${proj.color}50`:"none"};transition:all 0.15s">${checked?"✓":""}</div>
