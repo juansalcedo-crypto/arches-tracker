@@ -15,6 +15,7 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 24px 6px rgba(247,162,0,0.3)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -196,6 +197,7 @@ body{background:var(--bg);color:#fff;font-family:'DM Mono',monospace;height:100v
       <button class="bhdr bupd" id="bupd" style="border:1px solid" onclick="sendUpdate()">📊 Update</button>
       <button class="bhdr beod" id="beod" onclick="sendEOD()">🏆 EOD Report</button>
       <button class="bhdr bnew" style="border:1px solid" onclick="resetDay()">↺ New Day</button>
+      <button id="btn-lunch" class="bhdr" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35)!important;color:#FBB324;font-size:11px" onclick="toggleLunch()">🍽️ Lunch</button>
     </div>
   </div>
   <div id="gbar"><div id="gbf"></div></div>
@@ -824,6 +826,46 @@ function showResumeBanner(){
   b.innerHTML=`<span>✅ Progress restored for today!</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,0.2);border:none;border-radius:5px;color:#fff;padding:2px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">✕</button>`;
   document.body.appendChild(b);
   setTimeout(()=>b.remove(),5000);
+}
+
+// ── LUNCH ────────────────────────────────────────────────────────────────────
+let onLunch = false;
+
+function toggleLunch(){
+  if(!onLunch){
+    onLunch = true;
+    PROJECTS.forEach(p=>{ if(S.swR[p.id]) stopSW(p.id); });
+    logAct("🍽️","Lunch break — timers paused");
+    showLunchScreen();
+  } else {
+    onLunch = false;
+    hideLunchScreen();
+    if(S.active) startSW(S.active);
+    logAct("✅","Back from lunch — timer resumed");
+    renderLeft();
+  }
+}
+
+function showLunchScreen(){
+  const overlay = document.createElement("div");
+  overlay.id = "lunch-overlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:#0D0F1A;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;animation:fadeIn 0.5s ease";
+  overlay.innerHTML = `
+    <div style="font-size:80px;line-height:1">🍽️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:900;color:#F7A200;letter-spacing:-1px">Have a good lunch!</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace">All timers are paused</div>
+    <button onclick="toggleLunch()" style="margin-top:12px;background:linear-gradient(135deg,#F7A200,#E07000);border:none;border-radius:14px;padding:16px 40px;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 6px 24px rgba(247,162,0,0.5);letter-spacing:0.5px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+      ▶ Continue Working
+    </button>`;
+  document.body.appendChild(overlay);
+}
+
+function hideLunchScreen(){
+  const overlay = document.getElementById("lunch-overlay");
+  if(overlay){
+    overlay.style.animation = "fadeOut 0.3s ease forwards";
+    setTimeout(()=>overlay.remove(), 300);
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
