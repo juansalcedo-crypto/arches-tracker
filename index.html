@@ -714,12 +714,16 @@ document.getElementById("s-date").textContent=new Date().toLocaleDateString("en-
 let cachedMembers=null;
 
 async function initSetup(){
+  await refreshMembers();
+  await loadTargets();
+}
+
+async function refreshMembers(){
   const data=await supa("members","?active=eq.true&select=name,team_id&order=name");
   cachedMembers={luis:[],taiki:[]};
   (data||[]).forEach(m=>{if(cachedMembers[m.team_id])cachedMembers[m.team_id].push(m.name);});
   document.getElementById("luis-ct").textContent=cachedMembers.luis.length+" members";
   document.getElementById("taiki-ct").textContent=cachedMembers.taiki.length+" members";
-  await loadTargets();
 }
 
 async function loadTargets(){
@@ -727,10 +731,12 @@ async function loadTargets(){
   if(data&&data.length>0) data.forEach(t=>{const a=ACTIONS.find(x=>x.id===t.id);if(a)a.target=t.target;});
 }
 
-function selTeam(tid){
+async function selTeam(tid){
   S.team=TEAMS[tid];
   document.getElementById("team-lbl").textContent="Team "+S.team.name;
   document.getElementById("team-lbl").style.color=S.team.color;
+  // Always refresh from Supabase when picking team so changes from dashboard show up
+  await refreshMembers();
   const ml=document.getElementById("member-list");ml.innerHTML="";
   (cachedMembers[tid]||[]).forEach(name=>{
     const b=document.createElement("button");b.className="mbtn";
