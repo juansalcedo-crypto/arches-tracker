@@ -339,6 +339,17 @@ const SUPA_URL  = "https://watgvezsgppjvusotuge.supabase.co";
 const SUPA_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
 const SLACK_GENERAL = "C0B6EGPPC0L";
 const STORE_KEY = "arches_v5";
+// Strip project code prefix for display
+// Full: a112321_oliverwyman_us_service_automation
+// Display: oliverwyman_us_service_automation
+function dispName(name){
+  if(!name) return "";
+  // Remove pjt_ prefix first if present
+  let n = name.startsWith("pjt_") ? name.slice(4) : name;
+  // Remove leading code like a112321_ (letter + digits + underscore)
+  return n.replace(/^[a-zA-Z]\d+_/, "");
+}
+
 const PCOLS = ["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#EF4444","#8B5CF6"];
 
 const TEAMS = {
@@ -861,7 +872,7 @@ function startDay(){
 
   PROJECTS=allProjs.map((p,i)=>({
     id:"p"+i, name:p.name,
-    short:p.name.length>16?p.name.substring(0,14)+"…":p.name,
+    short:(()=>{ const d=dispName(p.name); return d.length>16?d.substring(0,14)+"…":d; })(),
     color:PCOLS[i%PCOLS.length], prio:p.prio
   }));
   PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
@@ -914,7 +925,7 @@ async function pollAssignments(){
   assigned.forEach(a=>{
     if(!PROJECTS.find(p=>p.name===a.project)){
       const newId="pa_"+Date.now()+"_"+Math.random().toString(36).substr(2,4);
-      PROJECTS.push({id:newId,name:a.project,short:a.project.length>16?a.project.substring(0,14)+"…":a.project,color:PCOLS[PROJECTS.length%PCOLS.length],prio:a.priority||"P2"});
+      const dn=dispName(a.project);PROJECTS.push({id:newId,name:a.project,short:dn.length>16?dn.substring(0,14)+"…":dn,color:PCOLS[PROJECTS.length%PCOLS.length],prio:a.priority||"P2"});
       added++;
     }
   });
@@ -1027,7 +1038,7 @@ function renderProjHeader(){
       <div>
         <div style="display:flex;align-items:center;gap:6px">
           <span class="pb pb-${proj.prio}">${proj.prio}</span>
-          <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)">${proj.name}</span>
+          <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)">${dispName(proj.name)}</span>
         </div>
         <div style="font-size:10px;color:var(--txt3);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets · <span style="color:var(--org)">⏱ auto-tracking</span></div>
       </div>
