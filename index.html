@@ -924,4 +924,192 @@ function renderLeft(){
       </div>
     </div>
     <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:5px">
-      <div
+      <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:2px">${icons}</div>
+      <span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"var(--txt3)"};font-weight:600">${fmtT(S.swE[proj.id]||0)}</span>
+    </div>`;
+    d.onclick=()=>switchProject(proj.id);list.appendChild(d);
+  });
+  const tl=document.getElementById("totals");tl.innerHTML="";let any=false;
+  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt2)">${a.emoji} ${a.name}</span><span style="font-weight:700;color:var(--org);font-size:12px">${t}</span></div>`;}});
+  if(!any)tl.innerHTML=`<div style="font-size:11px;color:var(--txt3);font-style:italic">No activity yet</div>`;
+}
+
+function renderCenter(){renderProjHeader();renderActions();}
+
+function renderProjHeader(){
+  const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
+  const pct=calcPct(proj.id),C=(2*Math.PI*22).toFixed(1);
+  document.getElementById("phdr").innerHTML=`
+    <div style="background:var(--sur);border:1.5px solid ${proj.color}40;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="position:relative;width:50px;height:50px;flex-shrink:0">
+          <svg width="50" height="50" style="transform:rotate(-90deg);position:absolute">
+            <circle cx="25" cy="25" r="22" fill="none" stroke="var(--bdr)" stroke-width="4"/>
+            <circle cx="25" cy="25" r="22" fill="none" stroke="${proj.color}" stroke-width="4" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset .4s" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--txt)">${pct}%</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <span class="pb pb-${proj.prio}">${proj.prio}</span>
+            <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)">${dispName(proj.name)}</span>
+          </div>
+          <div style="font-size:10px;color:var(--txt3)">${CORE_ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length}/${CORE_ACTIONS.length} core actions · ${ACTIONS.filter(a=>(S.counts[`${proj.id}_${a.id}`]||0)>=a.target).length} targets hit</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:6px 10px">
+          <span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${S.swR[proj.id]?proj.color:"var(--txt)"};min-width:50px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span>
+          <button onclick="resetSW('${proj.id}')" style="width:22px;height:22px;border-radius:5px;border:1.5px solid var(--bdr);cursor:pointer;background:transparent;color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.borderColor='var(--org)'" onmouseout="this.style.borderColor='var(--bdr)'">↺</button>
+        </div>
+        <button onclick="openCloseProject('${proj.id}')" style="background:var(--grn-lt);border:1.5px solid var(--grn);border-radius:8px;padding:6px 12px;color:var(--grn);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='var(--grn)';this.style.color='#fff'" onmouseout="this.style.background='var(--grn-lt)';this.style.color='var(--grn)'">✓ Close Project</button>
+        <button onclick="notifyProj('${proj.id}')" style="background:var(--org-lt);border:1.5px solid var(--org);border-radius:8px;padding:6px 12px;color:var(--org);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='var(--org)';this.style.color='#fff'" onmouseout="this.style.background='var(--org-lt)';this.style.color='var(--org)'">↑ Notify Slack</button>
+      </div>
+    </div>`;
+}
+
+function renderActions(){
+  const al=document.getElementById("alist");al.innerHTML="";
+  const coreDiv=document.createElement("div");
+  coreDiv.innerHTML=`<div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;padding:0 2px">Core Actions <span style="font-weight:400;color:var(--txt4)">(count toward %)</span></div>`;
+  CORE_ACTIONS.forEach(a=>{const d=document.createElement("div");d.id=`ar-${S.active}-${a.id}`;coreDiv.appendChild(d);renderActionRow(S.active,a.id);});
+  al.appendChild(coreDiv);
+  const optDiv=document.createElement("div");optDiv.style.marginTop="16px";
+  optDiv.innerHTML=`<div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;padding:0 2px">Optional Actions <span style="font-weight:400;color:var(--txt4)">(bonus — don't affect %)</span></div>`;
+  OPT_ACTIONS.forEach(a=>{const d=document.createElement("div");d.id=`ar-${S.active}-${a.id}`;optDiv.appendChild(d);renderActionRow(S.active,a.id);});
+  al.appendChild(optDiv);
+}
+
+function renderActionRow(pid,aid){
+  const el=document.getElementById(`ar-${pid}-${aid}`);if(!el)return;
+  const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
+  const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
+  const hitTgt=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
+  el.style.cssText=`border-radius:10px;margin-bottom:6px;padding:10px 14px;transition:all .15s;box-shadow:var(--shadow);display:grid;grid-template-columns:28px 26px 1fr 200px 150px;align-items:center;gap:10px;background:${checked&&hitTgt?"var(--grn-lt)":(checked||count>0)?"var(--ylw-lt)":"var(--sur)"};border:1.5px solid ${checked&&hitTgt?"var(--grn)":(checked||count>0)?"var(--ylw)":"var(--bdr)"}`;
+  const statusIcon=checked&&hitTgt?`<span style="font-size:14px">✅</span>`:checked||count>0?`<span style="font-size:14px">🟡</span>`:`<span style="font-size:14px;color:var(--txt4)">○</span>`;
+  el.innerHTML=`${statusIcon}
+    <div onclick="toggleCheck('${pid}','${aid}')" style="width:20px;height:20px;border-radius:5px;cursor:pointer;border:2px solid ${checked?proj.color:"var(--bdr)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;transition:all .15s">${checked?"✓":""}</div>
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <span style="font-size:13px">${a.emoji}</span>
+        <span style="font-size:12px;font-weight:${checked?400:600};color:${checked?"var(--txt3)":"var(--txt)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>
+        ${a.optional?`<span class="opt-badge">optional</span>`:""}
+        ${hitTgt?`<span style="font-size:9px;background:var(--grn-lt);color:var(--grn);padding:1px 6px;border-radius:10px;font-weight:600;border:1px solid var(--grn)">✓ target</span>`:""}
+      </div>
+      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:3px">
+        <div style="height:100%;width:${pctA}%;background:${hitTgt?"var(--grn)":pctA>=50?"var(--ylw)":proj.color};border-radius:2px;transition:width .3s"></div>
+      </div>
+      <div style="font-size:9px;color:var(--txt3)">${count} / ${a.target} · ${pctA}%</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px" onclick="event.stopPropagation()">
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:28px;height:26px;font-size:11px">−1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:28px;height:26px;font-size:11px;border-color:${proj.color};color:${proj.color}">+1</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:28px;height:26px;font-size:11px;border-color:${proj.color};color:${proj.color}">+5</button>
+      <button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:26px;font-size:11px;border-color:${proj.color};color:${proj.color}">+10</button>
+      <input type="number" min="0" value="${count}" id="ci-${key}" onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)" onclick="this.select()" style="width:48px;height:26px;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:6px;color:var(--org);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px" onfocus="this.style.borderColor='var(--org)'" onblur="this.style.borderColor='var(--bdr)'"/>
+    </div>
+    <div onclick="editNote('${key}')" style="cursor:text;padding:4px 0">
+      <span style="font-size:10px;color:${note?"var(--ylw)":"var(--txt3)"};font-style:${note?"normal":"italic"};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${note||"+ add note"}</span>
+    </div>`;
+}
+
+function editNote(key){
+  const val=prompt("Note:",S.notes[key]||"");
+  if(val!==null){
+    S.notes[key]=val;
+    const parts=key.split("_");
+    const pid=parts[0];
+    const aid=parts.slice(1).join("_");
+    renderActionRow(pid,aid);
+    if(val)logAct("📝","Note saved");
+    save();
+  }
+}
+
+function renderOv(){
+  const ol=document.getElementById("ovlist");ol.innerHTML="";
+  [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
+    const pct=calcPct(proj.id),allDone=pct===100,isAct=S.active===proj.id;
+    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 10px;border-bottom:1px solid var(--bdr);cursor:pointer;background:${isAct?"var(--org-lt)":"transparent"};transition:background .15s">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div style="display:flex;align-items:center;gap:5px"><span class="pb pb-${proj.prio}">${proj.prio}</span><span style="font-size:10px;font-weight:600;color:${allDone?"var(--grn)":isAct?"var(--org)":"var(--txt2)"}">${proj.short}</span></div>
+        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"var(--grn)":"var(--txt)"}">${pct}%</span>
+      </div>
+      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
+      </div>
+    </div>`;
+  });
+}
+
+function updateGlobal(){
+  const pct=calcGlobalPct();
+  const tc=PROJECTS.reduce((s,p)=>s+CORE_ACTIONS.filter(a=>S.checks[`${p.id}_${a.id}`]).length,0);
+  const ti=PROJECTS.length*CORE_ACTIONS.length;
+  const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
+  document.getElementById("rc").setAttribute("stroke-dashoffset",(94.2-(pct/100)*94.2).toFixed(1));
+  document.getElementById("rl").textContent=pct+"%";
+  document.getElementById("s-tgt").textContent=`${th}/${PROJECTS.length*ACTIONS.length}`;
+  document.getElementById("s-chk").textContent=`${tc}/${ti}`;
+  document.getElementById("gbf").style.width=pct+"%";
+}
+
+function updateTimer(){
+  const now=new Date(),dl=new Date();dl.setHours(17,0,0,0);
+  const ms=dl-now,h=Math.max(0,Math.floor(ms/3600000)),m=Math.max(0,Math.floor((ms%3600000)/60000)),urgent=h<2&&ms>0;
+  const t=document.getElementById("timer");
+  t.style.borderColor=urgent?"var(--red)":"var(--bdr)";
+  t.style.background=urgent?"var(--red-lt)":"var(--sur2)";
+  t.style.animation=urgent?"pulse 1.5s infinite":"none";
+  document.getElementById("tv").textContent=ms<=0?"Time up!":`${h}h ${m}m`;
+  document.getElementById("tv").style.color=urgent?"var(--red)":"var(--txt)";
+  document.getElementById("tnow").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+}
+
+function logAct(emoji,text){
+  const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
+  const f=document.getElementById("afeed");f.innerHTML="";
+  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:5px 10px;border-bottom:1px solid var(--bdr);display:flex;gap:6px;opacity:${Math.max(.15,1-i*.06)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:10px;color:var(--txt2);line-height:1.4">${ev.text}</div><div style="font-size:9px;color:var(--txt3);margin-top:1px">${ev.time}</div></div></div>`);
+}
+
+function fireConfetti(big=false){
+  const w=document.getElementById("cfw");w.innerHTML="";
+  const cols=["#E07000","#16A34A","#2563EB","#7C3AED","#DC2626","#0891B2"];
+  for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?"50%":"2px"};animation:confetti ${1.5+Math.random()*1.2}s ${Math.random()*.8}s ease-in forwards`;w.appendChild(el);}
+  setTimeout(()=>w.innerHTML="",big?5000:3500);
+}
+
+function showToast(msg,type="info"){
+  const t=document.getElementById("toast");
+  t.style.background=type==="success"?"var(--grn)":type==="error"?"var(--red)":"var(--txt)";
+  t.style.color="#fff";t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),4000);
+}
+
+function showResumeBanner(){
+  const b=document.createElement("div");
+  b.style.cssText="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--grn);color:#fff;border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;z-index:997;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:10px;animation:fadeIn .3s ease";
+  b.innerHTML=`<span>✓ Progress restored for today</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.2);border:none;border-radius:5px;color:#fff;padding:1px 7px;cursor:pointer;font-size:11px">✕</button>`;
+  document.body.appendChild(b);setTimeout(()=>b.remove(),5000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+setInterval(updateTimer,30000);
+setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
+
+window.addEventListener("DOMContentLoaded",async function(){
+  if(restore()){
+    document.getElementById("setup").style.display="none";
+    document.getElementById("app").style.display="flex";
+    showBadge();showResumeBanner();
+    await loadTargets();startSW(S.active);renderAll();startPolling();
+  }else{
+    await initSetup();updateSBtn();
+  }
+});
+</script>
+</body>
+</html>
