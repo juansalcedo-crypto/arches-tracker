@@ -4,259 +4,269 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Arches Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
+/* ── THEME ───────────────────────────────────────────────────────────────────*/
 :root{
+  --bg:#F8F9FC;--sur:#FFFFFF;--sur2:#F1F3F8;--bdr:#E2E6EF;
+  --org:#E07000;--org-lt:#FFF3E0;--grn:#16A34A;--grn-lt:#F0FDF4;
+  --red:#DC2626;--red-lt:#FEF2F2;--ylw:#CA8A04;--ylw-lt:#FEFCE8;
+  --pur:#7C3AED;--blu:#2563EB;
+  --txt:#0F172A;--txt2:#475569;--txt3:#94A3B8;--txt4:#CBD5E1;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+}
+[data-theme="dark"]{
   --bg:#0A0C14;--sur:#10131F;--sur2:#161A28;--bdr:#1E2235;
-  --org:#F7A200;--od:#E07000;--grn:#22C55E;--red:#EF4444;--ylw:#EAB308;--pur:#8B5CF6;--blu:#3B82F6;
-  --txt:#F1F5F9;--txt2:#94A3B8;--txt3:#475569;
+  --org:#F7A200;--org-lt:rgba(247,162,0,.1);--grn:#22C55E;--grn-lt:rgba(34,197,94,.1);
+  --red:#EF4444;--red-lt:rgba(239,68,68,.1);--ylw:#EAB308;--ylw-lt:rgba(234,179,8,.1);
+  --pur:#8B5CF6;--blu:#3B82F6;
+  --txt:#F1F5F9;--txt2:#94A3B8;--txt3:#475569;--txt4:#1E2235;
+  --shadow:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 6px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
 input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
-@keyframes confetti{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(247,162,0,0)}60%{box-shadow:0 0 20px 4px rgba(247,162,0,.25)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes slideRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes confetti{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* ── SETUP ─────────────────────────────────────────────────────────── */
-#setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .4s ease}
-.scard{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:28px 32px;max-width:520px;width:100%;box-shadow:0 24px 48px rgba(0,0,0,.5);max-height:92vh;overflow-y:auto}
-.scard::-webkit-scrollbar{width:0}
-.flbl{font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;display:block}
-.finp{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--txt);outline:none;transition:border-color .2s}
-.finp:focus{border-color:var(--org);box-shadow:0 0 0 3px rgba(247,162,0,.1)}
+/* ── SETUP ───────────────────────────────────────────────────────────────────*/
+#setup{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.scard{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:28px 32px;max-width:520px;width:100%;box-shadow:var(--shadow-md);max-height:92vh;overflow-y:auto}
+.flbl{font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px;display:block}
+.finp{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--txt);outline:none;transition:border-color .15s,box-shadow .15s}
+.finp:focus{border-color:var(--org);box-shadow:0 0 0 3px var(--org-lt)}
 .finp::placeholder{color:var(--txt3)}
-.fsel{background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--txt);outline:none;cursor:pointer}
-.fsel option{background:var(--sur)}
-
-/* team buttons */
-.team-btn{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:12px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s;margin-bottom:8px;text-align:left}
-.team-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
-
-/* member buttons */
-.mbtn{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;margin-bottom:6px;text-align:left}
-.mbtn:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
-
-/* project row */
-.prow{display:flex;align-items:center;gap:6px;margin-bottom:7px;animation:fadeIn .25s ease}
+.team-btn{width:100%;background:var(--sur);border:1.5px solid var(--bdr);border-radius:12px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .15s;margin-bottom:8px;text-align:left;box-shadow:var(--shadow)}
+.team-btn:hover{border-color:var(--org);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.mbtn{width:100%;background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;margin-bottom:5px;text-align:left}
+.mbtn:hover{border-color:var(--org);background:var(--org-lt)}
+.prow{display:flex;align-items:center;gap:6px;margin-bottom:7px;animation:fadeIn .2s ease}
 .pnum{font-size:11px;color:var(--txt3);width:14px;text-align:right;flex-shrink:0}
-.pinp{flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--txt);outline:none;transition:all .2s}
-.pinp:focus{border-color:var(--org);background:rgba(247,162,0,.04)}
+.pinp{flex:1;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--txt);outline:none;transition:all .15s}
+.pinp:focus{border-color:var(--org);background:var(--sur)}
 .pinp::placeholder{color:var(--txt3)}
-.pinp.dup{border-color:var(--red);animation:shake .3s}
-.psel{background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:7px 9px;font-size:11px;font-weight:700;color:var(--txt);outline:none;cursor:pointer;flex-shrink:0}
+.pinp.dup{border-color:var(--red)}
+.psel{background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:600;color:var(--txt);outline:none;cursor:pointer;transition:border-color .15s}
+.psel:focus{border-color:var(--org)}
 .psel option{background:var(--sur)}
-.prm{width:22px;height:22px;border-radius:6px;border:none;background:rgba(239,68,68,.12);color:#F87171;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
-.prm:hover{background:rgba(239,68,68,.25)}
-
-/* prev projects */
-.prev-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--bdr);background:var(--sur2);margin-bottom:6px;cursor:pointer;transition:all .15s}
-.prev-item.selected{border-color:var(--org);background:rgba(247,162,0,.06)}
-.prev-item:hover{border-color:rgba(255,255,255,.15)}
-
-.badd{width:100%;background:transparent;border:1px dashed var(--bdr);border-radius:8px;padding:8px;color:var(--txt3);cursor:pointer;font-size:12px;transition:all .2s;margin-bottom:18px}
-.badd:hover{border-color:rgba(247,162,0,.4);color:var(--org)}
-.bstart{width:100%;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:10px;padding:12px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(247,162,0,.35);transition:all .2s;letter-spacing:.3px}
-.bstart:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(247,162,0,.45)}
+.prm{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--bdr);background:var(--sur);color:var(--txt3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.prm:hover{border-color:var(--red);color:var(--red);background:var(--red-lt)}
+.prev-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;border:1.5px solid var(--bdr);background:var(--sur);margin-bottom:5px;cursor:pointer;transition:all .15s}
+.prev-item:hover,.prev-item.selected{border-color:var(--org);background:var(--org-lt)}
+.badd{width:100%;background:transparent;border:1.5px dashed var(--bdr);border-radius:8px;padding:8px;color:var(--txt3);cursor:pointer;font-size:12px;transition:all .15s;margin-bottom:16px}
+.badd:hover{border-color:var(--org);color:var(--org)}
+.bstart{width:100%;background:var(--org);border:none;border-radius:10px;padding:12px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(224,112,0,.3);transition:all .15s}
+.bstart:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(224,112,0,.4)}
 .bstart:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-.back-btn{background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:5px 12px;color:var(--txt2);font-size:12px;cursor:pointer;transition:all .15s}
-.back-btn:hover{color:var(--txt)}
-.dup-warn{font-size:11px;color:var(--red);margin:-3px 0 7px 20px;display:none}
+.back-btn{background:var(--sur2);border:1.5px solid var(--bdr);border-radius:7px;padding:5px 12px;color:var(--txt2);font-size:12px;cursor:pointer;transition:all .15s}
+.back-btn:hover{border-color:var(--org);color:var(--org)}
 
-/* ── APP ───────────────────────────────────────────────────────────── */
+/* ── APP ─────────────────────────────────────────────────────────────────────*/
 #app{display:none;flex-direction:column;height:100vh}
-#hdr{background:var(--sur);border-bottom:1px solid var(--bdr);height:52px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 0 var(--bdr)}
-#layout{display:grid;grid-template-columns:210px 1fr 240px;flex:1;overflow:hidden}
-#left{background:var(--sur);border-right:1px solid var(--bdr);padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-#center{overflow-y:auto;padding:12px 14px;background:var(--bg)}
-#right{background:var(--sur);border-left:1px solid var(--bdr);padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-#gbar{height:2px;background:var(--bdr);flex-shrink:0}
-#gbf{height:100%;width:0%;background:linear-gradient(90deg,var(--org),var(--od));transition:width .5s;box-shadow:0 0 8px rgba(247,162,0,.4)}
+#hdr{background:var(--sur);border-bottom:1.5px solid var(--bdr);height:52px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--shadow)}
+#layout{display:grid;grid-template-columns:220px 1fr 230px;flex:1;overflow:hidden}
+#left{background:var(--sur);border-right:1.5px solid var(--bdr);padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+#center{overflow-y:auto;padding:14px 16px;background:var(--bg)}
+#right{background:var(--sur);border-left:1.5px solid var(--bdr);padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+#gbar{height:3px;background:var(--bdr);flex-shrink:0}
+#gbf{height:100%;width:0%;background:var(--org);transition:width .4s}
 
-/* header buttons */
-.hbtn{border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;border:1px solid transparent;display:inline-flex;align-items:center;gap:4px}
-.hbtn:disabled{opacity:.45;cursor:not-allowed}
-.hbtn-org{background:rgba(247,162,0,.12);border-color:rgba(247,162,0,.3);color:var(--org)}
-.hbtn-org:hover:not(:disabled){background:rgba(247,162,0,.2)}
-.hbtn-solid{background:linear-gradient(135deg,var(--org),var(--od));color:#fff;border:none;box-shadow:0 2px 8px rgba(247,162,0,.35)}
-.hbtn-solid:hover:not(:disabled){transform:translateY(-1px)}
-.hbtn-ghost{background:rgba(255,255,255,.04);border-color:var(--bdr);color:var(--txt2)}
-.hbtn-ghost:hover:not(:disabled){color:var(--txt);background:rgba(255,255,255,.08)}
-.hbtn-lunch{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:#FBB324}
-.hbtn-lunch:hover{background:rgba(251,191,36,.2)}
-.hbtn-meet{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#A78BFA}
-.hbtn-meet:hover{background:rgba(139,92,246,.2)}
+/* Header buttons */
+.hbtn{border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;border:1.5px solid transparent;display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif}
+.hbtn:disabled{opacity:.4;cursor:not-allowed}
+.hbtn-org{background:var(--org);color:#fff;border-color:var(--org);box-shadow:0 2px 6px rgba(224,112,0,.3)}
+.hbtn-org:hover:not(:disabled){transform:translateY(-1px)}
+.hbtn-ghost{background:transparent;border-color:var(--bdr);color:var(--txt2)}
+.hbtn-ghost:hover:not(:disabled){border-color:var(--org);color:var(--org)}
+.hbtn-soft{background:var(--sur2);border-color:var(--bdr);color:var(--txt2)}
+.hbtn-soft:hover:not(:disabled){border-color:var(--org);color:var(--org)}
 
-/* stat boxes */
-.sbox{text-align:center;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:4px 9px}
-.sv{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1}
-.sl{font-size:9px;color:var(--txt3);letter-spacing:.5px;margin-top:1px;text-transform:uppercase}
+/* Stat boxes */
+.sbox{text-align:center;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:4px 10px}
+.sv{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1;color:var(--txt)}
+.sl{font-size:8px;color:var(--txt3);letter-spacing:.5px;margin-top:1px;text-transform:uppercase}
 
-/* ring */
+/* Ring */
 .rwrap{position:relative;flex-shrink:0}
 .rlbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:var(--txt)}
 
-/* left panel project cards */
-.pcard{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-left:3px solid transparent;border-radius:9px;padding:8px 9px;cursor:pointer;transition:all .2s}
-.pcard:hover{transform:translateY(-1px)}
+/* Project cards */
+.pcard{background:var(--sur);border:1.5px solid var(--bdr);border-left:3px solid transparent;border-radius:10px;padding:9px 10px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow)}
+.pcard:hover{box-shadow:var(--shadow-md)}
+.pcard.active{box-shadow:var(--shadow-md)}
 
-/* action rows */
-.arow{border:1px solid var(--bdr);border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:22px 22px 1fr 210px 160px;align-items:center;gap:8px;transition:all .2s}
-.arow:hover{background:rgba(247,162,0,.03)!important}
+/* Action rows */
+.arow{background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;margin-bottom:6px;padding:10px 14px;transition:all .15s;box-shadow:var(--shadow)}
+.arow:hover{box-shadow:var(--shadow-md)}
+.arow.done{background:var(--grn-lt);border-color:var(--grn)}
+.arow.partial{background:var(--ylw-lt);border-color:var(--ylw)}
+.arow.optional-done{background:var(--grn-lt);border-color:var(--grn)}
 
-/* counter buttons */
-.cbtn{border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:5px;transition:all .1s;font-family:'Inter',sans-serif}
-.cbtn:active{transform:scale(.84)}
+/* Counter buttons */
+.cbtn{border:1.5px solid var(--bdr);background:var(--sur2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;border-radius:6px;transition:all .1s;font-family:'Inter',sans-serif;color:var(--txt2)}
+.cbtn:hover{border-color:var(--org);color:var(--org);background:var(--org-lt)}
+.cbtn:active{transform:scale(.88)}
 
-/* side panels */
-.spanel{background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
-.shead{padding:8px 11px;border-bottom:1px solid var(--bdr);background:linear-gradient(135deg,rgba(247,162,0,.08),transparent);display:flex;align-items:center;gap:5px}
-.stitle{font-size:10px;font-weight:700;color:var(--org);letter-spacing:.8px;text-transform:uppercase}
+/* Priority badges */
+.pb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;letter-spacing:.2px}
+.pb-P1{background:var(--red-lt);color:var(--red);border:1.5px solid var(--red)}
+.pb-P2{background:var(--org-lt);color:var(--org);border:1.5px solid var(--org)}
+.pb-P3{background:var(--grn-lt);color:var(--grn);border:1.5px solid var(--grn)}
 
-/* prio badges */
-.pb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;letter-spacing:.3px}
-.pb-P1{background:rgba(239,68,68,.15);color:#F87171;border:1px solid rgba(239,68,68,.25)}
-.pb-P2{background:rgba(247,162,0,.15);color:var(--org);border:1px solid rgba(247,162,0,.25)}
-.pb-P3{background:rgba(34,197,94,.15);color:#4ADE80;border:1px solid rgba(34,197,94,.25)}
+/* Optional badge */
+.opt-badge{font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;background:var(--sur2);color:var(--txt3);border:1px solid var(--bdr);flex-shrink:0}
 
-/* toast */
-#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(16px);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:990;box-shadow:0 6px 20px rgba(0,0,0,.5);white-space:nowrap;border:1px solid rgba(255,255,255,.08)}
+/* Side panels */
+.spanel{background:var(--sur2);border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden}
+.shead{padding:8px 11px;border-bottom:1.5px solid var(--bdr);display:flex;align-items:center;gap:5px}
+.stitle{font-size:10px;font-weight:700;color:var(--org);letter-spacing:.5px;text-transform:uppercase}
+
+/* Modals */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-box{background:var(--sur);border:1.5px solid var(--bdr);border-radius:16px;padding:24px;max-width:440px;width:92%;box-shadow:0 20px 50px rgba(0,0,0,.2);max-height:85vh;overflow-y:auto}
+
+/* Overlay screens */
+.overlay-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+
+/* Toast */
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--txt);color:var(--sur);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;opacity:0;transition:all .25s;pointer-events:none;z-index:990;box-shadow:var(--shadow-md);white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #cfw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
 
-/* note modal */
-#note-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.nbox{background:var(--sur);border:1px solid var(--org);border-radius:14px;padding:22px;max-width:400px;width:90%;box-shadow:0 20px 50px rgba(0,0,0,.7)}
-
-/* EOD confirm modal */
-#eod-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.eodbox{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:24px;max-width:560px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 50px rgba(0,0,0,.7)}
-
-/* overlay screens */
-.overlay-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;animation:fadeIn .4s ease}
-
-/* sync indicator */
-#sync-ind{font-size:9px;color:var(--txt3);display:flex;align-items:center;gap:4px}
-.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--grn)}
+/* Theme toggle */
+.theme-toggle{width:34px;height:20px;border-radius:10px;background:var(--bdr);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.theme-toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--sur);transition:transform .2s;box-shadow:var(--shadow)}
+[data-theme="dark"] .theme-toggle{background:var(--org)}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(14px)}
 </style>
 </head>
 <body>
 <div id="cfw"></div>
 
-<!-- ADD PROJECT MODAL -->
-<div id="add-proj-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-  <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:14px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 50px rgba(0,0,0,.7)">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--org);margin-bottom:4px">+ Add Project</div>
-    <div style="font-size:11px;color:var(--txt2);margin-bottom:16px">Add a new project to your current day</div>
-    <label class="flbl">Project Name</label>
-    <input class="finp" id="add-proj-inp" placeholder="e.g. a112321_oliverwyman_us_service_automation" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')confirmAddProject()"/>
-    <label class="flbl">Priority</label>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">
-      <button class="add-prio-btn active" data-prio="P1" onclick="selectAddPrio(this)" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:8px;color:#F87171;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">P1</button>
-      <button class="add-prio-btn" data-prio="P2" onclick="selectAddPrio(this)" style="background:rgba(247,162,0,.08);border:1px solid var(--bdr);border-radius:8px;padding:8px;color:var(--txt2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">P2</button>
-      <button class="add-prio-btn" data-prio="P3" onclick="selectAddPrio(this)" style="background:rgba(34,197,94,.08);border:1px solid var(--bdr);border-radius:8px;padding:8px;color:var(--txt2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">P3</button>
-    </div>
-    <div id="add-proj-err" style="font-size:11px;color:var(--red);margin-bottom:10px;display:none"></div>
-    <div style="display:flex;gap:8px">
-      <button onclick="document.getElementById('add-proj-modal').style.display='none'" style="flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px;color:var(--txt2);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif">Cancel</button>
-      <button onclick="confirmAddProject()" style="flex:2;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;cursor:pointer">+ Add to Day</button>
-    </div>
-  </div>
-</div>
-
 <!-- NOTE MODAL -->
-<div id="note-modal">
-  <div class="nbox">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--org);margin-bottom:6px">Note Required</div>
-    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px" id="note-sub">Mark this action as done with 0 — explain why.</div>
-    <textarea id="note-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…"
-      style="width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px;font-size:12px;color:var(--txt);outline:none;resize:none;line-height:1.5;transition:border-color .2s"
-      onfocus="this.style.borderColor='var(--org)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
-    <div style="display:flex;gap:8px;margin-top:11px">
-      <button onclick="closeNote(false)" style="flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:9px;color:var(--txt2);font-size:12px;cursor:pointer">Cancel</button>
-      <button onclick="closeNote(true)" style="flex:2;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;cursor:pointer">Save & Mark Done</button>
+<div class="modal-bg" id="note-modal">
+  <div class="modal-box">
+    <div style="font-size:14px;font-weight:700;color:var(--org);margin-bottom:4px">Note Required</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px" id="note-sub"></div>
+    <textarea id="note-inp" rows="3" placeholder="e.g. No leads available, already fully contacted…" style="width:100%;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:9px;font-size:12px;color:var(--txt);outline:none;resize:none;line-height:1.5;transition:border-color .15s" onfocus="this.style.borderColor='var(--org)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="closeNote(false)" class="hbtn hbtn-ghost" style="flex:1;justify-content:center">Cancel</button>
+      <button onclick="closeNote(true)" class="hbtn hbtn-org" style="flex:2;justify-content:center">Save & Mark Done</button>
     </div>
   </div>
 </div>
 
-<!-- EOD CONFIRM MODAL -->
-<div id="eod-modal">
-  <div class="eodbox">
-    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:var(--org);margin-bottom:4px">End of Day Report</div>
+<!-- EOD MODAL -->
+<div class="modal-bg" id="eod-modal">
+  <div class="modal-box">
+    <div style="font-size:16px;font-weight:700;color:var(--org);margin-bottom:4px">End of Day Report</div>
     <div style="font-size:12px;color:var(--txt2);margin-bottom:16px">Review before sending to Slack & Dashboard</div>
     <div id="eod-preview"></div>
     <div style="display:flex;gap:8px;margin-top:16px">
-      <button onclick="document.getElementById('eod-modal').style.display='none'" style="flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:10px;color:var(--txt2);font-size:12px;cursor:pointer">← Keep Working</button>
-      <button onclick="confirmEOD()" style="flex:2;background:linear-gradient(135deg,var(--org),var(--od));border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(247,162,0,.4)">🏆 Send Report</button>
+      <button onclick="document.getElementById('eod-modal').style.display='none'" class="hbtn hbtn-ghost" style="flex:1;justify-content:center">← Keep Working</button>
+      <button onclick="confirmEOD()" class="hbtn hbtn-org" style="flex:2;justify-content:center;font-size:13px">🏆 Send Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSE PROJECT MODAL -->
+<div class="modal-bg" id="close-modal">
+  <div class="modal-box">
+    <div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:4px" id="close-title">Close Project</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px">Mark all actions as done. Add a note explaining why uncompleted actions are being closed.</div>
+    <textarea id="close-note" rows="3" placeholder="e.g. End of day, will continue tomorrow / Project completed / Client paused…" style="width:100%;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:9px;font-size:12px;color:var(--txt);outline:none;resize:none;line-height:1.5;transition:border-color .15s" onfocus="this.style.borderColor='var(--org)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="document.getElementById('close-modal').style.display='none'" class="hbtn hbtn-ghost" style="flex:1;justify-content:center">Cancel</button>
+      <button onclick="confirmCloseProject()" class="hbtn hbtn-org" style="flex:2;justify-content:center">✅ Close Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PROJECT MODAL -->
+<div class="modal-bg" id="add-proj-modal">
+  <div class="modal-box" style="max-width:400px">
+    <div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:4px">+ Add Project</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px">Add a new project to your day</div>
+    <label class="flbl">Project Name</label>
+    <input class="finp" id="add-proj-inp" placeholder="a112321_oliverwyman_us_service_automation" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')confirmAddProject()"/>
+    <label class="flbl">Priority</label>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px" id="add-prio-btns">
+      <button data-prio="P1" onclick="selAddPrio(this)" style="background:var(--red-lt);border:1.5px solid var(--red);border-radius:8px;padding:8px;color:var(--red);font-size:12px;font-weight:700;cursor:pointer">P1</button>
+      <button data-prio="P2" onclick="selAddPrio(this)" style="background:var(--org-lt);border:1.5px solid var(--org);border-radius:8px;padding:8px;color:var(--org);font-size:12px;font-weight:700;cursor:pointer">P2 ✓</button>
+      <button data-prio="P3" onclick="selAddPrio(this)" style="background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:8px;color:var(--txt3);font-size:12px;font-weight:700;cursor:pointer">P3</button>
+    </div>
+    <div id="add-proj-err" style="font-size:11px;color:var(--red);margin-bottom:8px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="document.getElementById('add-proj-modal').style.display='none'" class="hbtn hbtn-ghost" style="flex:1;justify-content:center">Cancel</button>
+      <button onclick="confirmAddProject()" class="hbtn hbtn-org" style="flex:2;justify-content:center">+ Add to Day</button>
     </div>
   </div>
 </div>
 
 <!-- SETUP -->
 <div id="setup">
-  <!-- STEP 1: TEAM -->
   <div id="s-team" class="scard" style="max-width:440px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-      <svg width="34" height="22" viewBox="0 0 200 130" fill="none">
-        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/><path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity=".7"/><path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity=".7"/>
-        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
-      </svg>
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:var(--txt)">Arches Tracker</div>
-        <div style="font-size:10px;color:var(--org);letter-spacing:1.5px;margin-top:2px" id="s-date"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg width="32" height="21" viewBox="0 0 200 130" fill="none">
+          <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#E07000"/>
+          <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#B45309"/>
+          <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#B45309"/>
+          <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#E07000" opacity=".6"/>
+          <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#E07000" opacity=".6"/>
+          <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#B45309"/>
+        </svg>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:var(--txt)">Arches Tracker</div>
+          <div style="font-size:10px;color:var(--org);letter-spacing:1px;margin-top:1px" id="s-date"></div>
+        </div>
       </div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark"></button>
     </div>
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:16px;font-weight:500">Which team are you on?</div>
+    <div style="font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:16px">Select your team to get started</div>
     <button class="team-btn" onclick="selTeam('luis')">
-      <span style="font-size:26px">🟠</span>
-      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--org)">Team Luis</div><div style="font-size:11px;color:var(--txt3);margin-top:2px" id="luis-ct">Loading…</div></div>
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--org-lt);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🟠</div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--org)">Team Luis</div><div style="font-size:11px;color:var(--txt3);margin-top:1px" id="luis-ct">Loading…</div></div>
     </button>
     <button class="team-btn" onclick="selTeam('taiki')">
-      <span style="font-size:26px">🔵</span>
-      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--blu)">Team Taiki</div><div style="font-size:11px;color:var(--txt3);margin-top:2px" id="taiki-ct">Loading…</div></div>
+      <div style="width:36px;height:36px;border-radius:8px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔵</div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--blu)">Team Taiki</div><div style="font-size:11px;color:var(--txt3);margin-top:1px" id="taiki-ct">Loading…</div></div>
     </button>
   </div>
 
-  <!-- STEP 2: MEMBER -->
   <div id="s-member" class="scard" style="max-width:440px;display:none">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
       <button class="back-btn" onclick="goStep('team')">← Back</button>
-      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800" id="team-lbl">Team</div><div style="font-size:11px;color:var(--txt3)">Select your name</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--txt)" id="team-lbl">Team</div><div style="font-size:11px;color:var(--txt3)">Select your name</div></div>
     </div>
     <div id="member-list"></div>
   </div>
 
-  <!-- STEP 3: PROJECTS -->
   <div id="s-projects" class="scard" style="display:none">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
       <button class="back-btn" onclick="goStep('member')">← Back</button>
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--txt)" id="proj-title">Projects</div>
-        <div style="font-size:11px;color:var(--txt3);margin-top:1px" id="proj-sub">Set priority · max 8</div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:1px" id="proj-sub">P1 = highest priority · max 8</div>
       </div>
     </div>
-    <!-- Previous projects section -->
     <div id="prev-section" style="display:none;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Continue from yesterday?</div>
+      <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.3px;text-transform:uppercase;margin-bottom:7px">Continue from yesterday?</div>
       <div id="prev-list"></div>
       <div style="height:1px;background:var(--bdr);margin:12px 0"></div>
     </div>
-    <!-- Assigned banner -->
-    <div id="assigned-banner" style="display:none;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:#4ADE80;font-weight:500"></div>
-    <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px" id="new-proj-label">Today's Projects</div>
+    <div id="assigned-banner" style="display:none;background:var(--grn-lt);border:1.5px solid var(--grn);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:var(--grn);font-weight:500"></div>
+    <div style="font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.3px;text-transform:uppercase;margin-bottom:7px" id="new-proj-label">Today's Projects</div>
     <div id="pinputs"></div>
-    <div class="dup-warn" id="dup-warn">⚠️ Duplicate project name</div>
+    <div style="font-size:11px;color:var(--red);margin:-3px 0 8px 18px;display:none" id="dup-warn">⚠ Duplicate project name</div>
     <button class="badd" id="badd" onclick="addPI()">+ Add project</button>
-    <button class="bstart" id="bstart" onclick="startDay()">🚀 Start Day</button>
+    <button class="bstart" id="bstart" onclick="startDay()">Start Day →</button>
   </div>
 </div>
 
@@ -264,75 +274,73 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
 <div id="app">
   <div id="hdr">
     <div style="display:flex;align-items:center;gap:10px">
-      <svg width="26" height="17" viewBox="0 0 200 130" fill="none">
-        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#F7A200"/>
-        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#E07000"/><path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#E07000"/>
-        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#F7A200" opacity=".7"/><path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#F7A200" opacity=".7"/>
-        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#E07000"/>
+      <svg width="24" height="16" viewBox="0 0 200 130" fill="none">
+        <path d="M100 10 C60 10 30 50 20 90 L50 90 C55 65 75 45 100 45 C125 45 145 65 150 90 L180 90 C170 50 140 10 100 10Z" fill="#E07000"/>
+        <path d="M20 90 C15 70 5 55 0 90 L25 90Z" fill="#B45309"/>
+        <path d="M180 90 C185 70 195 55 200 90 L175 90Z" fill="#B45309"/>
+        <path d="M50 90 C48 75 42 62 35 55 L15 90Z" fill="#E07000" opacity=".6"/>
+        <path d="M150 90 C152 75 158 62 165 55 L185 90Z" fill="#E07000" opacity=".6"/>
+        <path d="M85 45 C85 25 95 15 100 10 C105 15 115 25 115 45Z" fill="#B45309"/>
       </svg>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:-.3px">Arches Tracker</div>
-        <div style="font-size:9px;color:var(--org);letter-spacing:1.5px" id="hdate"></div>
+        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:var(--txt)">Arches Tracker</div>
+        <div style="font-size:8px;color:var(--org);letter-spacing:1px" id="hdate"></div>
       </div>
     </div>
     <div style="display:flex;gap:6px;align-items:center">
-      <div class="rwrap" style="width:38px;height:38px">
-        <svg width="38" height="38" style="transform:rotate(-90deg);position:absolute">
-          <circle cx="19" cy="19" r="16" fill="none" stroke="var(--bdr)" stroke-width="3.5"/>
-          <circle cx="19" cy="19" r="16" fill="none" stroke="var(--org)" stroke-width="3.5" stroke-dasharray="100.5" stroke-dashoffset="100.5" id="rc" style="transition:stroke-dashoffset .5s ease" stroke-linecap="round"/>
+      <div class="rwrap" style="width:36px;height:36px">
+        <svg width="36" height="36" style="transform:rotate(-90deg);position:absolute">
+          <circle cx="18" cy="18" r="15" fill="none" stroke="var(--bdr)" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15" fill="none" stroke="var(--org)" stroke-width="3" stroke-dasharray="94.2" stroke-dashoffset="94.2" id="rc" style="transition:stroke-dashoffset .4s" stroke-linecap="round"/>
         </svg>
         <div class="rlbl" style="font-size:9px;font-weight:700" id="rl">0%</div>
       </div>
       <div class="sbox"><div class="sv" id="s-tgt">0/0</div><div class="sl">Targets</div></div>
       <div class="sbox"><div class="sv" id="s-chk">0/0</div><div class="sl">Done</div></div>
-      <div id="timer" style="background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:4px 10px;text-align:center">
-        <div style="font-size:8px;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase">Ends 17:00</div>
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800" id="tv">—</div>
+      <div id="timer" style="background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;padding:4px 10px;text-align:center">
+        <div style="font-size:7px;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase">Ends 5pm</div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)" id="tv">—</div>
         <div style="font-size:8px;color:var(--txt3)" id="tnow">—</div>
       </div>
-      <div id="sind" style="display:none;align-items:center;gap:5px;padding:4px 9px;border-radius:16px;font-size:10px;font-weight:600;border:1px solid transparent"></div>
-      <div id="sync-ind"><div class="sync-dot" id="sync-dot" style="opacity:.4"></div><span id="sync-lbl">synced</span></div>
+      <div id="sind" style="display:none"></div>
       <div id="hbadge" style="display:none;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px"></div>
       <span id="hname" style="font-size:11px;color:var(--txt2);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-      <button class="hbtn hbtn-org" id="bupd" onclick="sendUpdate()">📊 Update</button>
-      <button class="hbtn hbtn-solid" id="beod" onclick="showEOD()">🏆 EOD Report</button>
-      <button class="hbtn hbtn-lunch" onclick="toggleLunch()">🍽️ Lunch</button>
-      <button class="hbtn hbtn-meet" onclick="toggleMeeting()">📞 Meeting</button>
-      <button class="hbtn hbtn-ghost" onclick="resetDay()">↺ New Day</button>
+      <button class="hbtn hbtn-ghost" id="bupd" onclick="sendUpdate()">↑ Update</button>
+      <button class="hbtn hbtn-org" id="beod" onclick="showEOD()">🏆 EOD</button>
+      <button class="hbtn hbtn-soft" onclick="toggleLunch()">🍽 Lunch</button>
+      <button class="hbtn hbtn-soft" onclick="toggleMeeting()">📞 Meeting</button>
+      <button class="hbtn hbtn-ghost" onclick="resetDay()">↺</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></button>
     </div>
   </div>
   <div id="gbar"><div id="gbf"></div></div>
   <div id="layout">
     <div id="left">
-      <div style="display:flex;justify-content:space-between;padding:0 3px 6px;border-bottom:1px solid var(--bdr);margin-bottom:4px">
-        <span style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase">Projects</span>
-        <span style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase">To Do</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:2px 4px 8px;border-bottom:1px solid var(--bdr);margin-bottom:4px">
+        <span style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase">Projects</span>
+        <button onclick="openAddProject()" style="font-size:10px;font-weight:600;color:var(--org);background:transparent;border:none;cursor:pointer;padding:0">+ Add</button>
       </div>
       <div id="plist"></div>
-      <button onclick="openAddProject()" style="width:100%;background:rgba(247,162,0,.08);border:1px dashed rgba(247,162,0,.3);border-radius:8px;padding:7px;color:var(--org);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;font-family:'Inter',sans-serif" onmouseover="this.style.background='rgba(247,162,0,.15)'" onmouseout="this.style.background='rgba(247,162,0,.08)'">+ Add Project</button>
-      <div style="margin-top:8px;background:var(--sur2);border:1px solid var(--bdr);border-radius:9px;padding:8px 9px">
-        <div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px">Today's Totals</div>
+      <div style="margin-top:8px;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:9px;padding:9px 10px">
+        <div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:7px">Totals Today</div>
         <div id="totals"></div>
       </div>
     </div>
     <div id="center"><div id="phdr"></div><div id="alist"></div></div>
     <div id="right">
-      <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:10px 11px">
-        <div style="font-size:10px;font-weight:700;color:#A78BFA;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">⚡ Auto Sync</div>
-        <div style="font-size:11px;color:var(--txt2);line-height:1.7">
-          🟢 Slack on project complete<br>
-          📊 Dashboard updated live<br>
-          🔄 Checks assignments every 60s
+      <div style="background:var(--sur2);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 11px">
+        <div style="font-size:10px;font-weight:700;color:var(--pur);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Auto Sync</div>
+        <div style="font-size:11px;color:var(--txt2);line-height:1.8">
+          Slack on project complete<br>
+          Dashboard updated on EOD<br>
+          Checks assignments every 60s
         </div>
-        <div id="slive" style="margin-top:7px;display:none;align-items:center;gap:5px;border-radius:6px;padding:5px 9px">
-          <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0" id="sdot"></div>
-          <span style="font-size:10px;font-weight:600" id="stxt"></span>
-        </div>
+        <div id="slive" style="margin-top:6px;display:none;font-size:10px;font-weight:600;padding:5px 8px;border-radius:6px"></div>
       </div>
       <div class="spanel">
-        <div class="shead"><span>⚡</span><span class="stitle">Activity</span></div>
-        <div id="afeed" style="max-height:200px;overflow-y:auto;padding:2px 0">
-          <div style="padding:12px;font-size:11px;color:var(--txt3);text-align:center;font-style:italic">No activity yet…</div>
+        <div class="shead"><span class="stitle">Activity</span></div>
+        <div id="afeed" style="max-height:180px;overflow-y:auto;padding:2px 0">
+          <div style="padding:12px;font-size:11px;color:var(--txt3);text-align:center;font-style:italic">No activity yet</div>
         </div>
       </div>
       <div class="spanel">
@@ -340,13 +348,11 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
         <div id="ovlist"></div>
       </div>
       <div class="spanel" id="cmts-panel" style="display:none">
-        <div class="shead" style="background:linear-gradient(135deg,rgba(59,130,246,.12),transparent)">
-          <span>💬</span><span class="stitle" style="color:var(--blu)">Manager Messages</span>
+        <div class="shead" style="background:rgba(37,99,235,.06)">
+          <span class="stitle" style="color:var(--blu)">Messages</span>
           <span id="cmt-badge" style="margin-left:auto;background:var(--blu);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:10px"></span>
         </div>
-        <div id="cmts-feed" style="max-height:160px;overflow-y:auto;padding:2px 0">
-          <div style="padding:12px;font-size:11px;color:var(--txt3);text-align:center;font-style:italic">No messages yet</div>
-        </div>
+        <div id="cmts-feed" style="max-height:140px;overflow-y:auto;padding:2px 0"></div>
       </div>
     </div>
   </div>
@@ -355,304 +361,280 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const SLACK_API = "/api/slack";
-const LOG_API   = "/api/log";
-const SUPA_URL  = "https://watgvezsgppjvusotuge.supabase.co";
-const SUPA_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
-const SLACK_GENERAL = "C0B6EGPPC0L";
-const STORE_KEY = "arches_v5";
-// Strip project code prefix for display
-// Full: a112321_oliverwyman_us_service_automation
-// Display: oliverwyman_us_service_automation
-function dispName(name){
-  if(!name) return "";
-  // Remove pjt_ prefix first if present
-  let n = name.startsWith("pjt_") ? name.slice(4) : name;
-  // Remove leading code like a112321_ (letter + digits + underscore)
-  return n.replace(/^[a-zA-Z]\d+_/, "");
-}
+const SLACK_API="/api/slack", LOG_API="/api/log";
+const SUPA_URL="https://watgvezsgppjvusotuge.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhdGd2ZXpzZ3BwanZ1c290dWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODExMzgsImV4cCI6MjA5NjI1NzEzOH0.U1vPzCzCPKHozbdvIV6n2_67UqB3etUSFc9yKoyE0SU";
+const STORE_KEY="arches_v5"; // same key — no data lost
+const PCOLS=["#E07000","#2563EB","#16A34A","#7C3AED","#DC2626","#0891B2","#EA580C","#059669"];
 
-const PCOLS = ["#F7A200","#E07000","#F59E0B","#D97706","#B45309","#EA580C","#EF4444","#8B5CF6"];
-
-const TEAMS = {
-  luis:  {id:"luis",  name:"Luis",  emoji:"🟠", color:"#F7A200", slack:"C0B8QE4DNBE"},
-  taiki: {id:"taiki", name:"Taiki", emoji:"🔵", color:"#3B82F6", slack:"C0B8EENH60K"},
+const TEAMS={
+  luis:{id:"luis",name:"Luis",emoji:"🟠",color:"#E07000",slack:"C0B8QE4DNBE"},
+  taiki:{id:"taiki",name:"Taiki",emoji:"🔵",color:"#2563EB",slack:"C0B8EENH60K"},
 };
 
-const ACTIONS = [
-  {id:"db_search",    emoji:"🗄️", name:"DB Search (CC+Email)",   target:1  },
-  {id:"li_search",    emoji:"🔍", name:"LinkedIn Search",          target:25 },
-  {id:"expansion",    emoji:"📈", name:"Expansion (if needed)",    target:60 },
-  {id:"cold_call",    emoji:"📞", name:"Cold Call",                target:20 },
-  {id:"connections",  emoji:"🔗", name:"Connections",              target:25 },
-  {id:"inmail",       emoji:"💼", name:"InMail (LI Premium)",      target:10 },
-  {id:"emails",       emoji:"📧", name:"Emails (Instantly)",       target:40 },
-  {id:"sms",          emoji:"💬", name:"SMS / iMessage",           target:15 },
-  {id:"company_call", emoji:"🏢", name:"Company Call (if needed)", target:1  },
-  {id:"proposals",    emoji:"🤝", name:"Proposals",                target:3  },
-  {id:"int_sched",    emoji:"🎙️", name:"Interviews Scheduled",     target:2  },
-  {id:"int_done",     emoji:"📅", name:"Interviews Completed",     target:1  },
-  {id:"other",        emoji:"⚡", name:"Other Actions",            target:1  },
+// optional:true → counts toward % only if worked, no ❌ in Slack if 0
+const ACTIONS=[
+  {id:"db_search",    emoji:"🗄",  name:"DB Search",          target:1,  optional:false},
+  {id:"li_search",    emoji:"🔍",  name:"LinkedIn Search",    target:25, optional:false},
+  {id:"expansion",    emoji:"📈",  name:"Expansion",          target:60, optional:false},
+  {id:"cold_call",    emoji:"📞",  name:"Cold Call",          target:20, optional:false},
+  {id:"connections",  emoji:"🔗",  name:"Connections",        target:25, optional:false},
+  {id:"inmail",       emoji:"💼",  name:"InMail",             target:10, optional:false},
+  {id:"emails",       emoji:"📧",  name:"Emails",             target:40, optional:false},
+  {id:"sms",          emoji:"💬",  name:"SMS",                target:15, optional:false},
+  {id:"company_call", emoji:"🏢",  name:"Company Call",       target:1,  optional:true},
+  {id:"proposals",    emoji:"🤝",  name:"Proposals",          target:3,  optional:true},
+  {id:"int_sched",    emoji:"🎙",  name:"Int. Scheduled",     target:2,  optional:true},
+  {id:"int_done",     emoji:"📅",  name:"Int. Completed",     target:1,  optional:true},
+  {id:"other",        emoji:"⚡",  name:"Other Actions",      target:1,  optional:true},
 ];
 
-let PROJECTS = [];
-const S = {
-  checks:{}, counts:{}, notes:{}, active:null,
-  completed:{}, allDone:false,
-  swE:{}, swR:{}, swI:{},
-  actLog:[], user:"", team:null, noteModal:null
-};
+const CORE_ACTIONS=ACTIONS.filter(a=>!a.optional);   // used for % calc
+const OPT_ACTIONS=ACTIONS.filter(a=>a.optional);
 
-// ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
-function save(){
-  try{
-    localStorage.setItem(STORE_KEY, JSON.stringify({
-      date: new Date().toDateString(),
-      user: S.user, teamId: S.team?.id,
-      projects: PROJECTS,
-      checks: S.checks, counts: S.counts, notes: S.notes,
-      active: S.active, completed: S.completed,
-      swE: S.swE, actLog: S.actLog.slice(0,20)
-    }));
-  }catch{}
+let PROJECTS=[];
+const S={checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null,closeModal:null};
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function initTheme(){
+  const t=localStorage.getItem("arches_theme")||"light";
+  document.documentElement.setAttribute("data-theme",t);
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute("data-theme")||"light";
+  const next=cur==="light"?"dark":"light";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem("arches_theme",next);
+}
+initTheme();
+
+// ── DISPLAY NAME ──────────────────────────────────────────────────────────────
+function dispName(name){
+  if(!name)return"";
+  let n=name.startsWith("pjt_")?name.slice(4):name;
+  return n.replace(/^[a-zA-Z]\d+_/,"");
 }
 
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function save(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({date:new Date().toDateString(),user:S.user,teamId:S.team?.id,projects:PROJECTS,checks:S.checks,counts:S.counts,notes:S.notes,active:S.active,completed:S.completed,swE:S.swE,actLog:S.actLog.slice(0,20)}));}catch{}
+}
 function restore(){
   try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(!raw) return false;
-    const d = JSON.parse(raw);
-    if(d.date !== new Date().toDateString()){ localStorage.removeItem(STORE_KEY); return false; }
-    if(!d.user || !d.projects?.length) return false;
-    S.user=d.user; S.checks=d.checks||{}; S.counts=d.counts||{};
-    S.notes=d.notes||{}; S.active=d.active; S.completed=d.completed||{};
-    S.swE=d.swE||{}; S.actLog=d.actLog||[];
-    PROJECTS=d.projects;
-    if(d.teamId) S.team=TEAMS[d.teamId]||null;
+    const raw=localStorage.getItem(STORE_KEY);if(!raw)return false;
+    const d=JSON.parse(raw);
+    if(d.date!==new Date().toDateString()){localStorage.removeItem(STORE_KEY);return false;}
+    if(!d.user||!d.projects?.length)return false;
+    S.user=d.user;S.checks=d.checks||{};S.counts=d.counts||{};S.notes=d.notes||{};S.active=d.active;S.completed=d.completed||{};S.swE=d.swE||{};S.actLog=d.actLog||[];PROJECTS=d.projects;
+    if(d.teamId)S.team=TEAMS[d.teamId]||null;
     return true;
-  }catch{ return false; }
+  }catch{return false;}
 }
-
-function getPrevProjects(){
-  try{
-    // Look for yesterday's data in a separate key
-    const raw = localStorage.getItem(STORE_KEY+"_prev");
-    if(!raw) return [];
-    const d = JSON.parse(raw);
-    return d.projects||[];
-  }catch{ return []; }
-}
-
-function savePrevProjects(){
-  try{
-    localStorage.setItem(STORE_KEY+"_prev", JSON.stringify({
-      projects: PROJECTS.map(p=>({name:p.name, prio:p.prio}))
-    }));
-  }catch{}
-}
+function getPrev(){try{const r=localStorage.getItem(STORE_KEY+"_prev");return r?JSON.parse(r).projects||[]:[]}catch{return[];}}
+function savePrev(){try{localStorage.setItem(STORE_KEY+"_prev",JSON.stringify({projects:PROJECTS.map(p=>({name:p.name,prio:p.prio}))}));}catch{}}
 
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
-async function supa(table, params=""){
-  try{
-    const r = await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{
-      headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`}
-    });
-    return r.ok ? r.json() : [];
-  }catch{ return []; }
+async function supa(table,params=""){
+  try{const r=await fetch(`${SUPA_URL}/rest/v1/${table}${params}`,{headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`}});return r.ok?r.json():[];}catch{return[];}
 }
-
 async function supaLog(){
   try{
-    const payload = {
-      person: S.user, teamId: S.team?.id||null,
-      projects: PROJECTS.map(proj=>{
-        const done = ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-        const cnts = {}; ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
-        const notes = {}; ACTIONS.forEach(a=>{const n=S.notes[`${proj.id}_${a.id}`];if(n)notes[a.id]=n;});
-        return {name:proj.name, prio:proj.prio, counts:cnts, notes, actionsDone:done, pct:Math.round(done/ACTIONS.length*100)};
-      })
-    };
-    const r = await fetch(LOG_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    setSyncInd(r.ok?"ok":"err");
+    const payload={person:S.user,teamId:S.team?.id||null,projects:PROJECTS.map(proj=>{
+      const done=CORE_ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
+      const cnts={};ACTIONS.forEach(a=>cnts[a.id]=S.counts[`${proj.id}_${a.id}`]||0);
+      const notes={};ACTIONS.forEach(a=>{const n=S.notes[`${proj.id}_${a.id}`];if(n)notes[a.id]=n;});
+      return{name:proj.name,prio:proj.prio,counts:cnts,notes,actionsDone:done,pct:calcPct(proj.id)};
+    })};
+    const r=await fetch(LOG_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     return r.ok;
-  }catch{ setSyncInd("err"); return false; }
-}
-
-function setSyncInd(state){
-  const dot=document.getElementById("sync-dot"), lbl=document.getElementById("sync-lbl");
-  if(state==="syncing"){dot.style.background="var(--org)";dot.style.opacity="1";lbl.textContent="syncing…";}
-  else if(state==="ok"){dot.style.background="var(--grn)";dot.style.opacity="1";lbl.textContent="synced";setTimeout(()=>{dot.style.opacity=".4";},3000);}
-  else{dot.style.background="var(--red)";dot.style.opacity="1";lbl.textContent="sync failed";}
+  }catch{return false;}
 }
 
 let syncTimer=null;
-function scheduleSync(){
-  setSyncInd("syncing");
-  if(syncTimer) clearTimeout(syncTimer);
-  syncTimer=setTimeout(()=>{if(S.user&&PROJECTS.length>0)supaLog();},15000);
-}
+function scheduleSync(){if(syncTimer)clearTimeout(syncTimer);syncTimer=setTimeout(()=>{if(S.user&&PROJECTS.length>0)supaLog();},15000);}
 
 // ── SLACK ─────────────────────────────────────────────────────────────────────
 async function slackSend(text){
   try{
-    const ch=S.team?.slack||SLACK_GENERAL;
+    const ch=S.team?.slack||"C0B6EGPPC0L";
     const r=await fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:ch})});
     const d=await r.json();
-    if(d.ok&&ch!==SLACK_GENERAL) fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:SLACK_GENERAL})});
+    if(d.ok&&ch!=="C0B6EGPPC0L")fetch(SLACK_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,channel:"C0B6EGPPC0L"})});
     return d.ok;
   }catch{return false;}
 }
 
-function setSUI(s,detail){
-  const cfg={
-    sending:{bg:"rgba(247,162,0,.1)",bc:"rgba(247,162,0,.3)",dot:"var(--org)",color:"var(--org)",lbl:"Sending…"},
-    success:{bg:"rgba(34,197,94,.1)",bc:"rgba(34,197,94,.3)",dot:"var(--grn)",color:"var(--grn)",lbl:"✅ Sent!"},
-    error:{bg:"rgba(239,68,68,.1)",bc:"rgba(239,68,68,.3)",dot:"var(--red)",color:"var(--red)",lbl:`⚠️ ${detail||"Error"}`},
-  }[s];
+function setSUI(s){
   const i=document.getElementById("sind");
-  i.style.cssText=`display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;border:1px solid ${cfg.bc};background:${cfg.bg};color:${cfg.color}`;
-  i.textContent=cfg.lbl;
-  const l=document.getElementById("slive");l.style.display="flex";l.style.background=cfg.bg;
-  document.getElementById("sdot").style.cssText=`width:5px;height:5px;border-radius:50%;background:${cfg.dot};flex-shrink:0`;
-  document.getElementById("stxt").style.color=cfg.color;document.getElementById("stxt").textContent=cfg.lbl;
+  const cfgs={sending:{bg:"var(--org-lt)",c:"var(--org)",t:"Sending…"},success:{bg:"var(--grn-lt)",c:"var(--grn)",t:"✓ Sent"},error:{bg:"var(--red-lt)",c:"var(--red)",t:"⚠ Error"}};
+  const cfg=cfgs[s];
+  i.style.cssText=`display:flex;align-items:center;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;border:1.5px solid ${cfg.c};background:${cfg.bg};color:${cfg.c}`;
+  i.textContent=cfg.t;
+  document.getElementById("slive").style.cssText=`display:block;font-size:10px;font-weight:600;padding:5px 8px;border-radius:6px;background:${cfg.bg};color:${cfg.c}`;
+  document.getElementById("slive").textContent=cfg.t;
   ["bupd","beod"].forEach(id=>document.getElementById(id).disabled=s==="sending");
-  if(s!=="sending")setTimeout(()=>{i.style.display="none";l.style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},4000);
+  if(s!=="sending")setTimeout(()=>{i.style.display="none";document.getElementById("slive").style.display="none";["bupd","beod"].forEach(id=>document.getElementById(id).disabled=false);},3500);
+}
+
+// ── % CALCULATION (core actions only) ─────────────────────────────────────────
+function calcPct(pid){
+  const done=CORE_ACTIONS.filter(a=>S.checks[`${pid}_${a.id}`]).length;
+  return Math.round(done/CORE_ACTIONS.length*100);
+}
+function calcGlobalPct(){
+  if(!PROJECTS.length)return 0;
+  return Math.round(PROJECTS.reduce((s,p)=>s+calcPct(p.id),0)/PROJECTS.length);
 }
 
 // ── MESSAGES ──────────────────────────────────────────────────────────────────
 function buildProjMsg(proj){
-  let m=`🎉 *Project Complete!*\n*${S.user}* finished *${proj.name}* [${proj.prio}]\n_${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}_\n\n`;
+  let m=`✅ *Project Done — ${S.user}*\n*${dispName(proj.name)}* [${proj.prio}] · ${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}\n\n`;
   ACTIONS.forEach(a=>{
     const k=`${proj.id}_${a.id}`,cnt=S.counts[k]||0,note=S.notes[k],chk=S.checks[k];
-    const icon=chk&&cnt>0&&cnt>=a.target?"✅":chk&&cnt>0?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
-    m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
+    if(a.optional&&cnt===0&&!chk)return; // skip unchecked optionals
+    const icon=chk&&cnt>=a.target?"✅":chk||cnt>0?"🟡":"❌";
+    if(!a.optional||cnt>0||chk) m+=`${icon} ${a.emoji} *${a.name}:* ${cnt}${note?` — _${note}_`:""}\n`;
   });
   return m;
 }
-
 function buildEODMsg(){
   const date=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`🏆 *End of Day — ${S.user}*\n*${date}* | *${pct}% complete*\n\n`;
+  const pct=calcGlobalPct();
+  let m=`🏆 *End of Day — ${S.user}*\n*${date}* · *${pct}% complete*\n\n`;
   [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
-    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,mins=Math.floor((S.swE[proj.id]||0)/60000);
-    m+=`*[${proj.prio}] ${proj.name}* — ${Math.round(pd/ACTIONS.length*100)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
+    const mins=Math.floor((S.swE[proj.id]||0)/60000);
+    m+=`*[${proj.prio}] ${dispName(proj.name)}* — ${calcPct(proj.id)}%${mins>0?` ⏱ ${mins}min`:""}\n`;
     ACTIONS.forEach(a=>{
       const cnt=S.counts[`${proj.id}_${a.id}`]||0,note=S.notes[`${proj.id}_${a.id}`],chk=S.checks[`${proj.id}_${a.id}`];
-      const icon=chk&&cnt>0&&cnt>=a.target?"✅":chk&&cnt>0?"🟡":chk&&cnt===0?"🟡 (note)":cnt>0?"🟡":"❌";
-      m+=`  ${icon} ${a.emoji} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;
-    });
-    m+="\n";
+      if(a.optional&&cnt===0&&!chk)return;
+      const icon=chk&&cnt>=a.target?"✅":chk||cnt>0?"🟡":"❌";
+      m+=`  ${icon} ${a.name}: ${cnt}${note?` — _${note}_`:""}\n`;
+    });m+="\n";
   });
-  m+=`📊 *Grand Totals:*\n`;
+  m+=`*Totals:*\n`;
   ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0)m+=`${a.emoji} ${a.name}: *${t}*\n`;});
   return m;
 }
-
 function buildUpdateMsg(){
-  const date=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
-  const done=Object.values(S.checks).filter(Boolean).length,pct=Math.round(done/(PROJECTS.length*ACTIONS.length)*100);
-  let m=`📊 *Update — ${S.user}* | ${date} | ${pct}% complete\n\n`;
+  const pct=calcGlobalPct();
+  let m=`📊 *Update — ${S.user}* · ${pct}% complete\n\n`;
   PROJECTS.forEach(proj=>{
-    const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-    m+=`*[${proj.prio}] ${proj.short}* — ${Math.round(pd/ACTIONS.length*100)}%\n`;
-    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0;if(cnt>0)m+=`  ${a.emoji} ${a.name}: ${cnt}\n`;});
-    m+="\n";
-  });
-  return m;
+    m+=`*[${proj.prio}] ${dispName(proj.short||proj.name)}* — ${calcPct(proj.id)}%\n`;
+    ACTIONS.forEach(a=>{const cnt=S.counts[`${proj.id}_${a.id}`]||0;if(cnt>0)m+=`  ${a.emoji} ${a.name}: ${cnt}\n`;});m+="\n";
+  });return m;
 }
 
-// ── EOD CONFIRM ───────────────────────────────────────────────────────────────
+// ── EOD ───────────────────────────────────────────────────────────────────────
 function showEOD(){
-  const projects = [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio));
-  const totalPct = PROJECTS.length>0 ? Math.round(Object.values(S.checks).filter(Boolean).length/(PROJECTS.length*ACTIONS.length)*100) : 0;
+  const pct=calcGlobalPct();
   document.getElementById("eod-preview").innerHTML=`
-    <div style="background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:12px;display:flex;gap:16px">
-      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:${totalPct>=80?"var(--grn)":totalPct>=50?"var(--ylw)":"var(--red)"}">${totalPct}%</div><div style="font-size:10px;color:var(--txt3)">Overall</div></div>
-      <div style="flex:1">${projects.map(proj=>{
-        const pd=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(pd/ACTIONS.length*100);
-        return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="pb pb-${proj.prio}">${proj.prio}</span><span style="font-size:11px;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${proj.name}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:${pct>=80?"var(--grn)":pct>=50?"var(--ylw)":"var(--red)"};flex-shrink:0">${pct}%</span></div>`;
-      }).join("")}</div>
+    <div style="background:var(--sur2);border:1.5px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:${pct>=80?"var(--grn)":pct>=50?"var(--ylw)":"var(--red)"};text-align:center;margin-bottom:10px">${pct}%</div>
+      ${[...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).map(proj=>{
+        const p=calcPct(proj.id);
+        return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span class="pb pb-${proj.prio}">${proj.prio}</span>
+          <span style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${dispName(proj.name)}</span>
+          <span style="font-weight:700;color:${p>=80?"var(--grn)":p>=50?"var(--ylw)":"var(--red)"};font-size:12px">${p}%</span>
+        </div>`;
+      }).join("")}
     </div>
-    ${ACTIONS.some(a=>PROJECTS.some(p=>S.notes[`${p.id}_${a.id}`]))?`<div style="font-size:11px;color:var(--txt2);margin-bottom:8px;font-weight:500">📝 Notes included in report</div>`:""}
-    <div style="font-size:11px;color:var(--txt3)">This will send to Slack and update the manager dashboard.</div>`;
+    <div style="font-size:11px;color:var(--txt3)">Sends to Slack + manager dashboard.</div>`;
   document.getElementById("eod-modal").style.display="flex";
 }
-
 async function confirmEOD(){
   document.getElementById("eod-modal").style.display="none";
-  setSUI("sending");
-  savePrevProjects();
+  setSUI("sending");savePrev();
   const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
   setSUI(sOk?"success":"error");
-  showToast(sOk&&gOk?"🏆 Slack & Dashboard updated!":sOk?"🏆 Sent (Dashboard ⚠️)":"⚠️ Error",sOk?"success":"error");
+  showToast(sOk&&gOk?"🏆 Report sent!":sOk?"🏆 Sent (dashboard ⚠)":"⚠ Error",sOk?"success":"error");
   logAct("📊","EOD report sent");
 }
-
 async function sendUpdate(){
   setSUI("sending");
   const ok=await slackSend(buildUpdateMsg());
   setSUI(ok?"success":"error");
-  showToast(ok?"📊 Update sent!":"⚠️ Slack error",ok?"success":"error");
+  showToast(ok?"↑ Update sent!":"⚠ Error",ok?"success":"error");
 }
-
 async function notifyProj(pid){
-  const proj=PROJECTS.find(p=>p.id===pid);
-  setSUI("sending");
-  const ok=await slackSend(buildProjMsg(proj));
-  setSUI(ok?"success":"error");
-  showToast(ok?`✅ ${proj.short} sent!`:"⚠️ Error",ok?"success":"error");
+  const proj=PROJECTS.find(p=>p.id===pid);setSUI("sending");
+  const ok=await slackSend(buildProjMsg(proj));setSUI(ok?"success":"error");
+  showToast(ok?`✅ ${dispName(proj.name)} notified`:"⚠ Error",ok?"success":"error");
 }
 
 // ── PROJECT COMPLETE ──────────────────────────────────────────────────────────
 function checkComplete(pid){
-  const proj=PROJECTS.find(p=>p.id===pid),done=ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
+  const proj=PROJECTS.find(p=>p.id===pid);
+  const done=CORE_ACTIONS.every(a=>S.checks[`${pid}_${a.id}`]);
   if(done&&!S.completed[pid]){
-    S.completed[pid]=true;logAct("🎉",`${proj.short} 100% complete!`);
-    fireConfetti();showToast(`🎉 ${proj.short} done!`,"success");
+    S.completed[pid]=true;logAct("🎉",`${dispName(proj.name)} 100%!`);
+    fireConfetti();showToast(`🎉 ${dispName(proj.name)} done!`,"success");
     slackSend(buildProjMsg(proj)).then(ok=>setSUI(ok?"success":"error"));
     if(PROJECTS.every(p=>S.completed[p.id])&&!S.allDone){
       S.allDone=true;fireConfetti(true);
       setTimeout(async()=>{
-        showToast("🏆 All done! Sending report…","success");
-        savePrevProjects();
+        showToast("🏆 All projects done!","success");savePrev();
         const[sOk,gOk]=await Promise.all([slackSend(buildEODMsg()),supaLog()]);
-        showToast(sOk&&gOk?"🏆 Slack & Dashboard done!":"🏆 Done!","success");
-        logAct("🏆","Full debrief sent");
+        setSUI(sOk?"success":"error");logAct("🏆","Full debrief sent");
       },1800);
     }
   }else if(!done){S.completed[pid]=false;S.allDone=false;}
 }
 
+// ── CLOSE PROJECT (check all with note) ───────────────────────────────────────
+function openCloseProject(pid){
+  S.closeModal=pid;
+  const proj=PROJECTS.find(p=>p.id===pid);
+  document.getElementById("close-title").textContent=`Close: ${dispName(proj.name)}`;
+  document.getElementById("close-note").value="";
+  document.getElementById("close-modal").style.display="flex";
+  setTimeout(()=>document.getElementById("close-note").focus(),80);
+}
+function confirmCloseProject(){
+  const pid=S.closeModal;if(!pid)return;
+  const note=document.getElementById("close-note").value.trim();
+  // Mark all core actions done
+  CORE_ACTIONS.forEach(a=>{
+    const key=`${pid}_${a.id}`;
+    S.checks[key]=true;
+    if(!S.counts[key])S.counts[key]=0;
+    if((S.counts[key]||0)===0&&!S.notes[key]&&note)S.notes[key]=note;
+  });
+  document.getElementById("close-modal").style.display="none";
+  S.closeModal=null;
+  logAct("✅",`Closed: ${dispName(PROJECTS.find(p=>p.id===pid)?.name||"")}`);
+  checkComplete(pid);renderActionRow_all(pid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
+}
+function renderActionRow_all(pid){ACTIONS.forEach(a=>renderActionRow(pid,a.id));}
+
 // ── STOPWATCH ─────────────────────────────────────────────────────────────────
 function startSW(pid){
   if(S.swR[pid])return;
-  const elapsed=S.swE[pid]||0;
-  const t0=Date.now()-elapsed;
-  S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);
-  S.swR[pid]=true;
+  const elapsed=S.swE[pid]||0,t0=Date.now()-elapsed;
+  S.swI[pid]=setInterval(()=>{S.swE[pid]=Date.now()-t0;updSW(pid);},500);S.swR[pid]=true;
 }
 function stopSW(pid){if(!S.swR[pid])return;clearInterval(S.swI[pid]);S.swR[pid]=false;}
 function resetSW(pid){stopSW(pid);S.swE[pid]=0;updSW(pid);}
-function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${String(h).padStart(2,"0")}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
+function fmtT(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return h>0?`${h}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;}
 function updSW(pid){
-  const el1=document.getElementById(`swl-${pid}`),el2=document.getElementById("swc");
-  const col=PROJECTS.find(p=>p.id===pid)?.color||"#fff";
-  if(el1){el1.textContent=fmtT(S.swE[pid]||0);el1.style.color=S.swR[pid]?col:"var(--txt3)";}
-  if(el2&&S.active===pid){el2.textContent=fmtT(S.swE[pid]||0);el2.style.color=S.swR[pid]?col:"var(--txt)";}
+  const e1=document.getElementById(`swl-${pid}`),e2=document.getElementById("swc");
+  const col=PROJECTS.find(p=>p.id===pid)?.color||"var(--org)";
+  if(e1){e1.textContent=fmtT(S.swE[pid]||0);e1.style.color=S.swR[pid]?col:"var(--txt3)";}
+  if(e2&&S.active===pid){e2.textContent=fmtT(S.swE[pid]||0);e2.style.color=S.swR[pid]?col:"var(--txt)";}
 }
-function switchProject(pid){
-  if(S.active===pid)return;
-  stopSW(S.active);S.active=pid;startSW(pid);
-  save();renderAll();
-}
+function switchProject(pid){if(S.active===pid)return;stopSW(S.active);S.active=pid;startSW(pid);save();renderAll();}
 
 // ── COUNTERS ──────────────────────────────────────────────────────────────────
 function setCount(pid,aid,val){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid),prev=S.counts[key]||0,next=Math.max(0,val);
   S.counts[key]=next;
-  if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`${a.emoji} ${a.name} target hit! (${next})`);checkComplete(pid);}
-  else if(next<a.target&&prev>=a.target&&next>0){S.checks[key]=false;}
+  if(!a.optional){
+    if(next>=a.target&&prev<a.target){S.checks[key]=true;logAct("🎯",`${a.name} target hit!`);checkComplete(pid);}
+    else if(next<a.target&&prev>=a.target&&next>0)S.checks[key]=false;
+  }else{
+    if(next>=a.target&&prev<a.target)S.checks[key]=true;
+    else if(next<a.target&&prev>=a.target&&next>0)S.checks[key]=false;
+  }
   renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
 }
 function addCount(pid,aid,delta){setCount(pid,aid,(S.counts[`${pid}_${aid}`]||0)+delta);}
@@ -660,25 +642,24 @@ function addCount(pid,aid,delta){setCount(pid,aid,(S.counts[`${pid}_${aid}`]||0)
 function toggleCheck(pid,aid){
   const key=`${pid}_${aid}`,a=ACTIONS.find(x=>x.id===aid);
   if(!S.checks[key]){
-    if((S.counts[key]||0)===0){openNote(pid,aid);return;}
+    if((S.counts[key]||0)===0&&!a.optional){openNote(pid,aid);return;}
     S.checks[key]=true;
-  }else{S.checks[key]=false;}
-  const proj=PROJECTS.find(x=>x.id===pid);
-  if(S.checks[key])logAct("✅",`${a.name} · ${proj.short}`);
-  checkComplete(pid);renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
+  }else S.checks[key]=false;
+  if(!a.optional){checkComplete(pid);}
+  renderActionRow(pid,aid);updateGlobal();renderLeft();renderOv();save();scheduleSync();
 }
 
 // ── NOTE MODAL ────────────────────────────────────────────────────────────────
 function openNote(pid,aid){
   S.noteModal={pid,aid};
   const a=ACTIONS.find(x=>x.id===aid);
-  document.getElementById("note-sub").textContent=`"${a.name}" — enter reason to mark done with 0.`;
+  document.getElementById("note-sub").textContent=`"${a.name}" — explain why marking done with 0.`;
   document.getElementById("note-inp").value=S.notes[`${pid}_${aid}`]||"";
   document.getElementById("note-modal").style.display="flex";
   setTimeout(()=>document.getElementById("note-inp").focus(),80);
 }
-function closeNote(save_note){
-  if(save_note){
+function closeNote(sv){
+  if(sv){
     const val=document.getElementById("note-inp").value.trim();
     if(!val){document.getElementById("note-inp").style.borderColor="var(--red)";return;}
     const{pid,aid}=S.noteModal;
@@ -689,57 +670,84 @@ function closeNote(save_note){
   document.getElementById("note-modal").style.display="none";S.noteModal=null;
 }
 
+// ── ADD / REMOVE PROJECT ──────────────────────────────────────────────────────
+let _addPrio="P2";
+function openAddProject(){
+  document.getElementById("add-proj-inp").value="";
+  document.getElementById("add-proj-err").style.display="none";
+  _addPrio="P2";
+  document.querySelectorAll("#add-prio-btns button").forEach(b=>{
+    const p=b.getAttribute("data-prio");
+    const sel=p==="P2";
+    b.style.borderColor=sel?"var(--org)":"var(--bdr)";
+    b.style.background=sel?"var(--org-lt)":"var(--sur2)";
+    b.style.color=sel?"var(--org)":"var(--txt3)";
+    b.textContent=p+(sel?" ✓":"");
+  });
+  document.getElementById("add-proj-modal").style.display="flex";
+  setTimeout(()=>document.getElementById("add-proj-inp").focus(),80);
+}
+function selAddPrio(btn){
+  _addPrio=btn.getAttribute("data-prio");
+  document.querySelectorAll("#add-prio-btns button").forEach(b=>{
+    const p=b.getAttribute("data-prio"),sel=p===_addPrio;
+    const colors={P1:"var(--red)",P2:"var(--org)",P3:"var(--grn)"};
+    b.style.borderColor=sel?colors[p]:"var(--bdr)";
+    b.style.background=sel?`var(--${p==="P1"?"red":p==="P2"?"org":"grn"}-lt)`:"var(--sur2)";
+    b.style.color=sel?colors[p]:"var(--txt3)";
+    b.textContent=p+(sel?" ✓":"");
+  });
+}
+function confirmAddProject(){
+  const name=document.getElementById("add-proj-inp").value.trim();
+  const err=document.getElementById("add-proj-err");
+  if(!name){err.style.display="block";err.textContent="⚠ Enter a project name";return;}
+  if(PROJECTS.find(p=>p.name===name)){err.style.display="block";err.textContent="⚠ Already added";return;}
+  if(PROJECTS.length>=8){err.style.display="block";err.textContent="⚠ Max 8 projects";return;}
+  const dn=dispName(name);
+  PROJECTS.push({id:"p_"+Date.now(),name,short:dn.length>16?dn.substring(0,14)+"…":dn,color:PCOLS[PROJECTS.length%PCOLS.length],prio:_addPrio});
+  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
+  document.getElementById("add-proj-modal").style.display="none";
+  logAct("📋",`Added: ${dn}`);showToast(`Added ${dn}`,"success");
+  save();renderAll();scheduleSync();
+}
+function removeProject(pid){
+  const proj=PROJECTS.find(p=>p.id===pid);if(!proj)return;
+  if(!confirm(`Remove "${dispName(proj.name)}"?`))return;
+  PROJECTS=PROJECTS.filter(p=>p.id!==pid);
+  ACTIONS.forEach(a=>{delete S.checks[`${pid}_${a.id}`];delete S.counts[`${pid}_${a.id}`];delete S.notes[`${pid}_${a.id}`];});
+  delete S.completed[pid];delete S.swE[pid];stopSW(pid);
+  if(S.active===pid)S.active=PROJECTS.length>0?PROJECTS[0].id:null;
+  if(S.active)startSW(S.active);
+  logAct("🗑","Removed: "+dispName(proj.name));save();renderAll();scheduleSync();
+}
+
 // ── LUNCH / MEETING ───────────────────────────────────────────────────────────
-let onLunch=false, onMeeting=false;
-
-function toggleLunch(){
-  if(!onLunch){
-    onLunch=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});
-    logAct("🍽️","Lunch break — timers paused");showOverlayScreen("lunch");
-  }else{
-    onLunch=false;hideOverlayScreen("lunch-overlay");
-    if(S.active)startSW(S.active);logAct("✅","Back from lunch");renderLeft();
-  }
+let onLunch=false,onMeeting=false;
+function showOverlay(type){
+  const isL=type==="lunch";
+  const id=isL?"lunch-ov":"meet-ov";
+  const color=isL?"var(--org)":"var(--pur)";
+  const emoji=isL?"🍽":"📞";
+  const title=isL?"Have a good lunch!":"In a Meeting";
+  const label=isL?"▶ Continue Working":"▶ Back to Work";
+  const fn=isL?"toggleLunch":"toggleMeeting";
+  const el=document.createElement("div");el.id=id;el.className="overlay-screen";
+  el.style.animation="fadeIn .3s ease";
+  el.innerHTML=`<div style="font-size:64px;line-height:1">${emoji}</div>
+    <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:${color}">${title}</div>
+    <div style="font-size:13px;color:var(--txt2)">All timers paused</div>
+    <button onclick="${fn}()" style="margin-top:8px;background:${color};border:none;border-radius:12px;padding:14px 36px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:var(--shadow-md)">${label}</button>`;
+  document.body.appendChild(el);
 }
-function toggleMeeting(){
-  if(!onMeeting){
-    onMeeting=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});
-    logAct("📞","Meeting started — timers paused");showOverlayScreen("meeting");
-  }else{
-    onMeeting=false;hideOverlayScreen("meeting-overlay");
-    if(S.active)startSW(S.active);logAct("✅","Back from meeting");renderLeft();
-  }
-}
-
-function showOverlayScreen(type){
-  const isLunch=type==="lunch";
-  const id=isLunch?"lunch-overlay":"meeting-overlay";
-  const color=isLunch?"var(--org)":"#A78BFA";
-  const emoji=isLunch?"🍽️":"📞";
-  const title=isLunch?"Have a good lunch!":"In a Meeting";
-  const btnLabel=isLunch?"▶ Continue Working":"▶ Back to Work";
-  const btnStyle=isLunch?"background:linear-gradient(135deg,var(--org),var(--od));box-shadow:0 6px 20px rgba(247,162,0,.4)":"background:linear-gradient(135deg,#8B5CF6,#6D28D9);box-shadow:0 6px 20px rgba(139,92,246,.4)";
-  const div=document.createElement("div");div.id=id;div.className="overlay-screen";
-  div.innerHTML=`<div style="font-size:80px;line-height:1">${emoji}</div>
-    <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:900;color:${color};letter-spacing:-.5px">${title}</div>
-    <div style="font-size:13px;color:var(--txt2)">All timers are paused</div>
-    <button onclick="${isLunch?"toggleLunch":"toggleMeeting"}()" style="${btnStyle};border:none;border-radius:12px;padding:14px 36px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">${btnLabel}</button>`;
-  document.body.appendChild(div);
-}
-function hideOverlayScreen(id){
-  const el=document.getElementById(id);
-  if(el){el.style.animation="fadeOut .3s ease forwards";setTimeout(()=>el.remove(),300);}
-}
+function hideOverlay(id){const el=document.getElementById(id);if(el){el.style.animation="fadeOut .25s ease forwards";setTimeout(()=>el.remove(),250);}}
+function toggleLunch(){if(!onLunch){onLunch=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});logAct("🍽","Lunch break");showOverlay("lunch");}else{onLunch=false;hideOverlay("lunch-ov");if(S.active)startSW(S.active);logAct("✅","Back from lunch");renderLeft();}}
+function toggleMeeting(){if(!onMeeting){onMeeting=true;PROJECTS.forEach(p=>{if(S.swR[p.id])stopSW(p.id);});logAct("📞","Meeting");showOverlay("meeting");}else{onMeeting=false;hideOverlay("meet-ov");if(S.active)startSW(S.active);logAct("✅","Back from meeting");renderLeft();}}
 
 // ── SETUP ─────────────────────────────────────────────────────────────────────
-document.getElementById("s-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}).toUpperCase();
+document.getElementById("s-date").textContent=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}).toUpperCase();
 let cachedMembers=null;
-
-async function initSetup(){
-  await refreshMembers();
-  await loadTargets();
-}
-
+async function initSetup(){await refreshMembers();await loadTargets();}
 async function refreshMembers(){
   const data=await supa("members","?active=eq.true&select=name,team_id&order=name");
   cachedMembers={luis:[],taiki:[]};
@@ -747,50 +755,41 @@ async function refreshMembers(){
   document.getElementById("luis-ct").textContent=cachedMembers.luis.length+" members";
   document.getElementById("taiki-ct").textContent=cachedMembers.taiki.length+" members";
 }
-
 async function loadTargets(){
   const data=await supa("action_targets","?select=id,target&order=sort_order");
-  if(data&&data.length>0) data.forEach(t=>{const a=ACTIONS.find(x=>x.id===t.id);if(a)a.target=t.target;});
+  if(data&&data.length>0)data.forEach(t=>{const a=ACTIONS.find(x=>x.id===t.id);if(a)a.target=t.target;});
 }
-
 async function selTeam(tid){
   S.team=TEAMS[tid];
   document.getElementById("team-lbl").textContent="Team "+S.team.name;
   document.getElementById("team-lbl").style.color=S.team.color;
-  // Always refresh from Supabase when picking team so changes from dashboard show up
   await refreshMembers();
   const ml=document.getElementById("member-list");ml.innerHTML="";
   (cachedMembers[tid]||[]).forEach(name=>{
     const b=document.createElement("button");b.className="mbtn";
-    b.innerHTML=`<div style="width:32px;height:32px;border-radius:50%;background:${S.team.color}30;border:1px solid ${S.team.color}50;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:${S.team.color};flex-shrink:0">${name.charAt(0)}</div><span style="font-size:13px;font-weight:600;color:var(--txt)">${name}</span>`;
-    b.onclick=()=>selectMember(name);
-    ml.appendChild(b);
+    b.innerHTML=`<div style="width:30px;height:30px;border-radius:8px;background:var(--org-lt);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--org);flex-shrink:0">${name.charAt(0)}</div><span style="font-size:13px;font-weight:500;color:var(--txt)">${name}</span>`;
+    b.onclick=()=>selectMember(name);ml.appendChild(b);
   });
   goStep("member");
 }
-
 async function selectMember(name){
   S.user=name;
   document.getElementById("proj-title").textContent=name+"'s Projects";
-  document.getElementById("proj-sub").textContent=S.team.emoji+" Team "+S.team.name+" · P1 = highest priority · max 8";
-  document.getElementById("proj-sub").style.color=S.team.color;
+  document.getElementById("proj-sub").textContent=(S.team?.emoji||"")+" Team "+(S.team?.name||"")+" · P1 = highest · max 8";
   document.getElementById("pinputs").innerHTML="";
   document.getElementById("badd").style.display="";
   document.getElementById("assigned-banner").style.display="none";
   document.getElementById("prev-section").style.display="none";
+  document.getElementById("new-proj-label").textContent="Today's Projects";
   goStep("projects");
-
-  // Load previous projects
-  const prev=getPrevProjects();
+  const prev=getPrev();
   if(prev.length>0){
-    const ps=document.getElementById("prev-section");
-    const pl=document.getElementById("prev-list");
-    ps.style.display="block";
-    pl.innerHTML=prev.map((p,i)=>`
-      <div class="prev-item" id="prev-${i}" onclick="togglePrev(${i},'${p.name}','${p.prio}')">
-        <div style="width:16px;height:16px;border-radius:4px;border:2px solid var(--bdr);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px" id="prev-chk-${i}"></div>
-        <span style="font-size:12px;font-weight:500;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
-        <select class="psel" style="font-size:10px;padding:4px 6px" id="prev-prio-${i}" onclick="event.stopPropagation()" onchange="updatePrevPrio(${i})">
+    document.getElementById("prev-section").style.display="block";
+    document.getElementById("prev-list").innerHTML=prev.map((p,i)=>`
+      <div class="prev-item" id="prev-${i}" onclick="togglePrev(${i})">
+        <div id="prev-chk-${i}" style="width:16px;height:16px;border-radius:4px;border:2px solid var(--bdr);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px"></div>
+        <span style="font-size:12px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${dispName(p.name)}</span>
+        <select class="psel" id="prev-prio-${i}" onclick="event.stopPropagation()" style="font-size:10px;padding:3px 6px">
           <option value="P1" ${p.prio==="P1"?"selected":""}>P1</option>
           <option value="P2" ${p.prio==="P2"?"selected":""}>P2</option>
           <option value="P3" ${p.prio==="P3"?"selected":""}>P3</option>
@@ -798,218 +797,106 @@ async function selectMember(name){
       </div>`).join("");
     document.getElementById("new-proj-label").textContent="Add New Projects";
   }
-
-  // Load assigned from Supabase
   const today=new Date().toISOString().split("T")[0];
   const assigned=await supa("assigned_projects",`?person=eq.${encodeURIComponent(name)}&date=eq.${today}&select=*`);
   if(assigned&&assigned.length>0){
     assigned.forEach(p=>addPI(p.project,p.priority||"P2"));
-    const b=document.getElementById("assigned-banner");
-    b.style.display="block";
-    b.textContent=`📋 ${assigned.length} project(s) pre-loaded from manager`;
-  } else {
-    addPI();
-  }
+    const b=document.getElementById("assigned-banner");b.style.display="block";b.textContent=`📋 ${assigned.length} project(s) pre-loaded from manager`;
+  }else addPI();
   updateSBtn();
 }
-
-const prevSelected=new Set();
-function togglePrev(i, name, prio){
-  const item=document.getElementById(`prev-${i}`);
-  const chk=document.getElementById(`prev-chk-${i}`);
-  if(prevSelected.has(i)){
-    prevSelected.delete(i);
-    item.classList.remove("selected");
-    chk.style.cssText="border:2px solid var(--bdr);background:transparent;";
-    chk.textContent="";
-  }else{
-    prevSelected.add(i);
-    item.classList.add("selected");
-    chk.style.cssText=`border:2px solid var(--org);background:var(--org);`;
-    chk.textContent="✓";chk.style.color="#fff";chk.style.fontSize="9px";
-  }
+const prevSel=new Set();
+function togglePrev(i){
+  const item=document.getElementById(`prev-${i}`),chk=document.getElementById(`prev-chk-${i}`);
+  if(prevSel.has(i)){prevSel.delete(i);item.classList.remove("selected");chk.style.cssText="border:2px solid var(--bdr);background:transparent;";chk.textContent="";}
+  else{prevSel.add(i);item.classList.add("selected");chk.style.cssText="border:2px solid var(--org);background:var(--org);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;";chk.textContent="✓";}
 }
-function updatePrevPrio(i){} // priority updated via select directly
-
-function goStep(step){
-  ["team","member","projects"].forEach(s=>document.getElementById("s-"+s).style.display=s===step?"block":"none");
-  if(step==="projects") prevSelected.clear();
-}
-
+function goStep(step){["team","member","projects"].forEach(s=>document.getElementById("s-"+s).style.display=s===step?"block":"none");if(step==="projects")prevSel.clear();}
 function addPI(val="",prio="P2"){
-  const c=document.getElementById("pinputs"),n=c.children.length;
-  if(n>=8)return;
-  const row=document.createElement("div");row.className="prow";
-  const id="pi-"+Date.now();
-  row.innerHTML=`<span class="pnum">${n+1}</span>
-    <input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="60"/>
-    <select class="psel" id="pr-${id}">
-      <option value="P1" ${prio==="P1"?"selected":""}>P1</option>
-      <option value="P2" ${prio==="P2"?"selected":""}>P2</option>
-      <option value="P3" ${prio==="P3"?"selected":""}>P3</option>
-    </select>
-    <button class="prm" onclick="removePI(this)">×</button>`;
-  c.appendChild(row);
-  if(!val) document.getElementById(id).focus();
+  const c=document.getElementById("pinputs"),n=c.children.length;if(n>=8)return;
+  const row=document.createElement("div");row.className="prow";const id="pi-"+Date.now();
+  row.innerHTML=`<span class="pnum">${n+1}</span><input class="pinp" id="${id}" placeholder="Project name…" value="${val}" maxlength="80"/><select class="psel" id="pr-${id}"><option value="P1" ${prio==="P1"?"selected":""}>P1</option><option value="P2" ${prio==="P2"?"selected":""}>P2</option><option value="P3" ${prio==="P3"?"selected":""}>P3</option></select><button class="prm" onclick="removePI(this)">×</button>`;
+  c.appendChild(row);if(!val)document.getElementById(id).focus();
   document.getElementById(id).addEventListener("input",()=>{checkDups();updateSBtn();});
-  if(c.children.length>=8) document.getElementById("badd").style.display="none";
-  updateSBtn();
+  if(c.children.length>=8)document.getElementById("badd").style.display="none";updateSBtn();
 }
-
 function removePI(btn){
-  const c=document.getElementById("pinputs");
-  btn.closest(".prow").remove();
+  const c=document.getElementById("pinputs");btn.closest(".prow").remove();
   Array.from(c.children).forEach((r,i)=>r.querySelector(".pnum").textContent=i+1);
-  document.getElementById("badd").style.display="";
-  checkDups();updateSBtn();
+  document.getElementById("badd").style.display="";checkDups();updateSBtn();
 }
-
 function checkDups(){
   const inputs=Array.from(document.querySelectorAll(".pinp"));
-  const vals=inputs.map(i=>i.value.trim().toLowerCase());
-  const warn=document.getElementById("dup-warn");
-  let hasDup=false;
+  const vals=inputs.map(i=>i.value.trim().toLowerCase());let hasDup=false;
   inputs.forEach(inp=>{const v=inp.value.trim().toLowerCase();if(v&&vals.filter(x=>x===v).length>1){inp.classList.add("dup");hasDup=true;}else inp.classList.remove("dup");});
-  warn.style.display=hasDup?"block":"none";
-  return hasDup;
+  document.getElementById("dup-warn").style.display=hasDup?"block":"none";return hasDup;
 }
-
 function updateSBtn(){
-  const newProjs=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean);
-  const hasDup=checkDups();
-  const total=newProjs.length+prevSelected.size;
-  const btn=document.getElementById("bstart");
-  if(btn) btn.disabled=total===0||hasDup;
+  const n=Array.from(document.querySelectorAll(".pinp")).map(i=>i.value.trim()).filter(Boolean).length;
+  const btn=document.getElementById("bstart");if(btn)btn.disabled=(n+prevSel.size===0||checkDups());
 }
-
 function startDay(){
-  // Collect previous selected projects
-  const prevData=getPrevProjects();
-  const selectedPrev=[...prevSelected].map(i=>{
-    const prio=document.getElementById(`prev-prio-${i}`)?.value||prevData[i]?.prio||"P2";
-    return{name:prevData[i].name,prio};
-  });
-  // Collect new projects
-  const rows=Array.from(document.getElementById("pinputs").children);
-  const newProjs=rows.map(r=>{
-    const inp=r.querySelector(".pinp"),sel=r.querySelector(".psel");
-    return{name:inp.value.trim(),prio:sel?sel.value:"P2"};
-  }).filter(p=>p.name);
-  const allProjs=[...selectedPrev,...newProjs];
-  if(!S.user||allProjs.length===0) return;
-
-  PROJECTS=allProjs.map((p,i)=>({
-    id:"p"+i, name:p.name,
-    short:(()=>{ const d=dispName(p.name); return d.length>16?d.substring(0,14)+"…":d; })(),
-    color:PCOLS[i%PCOLS.length], prio:p.prio
-  }));
-  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
-  PROJECTS.forEach((p,i)=>p.id="p"+i);
+  const prevData=getPrev();
+  const selPrev=[...prevSel].map(i=>({name:prevData[i].name,prio:document.getElementById(`prev-prio-${i}`)?.value||prevData[i].prio||"P2"}));
+  const newP=Array.from(document.getElementById("pinputs").children).map(r=>{const inp=r.querySelector(".pinp"),sel=r.querySelector(".psel");return{name:inp.value.trim(),prio:sel?sel.value:"P2"};}).filter(p=>p.name);
+  const all=[...selPrev,...newP];if(!S.user||all.length===0)return;
+  PROJECTS=all.map((p,i)=>{const dn=dispName(p.name);return{id:"p"+i,name:p.name,short:dn.length>16?dn.substring(0,14)+"…":dn,color:PCOLS[i%PCOLS.length],prio:p.prio};});
+  PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));PROJECTS.forEach((p,i)=>p.id="p"+i);
   S.active=PROJECTS[0].id;
-
   document.getElementById("setup").style.display="none";
   document.getElementById("app").style.display="flex";
   showBadge();startSW(S.active);save();renderAll();startPolling();
 }
-
 function showBadge(){
   document.getElementById("hname").textContent=S.user;
-  if(S.team){
-    const b=document.getElementById("hbadge");
-    b.style.display="inline";b.textContent=S.team.emoji+" "+S.team.name;
-    b.style.background=S.team.color+"25";b.style.color=S.team.color;
-    b.style.border=`1px solid ${S.team.color}50`;
-  }
+  if(S.team){const b=document.getElementById("hbadge");b.style.display="inline";b.textContent=S.team.emoji+" "+S.team.name;b.style.background=S.team.color+"18";b.style.color=S.team.color;b.style.border=`1.5px solid ${S.team.color}40`;}
 }
-
 function resetDay(){
-  if(!confirm("Start a new day? Current progress will be cleared.")) return;
-  savePrevProjects();
-  localStorage.removeItem(STORE_KEY);
-  PROJECTS=[];
-  Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));
-  if(pollInterval) clearInterval(pollInterval);
-  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null});
-  prevSelected.clear();
-  document.getElementById("pinputs").innerHTML="";
-  document.getElementById("badd").style.display="";
-  document.getElementById("prev-section").style.display="none";
-  document.getElementById("new-proj-label").textContent="Today's Projects";
-  goStep("team");
-  document.getElementById("app").style.display="none";
-  document.getElementById("setup").style.display="flex";
-  initSetup();
+  if(!confirm("Start a new day?"))return;savePrev();localStorage.removeItem(STORE_KEY);PROJECTS=[];
+  Object.keys(S.swI).forEach(k=>clearInterval(S.swI[k]));if(pollInterval)clearInterval(pollInterval);
+  Object.assign(S,{checks:{},counts:{},notes:{},active:null,completed:{},allDone:false,swE:{},swR:{},swI:{},actLog:[],user:"",team:null,noteModal:null,closeModal:null});
+  prevSel.clear();["pinputs","prev-list"].forEach(id=>document.getElementById(id).innerHTML="");
+  document.getElementById("badd").style.display="";document.getElementById("prev-section").style.display="none";
+  document.getElementById("new-proj-label").textContent="Today's Projects";goStep("team");
+  document.getElementById("app").style.display="none";document.getElementById("setup").style.display="flex";initSetup();
 }
 
 // ── POLLING ───────────────────────────────────────────────────────────────────
-let pollInterval=null, seenCmtIds=new Set();
-
+let pollInterval=null,seenCmtIds=new Set();
 async function pollAssignments(){
-  if(!S.user) return;
-  const today=new Date().toISOString().split("T")[0];
+  if(!S.user)return;const today=new Date().toISOString().split("T")[0];
   const assigned=await supa("assigned_projects",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*`);
-  if(!assigned||assigned.length===0) return;
+  if(!assigned||assigned.length===0)return;
   let added=0;
   assigned.forEach(a=>{
     if(!PROJECTS.find(p=>p.name===a.project)){
-      const newId="pa_"+Date.now()+"_"+Math.random().toString(36).substr(2,4);
-      const dn=dispName(a.project);PROJECTS.push({id:newId,name:a.project,short:dn.length>16?dn.substring(0,14)+"…":dn,color:PCOLS[PROJECTS.length%PCOLS.length],prio:a.priority||"P2"});
-      added++;
+      const dn=dispName(a.project);
+      PROJECTS.push({id:"pa_"+Date.now()+"_"+Math.random().toString(36).substr(2,4),name:a.project,short:dn.length>16?dn.substring(0,14)+"…":dn,color:PCOLS[PROJECTS.length%PCOLS.length],prio:a.priority||"P2"});added++;
     }
   });
   if(added>0){
-    PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));PROJECTS.forEach((p,i)=>p.id="p"+i);
-    showToast(`📋 ${added} new project(s) assigned!`,"success");
-    playSound("project");logAct("📋",`${added} project(s) assigned by manager`);
-    save();renderAll();
+    PROJECTS.sort((a,b)=>a.prio.localeCompare(b.prio));
+    showToast(`📋 ${added} project(s) assigned!`,"success");playSound("project");logAct("📋",`${added} assigned by manager`);save();renderAll();
   }
 }
-
 async function pollComments(){
-  if(!S.user) return;
-  const today=new Date().toISOString().split("T")[0];
+  if(!S.user)return;const today=new Date().toISOString().split("T")[0];
   const data=await supa("comments",`?person=eq.${encodeURIComponent(S.user)}&date=eq.${today}&select=*&order=created_at.desc`);
-  if(!data||data.length===0) return;
-  const panel=document.getElementById("cmts-panel");
-  const feed=document.getElementById("cmts-feed");
-  const badge=document.getElementById("cmt-badge");
+  if(!data||data.length===0)return;
+  const panel=document.getElementById("cmts-panel"),feed=document.getElementById("cmts-feed"),badge=document.getElementById("cmt-badge");
   panel.style.display="block";badge.textContent=data.length;
-  data.forEach(c=>{
-    if(!seenCmtIds.has(c.id)){seenCmtIds.add(c.id);if(seenCmtIds.size>0)showCmtPopup(c.manager,c.comment);}
-  });
-  feed.innerHTML=data.map(c=>`
-    <div style="padding:8px 10px;border-bottom:1px solid var(--bdr)">
-      <div style="font-size:10px;font-weight:700;color:var(--blu);margin-bottom:2px">${c.manager}</div>
-      <div style="font-size:11px;color:var(--txt2);line-height:1.4">${c.comment}</div>
-      <div style="font-size:9px;color:var(--txt3);margin-top:2px">${new Date(c.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div>
-    </div>`).join("");
+  data.forEach(c=>{if(!seenCmtIds.has(c.id)){seenCmtIds.add(c.id);showCmtPopup(c.manager,c.comment);}});
+  feed.innerHTML=data.map(c=>`<div style="padding:8px 10px;border-bottom:1px solid var(--bdr)"><div style="font-size:10px;font-weight:600;color:var(--blu);margin-bottom:2px">${c.manager}</div><div style="font-size:11px;color:var(--txt2);line-height:1.4">${c.comment}</div><div style="font-size:9px;color:var(--txt3);margin-top:2px">${new Date(c.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div></div>`).join("");
 }
-
 function showCmtPopup(manager,comment){
-  const el=document.createElement("div");
-  el.style.cssText="position:fixed;top:62px;right:16px;background:var(--sur);border:1px solid var(--blu);border-radius:12px;padding:12px 16px;max-width:280px;z-index:500;box-shadow:0 8px 24px rgba(59,130,246,.25);animation:slideRight .4s ease";
-  el.innerHTML=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span>💬</span><span style="font-size:11px;font-weight:700;color:var(--blu)">Message from ${manager}</span><button onclick="this.parentNode.parentNode.remove()" style="margin-left:auto;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px">✕</button></div><div style="font-size:11px;color:var(--txt2);line-height:1.5">${comment}</div>`;
-  document.body.appendChild(el);
-  playSound("message");
-  setTimeout(()=>{if(el.parentNode){el.style.animation="fadeOut .3s ease forwards";setTimeout(()=>el.remove(),300);}},6000);
+  const el=document.createElement("div");el.style.cssText="position:fixed;top:62px;right:16px;background:var(--sur);border:1.5px solid var(--blu);border-radius:12px;padding:12px 16px;max-width:280px;z-index:500;box-shadow:var(--shadow-md);animation:fadeIn .3s ease";
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--blu)">💬 From ${manager}</span><button onclick="this.parentNode.parentNode.remove()" style="margin-left:auto;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:14px">×</button></div><div style="font-size:11px;color:var(--txt2);line-height:1.5">${comment}</div>`;
+  document.body.appendChild(el);playSound("message");
+  setTimeout(()=>{if(el.parentNode){el.style.animation="fadeOut .25s ease forwards";setTimeout(()=>el.remove(),250);}},6000);
 }
-
-function startPolling(){
-  if(pollInterval)clearInterval(pollInterval);
-  pollInterval=setInterval(pollAssignments,60000);
-  setInterval(pollComments,30000);
-  setTimeout(pollComments,2000);
-}
-
-function playSound(type){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);
-    if(type==="message"){o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(1100,ctx.currentTime+.1);g.gain.setValueAtTime(.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o.start(ctx.currentTime);o.stop(ctx.currentTime+.4);}
-    else{o.frequency.setValueAtTime(660,ctx.currentTime);o.frequency.setValueAtTime(880,ctx.currentTime+.15);g.gain.setValueAtTime(.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5);o.start(ctx.currentTime);o.stop(ctx.currentTime+.5);}
-  }catch{}
-}
+function startPolling(){if(pollInterval)clearInterval(pollInterval);pollInterval=setInterval(pollAssignments,60000);setInterval(pollComments,30000);setTimeout(pollComments,2000);}
+function playSound(type){try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);if(type==="message"){o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(1100,ctx.currentTime+.1);g.gain.setValueAtTime(.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o.start(ctx.currentTime);o.stop(ctx.currentTime+.4);}else{o.frequency.setValueAtTime(660,ctx.currentTime);o.frequency.setValueAtTime(880,ctx.currentTime+.15);g.gain.setValueAtTime(.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5);o.start(ctx.currentTime);o.stop(ctx.currentTime+.5);}
+}catch{}}
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll(){
@@ -1020,210 +907,21 @@ function renderAll(){
 function renderLeft(){
   const list=document.getElementById("plist");list.innerHTML="";
   PROJECTS.forEach(proj=>{
-    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length;
-    const todo=ACTIONS.length-done,pct=Math.round(done/ACTIONS.length*100);
-    const isAct=S.active===proj.id,allDone=done===ACTIONS.length;
-    const d=document.createElement("div");d.className="pcard";
-    d.style.cssText=`border-left-color:${allDone?"var(--grn)":isAct?proj.color:"transparent"};border-color:${isAct?proj.color+"60":"var(--bdr)"};background:${isAct?`${proj.color}12`:"rgba(255,255,255,.01)"};box-shadow:${isAct?`0 0 12px ${proj.color}18`:"none"};animation:${allDone?"glow 2s infinite":"none"}`;
-    const icons=ACTIONS.map(a=>{const k=`${proj.id}_${a.id}`;const cnt=S.counts[k]||0,chk=S.checks[k];const hitTgt=cnt>=a.target;return chk&&hitTgt?`<span style="color:var(--grn);font-size:7px">✓</span>`:chk?`<span style="color:var(--ylw);font-size:7px">◑</span>`:cnt>0?`<span style="color:var(--ylw);font-size:7px">◑</span>`:`<span style="color:var(--bdr);font-size:7px">○</span>`;}).join("");
+    const pct=calcPct(proj.id),isAct=S.active===proj.id,allDone=pct===100;
+    const todo=CORE_ACTIONS.filter(a=>!S.checks[`${proj.id}_${a.id}`]).length;
+    const d=document.createElement("div");d.className="pcard"+(isAct?" active":"");
+    d.style.cssText=`border-left-color:${allDone?"var(--grn)":isAct?proj.color:"transparent"};${isAct?`border-color:${proj.color}60;background:${proj.color}08;`:""}`;
+    const icons=CORE_ACTIONS.map(a=>{const k=`${proj.id}_${a.id}`,c=S.counts[k]||0,chk=S.checks[k];return chk?`<span style="color:var(--grn);font-size:7px">●</span>`:c>0?`<span style="color:var(--ylw);font-size:7px">◑</span>`:`<span style="color:var(--txt4);font-size:7px">○</span>`;}).join("");
     d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
       <div style="display:flex;align-items:center;gap:5px;flex:1;min-width:0">
         <span class="pb pb-${proj.prio}">${proj.prio}</span>
         <span style="font-size:11px;font-weight:600;color:${isAct?proj.color:allDone?"var(--grn)":"var(--txt2)"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proj.short}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-        <span style="font-size:11px;font-weight:700;color:${allDone?"var(--grn)":todo>0?"var(--org)":"var(--txt3)"}">${allDone?"✓":todo}</span>
-        <button onclick="event.stopPropagation();removeProject('${proj.id}')" style="width:16px;height:16px;border-radius:3px;border:none;background:rgba(239,68,68,.15);color:#F87171;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;opacity:0.6" onmouseover="this.style.opacity='1';this.style.background='rgba(239,68,68,.35)'" onmouseout="this.style.opacity='0.6';this.style.background='rgba(239,68,68,.15)'">×</button>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:4px">
+        <span style="font-size:10px;font-weight:600;color:${allDone?"var(--grn)":todo>0?"var(--org)":"var(--txt3)"}">${allDone?"✓":todo}</span>
+        <button onclick="event.stopPropagation();openCloseProject('${proj.id}')" title="Close project" style="width:18px;height:18px;border-radius:4px;border:1px solid var(--bdr);background:transparent;color:var(--txt3);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.borderColor='var(--grn)';this.style.color='var(--grn)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--txt3)'">✓</button>
+        <button onclick="event.stopPropagation();removeProject('${proj.id}')" title="Remove project" style="width:18px;height:18px;border-radius:4px;border:1px solid var(--bdr);background:transparent;color:var(--txt3);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.color='var(--txt3)'">×</button>
       </div>
     </div>
     <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:5px">
-      <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;gap:1px">${icons}</div>
-      <span id="swl-${proj.id}" style="font-size:9px;color:${S.swR[proj.id]?proj.color:"var(--txt3)"};font-family:'Syne',sans-serif;font-weight:700">${fmtT(S.swE[proj.id]||0)}</span>
-    </div>`;
-    d.onclick=()=>switchProject(proj.id);
-    list.appendChild(d);
-  });
-
-  const tl=document.getElementById("totals");tl.innerHTML="";let any=false;
-  ACTIONS.forEach(a=>{const t=PROJECTS.reduce((s,p)=>s+(S.counts[`${p.id}_${a.id}`]||0),0);if(t>0){any=true;tl.innerHTML+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt2)">${a.emoji} ${a.name}</span><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--org)">${t}</span></div>`;}});
-  if(!any)tl.innerHTML=`<div style="font-size:11px;color:var(--txt3);font-style:italic">No activity yet</div>`;
-}
-
-function renderCenter(){renderProjHeader();renderActions();}
-
-function renderProjHeader(){
-  const proj=PROJECTS.find(p=>p.id===S.active);if(!proj)return;
-  const done=ACTIONS.filter(a=>S.checks[`${S.active}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),C=(2*Math.PI*22).toFixed(1);
-  document.getElementById("phdr").innerHTML=`<div style="background:${proj.color}10;border:1px solid ${proj.color}25;border-radius:12px;padding:11px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="position:relative;width:52px;height:52px;flex-shrink:0">
-        <svg width="52" height="52" style="transform:rotate(-90deg);position:absolute">
-          <circle cx="26" cy="26" r="22" fill="none" stroke="var(--bdr)" stroke-width="5"/>
-          <circle cx="26" cy="26" r="22" fill="none" stroke="${proj.color}" stroke-width="5" stroke-dasharray="${C}" stroke-dashoffset="${(C-(pct/100)*C).toFixed(1)}" style="transition:stroke-dashoffset .5s ease" stroke-linecap="round"/>
-        </svg>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--txt)">${pct}%</div>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="pb pb-${proj.prio}">${proj.prio}</span>
-          <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--txt)">${dispName(proj.name)}</span>
-        </div>
-        <div style="font-size:10px;color:var(--txt3);margin-top:3px">${done}/${ACTIONS.length} actions · ${ACTIONS.filter(a=>(S.counts[S.active+"_"+a.id]||0)>=a.target).length} targets · <span style="color:var(--org)">⏱ auto-tracking</span></div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div style="display:flex;align-items:center;gap:6px;background:var(--sur2);border-radius:8px;padding:6px 10px;border:1px solid var(--bdr)">
-        <span id="swc" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${S.swR[proj.id]?proj.color:"var(--txt)"};min-width:50px;text-align:center">${fmtT(S.swE[proj.id]||0)}</span>
-        <button onclick="resetSW('${proj.id}')" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--bdr);cursor:pointer;background:transparent;color:var(--txt3);font-size:10px;display:flex;align-items:center;justify-content:center">↺</button>
-      </div>
-      <button onclick="notifyProj('${proj.id}')" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:7px;padding:6px 11px;color:#A78BFA;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">⚡ Notify Slack</button>
-    </div>
-  </div>`;
-}
-
-function renderActions(){
-  const al=document.getElementById("alist");al.innerHTML="";
-  ACTIONS.forEach(action=>{const d=document.createElement("div");d.id=`ar-${S.active}-${action.id}`;al.appendChild(d);renderActionRow(S.active,action.id);});
-}
-
-function renderActionRow(pid,aid){
-  const el=document.getElementById(`ar-${pid}-${aid}`);if(!el)return;
-  const proj=PROJECTS.find(p=>p.id===pid),a=ACTIONS.find(x=>x.id===aid),key=`${pid}_${aid}`;
-  const checked=S.checks[key]||false,count=S.counts[key]||0,note=S.notes[key]||"";
-  const hitTarget=count>=a.target,pctA=Math.min(100,Math.round(count/a.target*100));
-  let rowBg,rowBdr,statusIcon;
-  if(checked&&count>0&&hitTarget){rowBg="rgba(34,197,94,.05)";rowBdr="rgba(34,197,94,.2)";statusIcon=`<span style="font-size:12px">✅</span>`;}
-  else if(checked&&count>0&&!hitTarget){rowBg="rgba(234,179,8,.05)";rowBdr="rgba(234,179,8,.2)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
-  else if(checked&&count===0){rowBg="rgba(234,179,8,.05)";rowBdr="rgba(234,179,8,.2)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
-  else if(!checked&&count>0){rowBg="rgba(234,179,8,.04)";rowBdr="rgba(234,179,8,.15)";statusIcon=`<span style="font-size:12px">🟡</span>`;}
-  else{rowBg="rgba(255,255,255,.01)";rowBdr="var(--bdr)";statusIcon=`<span style="font-size:12px;color:var(--txt3)">○</span>`;}
-
-  el.className="arow";
-  el.style.cssText=`background:${rowBg};border:1px solid ${rowBdr};border-radius:9px;margin-bottom:5px;padding:8px 12px;display:grid;grid-template-columns:22px 22px 1fr 210px 160px;align-items:center;gap:8px`;
-  el.innerHTML=`${statusIcon}
-    <div onclick="toggleCheck('${pid}','${aid}')" style="width:18px;height:18px;border-radius:4px;cursor:pointer;border:1.5px solid ${checked?proj.color:"var(--bdr)"};background:${checked?proj.color:"transparent"};display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;transition:all .15s">${checked?"✓":""}</div>
-    <div>
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
-        <span style="font-size:13px">${a.emoji}</span>
-        <span style="font-size:12px;font-weight:${checked?500:600};color:${checked?"var(--txt3)":"var(--txt)"};text-decoration:${checked?"line-through":"none"}">${a.name}</span>
-        ${hitTarget?`<span style="font-size:9px;background:rgba(34,197,94,.12);color:#4ADE80;padding:1px 5px;border-radius:5px;font-weight:600;border:1px solid rgba(34,197,94,.2)">Target</span>`:""}
-      </div>
-      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${pctA}%;background:${hitTarget?"var(--grn)":pctA>=50?"var(--ylw)":proj.color};border-radius:2px;transition:width .3s"></div>
-      </div>
-      <div style="font-size:9px;color:var(--txt3);margin-top:2px">${count} / ${a.target} · ${pctA}%</div>
-      ${note?`<div style="font-size:10px;color:var(--ylw);margin-top:2px;font-style:italic">💬 "${note}"</div>`:""}
-    </div>
-    <div style="display:flex;align-items:center;gap:3px" onclick="event.stopPropagation()">
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',-1)" style="width:26px;height:24px;background:var(--sur2);color:var(--txt3);font-size:10px;border:1px solid var(--bdr)">−1</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',1)" style="width:28px;height:24px;background:${proj.color}25;color:var(--txt);font-size:10px">+1</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',5)" style="width:28px;height:24px;background:${proj.color}40;color:var(--txt);font-size:10px">+5</button>
-      <button class="cbtn" onclick="addCount('${pid}','${aid}',10)" style="width:32px;height:24px;background:${proj.color}60;color:var(--txt);font-size:10px">+10</button>
-      <input type="number" min="0" value="${count}" id="ci-${key}"
-        onchange="setCount('${pid}','${aid}',parseInt(this.value)||0)"
-        onclick="this.select()"
-        style="width:46px;height:24px;background:var(--sur2);border:1px solid var(--bdr);border-radius:5px;color:var(--org);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;outline:none;padding:0 4px"/>
-    </div>
-    <div id="nc-${key}" onclick="event.stopPropagation()"></div>`;
-  renderNote(key,note);
-}
-
-function renderNote(key,note){
-  const el=document.getElementById(`nc-${key}`);if(!el)return;
-  el.innerHTML=`<span onclick="editNote('${key}')" style="font-size:11px;color:${note?"var(--ylw)":"var(--txt3)"};font-style:${note?"normal":"italic"};cursor:text;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 0">${note||"+ note"}</span>`;
-}
-
-function editNote(key){
-  const val=prompt("Note:",S.notes[key]||"");
-  if(val!==null){S.notes[key]=val;const[p,a]=key.split("_");renderActionRow(p,a);if(val)logAct("📝","Note saved");save();}
-}
-
-function renderOv(){
-  const ol=document.getElementById("ovlist");ol.innerHTML="";
-  [...PROJECTS].sort((a,b)=>a.prio.localeCompare(b.prio)).forEach(proj=>{
-    const done=ACTIONS.filter(a=>S.checks[`${proj.id}_${a.id}`]).length,pct=Math.round(done/ACTIONS.length*100),allDone=done===ACTIONS.length,isAct=S.active===proj.id;
-    ol.innerHTML+=`<div onclick="switchProject('${proj.id}')" style="padding:7px 10px;border-bottom:1px solid var(--bdr);cursor:pointer;background:${isAct?"rgba(247,162,0,.04)":"transparent"};transition:background .15s">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-        <div style="display:flex;align-items:center;gap:5px"><span class="pb pb-${proj.prio}">${proj.prio}</span><span style="font-size:10px;font-weight:600;color:${allDone?"var(--grn)":isAct?"var(--org)":"var(--txt2)"}">${proj.short}</span></div>
-        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:${allDone?"var(--grn)":"var(--txt)"}">${pct}%</span>
-      </div>
-      <div style="height:3px;background:var(--bdr);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${pct}%;background:${allDone?"var(--grn)":proj.color};border-radius:2px;transition:width .4s"></div>
-      </div>
-    </div>`;
-  });
-}
-
-function updateGlobal(){
-  const tc=Object.values(S.checks).filter(Boolean).length,ti=PROJECTS.length*ACTIONS.length,pct=ti>0?Math.round(tc/ti*100):0;
-  const th=PROJECTS.reduce((s,p)=>s+ACTIONS.filter(a=>(S.counts[`${p.id}_${a.id}`]||0)>=a.target).length,0);
-  document.getElementById("rc").setAttribute("stroke-dashoffset",(100.5-(pct/100)*100.5).toFixed(1));
-  document.getElementById("rl").textContent=pct+"%";
-  document.getElementById("s-tgt").textContent=`${th}/${ti}`;
-  document.getElementById("s-chk").textContent=`${tc}/${ti}`;
-  document.getElementById("gbf").style.width=pct+"%";
-}
-
-function updateTimer(){
-  const now=new Date(),dl=new Date();dl.setHours(17,0,0,0);
-  const ms=dl-now,h=Math.max(0,Math.floor(ms/3600000)),m=Math.max(0,Math.floor((ms%3600000)/60000)),urgent=h<2&&ms>0;
-  const t=document.getElementById("timer");
-  t.style.borderColor=urgent?"rgba(239,68,68,.4)":"var(--bdr)";
-  t.style.background=urgent?"rgba(239,68,68,.08)":"var(--sur2)";
-  t.style.animation=urgent?"pulse 1.5s infinite":"none";
-  document.getElementById("tv").textContent=ms<=0?"⏰ UP":`${h}h${m}m`;
-  document.getElementById("tv").style.color=urgent?"var(--red)":"var(--txt)";
-  document.getElementById("tnow").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-}
-
-function logAct(emoji,text){
-  const time=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-  S.actLog.unshift({emoji,text,time});if(S.actLog.length>30)S.actLog.pop();
-  const f=document.getElementById("afeed");f.innerHTML="";
-  S.actLog.forEach((ev,i)=>f.innerHTML+=`<div style="padding:5px 10px;border-bottom:1px solid var(--bdr);display:flex;gap:5px;opacity:${Math.max(.15,1-i*.07)}"><span style="font-size:11px;flex-shrink:0">${ev.emoji}</span><div><div style="font-size:10px;color:var(--txt2);line-height:1.4">${ev.text}</div><div style="font-size:9px;color:var(--txt3);margin-top:1px">${ev.time}</div></div></div>`);
-}
-
-function fireConfetti(big=false){
-  const w=document.getElementById("cfw");w.innerHTML="";
-  const cols=["#F7A200","#E07000","#FFD60A","#EF4444","#22C55E","#3B82F6","#8B5CF6"];
-  for(let i=0;i<(big?100:60);i++){const el=document.createElement("div");el.style.cssText=`position:absolute;top:-20px;left:${Math.random()*100}%;width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?"50%":"2px"};animation:confetti ${1.5+Math.random()*1.2}s ${Math.random()*.8}s ease-in forwards`;w.appendChild(el);}
-  setTimeout(()=>w.innerHTML="",big?5000:3500);
-}
-
-function showToast(msg,type="info"){
-  const t=document.getElementById("toast");
-  t.style.background=type==="success"?"linear-gradient(135deg,#16A34A,#15803D)":type==="error"?"linear-gradient(135deg,#DC2626,#B91C1C)":"var(--sur2)";
-  t.style.color="#fff";t.textContent=msg;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),4500);
-}
-
-function showResumeBanner(){
-  const b=document.createElement("div");
-  b.style.cssText="position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border-radius:10px;padding:9px 18px;font-size:12px;font-weight:600;z-index:997;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px;animation:fadeIn .4s ease";
-  b.innerHTML=`<span>✅ Progress restored for today</span><button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.2);border:none;border-radius:5px;color:#fff;padding:1px 7px;cursor:pointer;font-size:11px">✕</button>`;
-  document.body.appendChild(b);setTimeout(()=>b.remove(),5000);
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-setInterval(updateTimer,30000);
-setInterval(()=>PROJECTS.forEach(p=>{if(S.swR[p.id])updSW(p.id);}),1000);
-
-window.addEventListener("DOMContentLoaded",async function(){
-  if(restore()){
-    document.getElementById("setup").style.display="none";
-    document.getElementById("app").style.display="flex";
-    showBadge();showResumeBanner();
-    await loadTargets();
-    startSW(S.active);
-    renderAll();startPolling();
-  } else {
-    await initSetup();
-    updateSBtn();
-  }
-});
-</script>
-</body>
-</html>
+      <div
