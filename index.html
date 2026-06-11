@@ -973,14 +973,32 @@ function renderProjHeader(){
 
 function renderActions(){
   const al=document.getElementById("alist");al.innerHTML="";
-  const coreDiv=document.createElement("div");
-  coreDiv.innerHTML=`<div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;padding:0 2px">Core Actions <span style="font-weight:400;color:var(--txt4)">(count toward %)</span></div>`;
-  CORE_ACTIONS.forEach(a=>{const d=document.createElement("div");d.id=`ar-${S.active}-${a.id}`;coreDiv.appendChild(d);renderActionRow(S.active,a.id);});
-  al.appendChild(coreDiv);
-  const optDiv=document.createElement("div");optDiv.style.marginTop="16px";
-  optDiv.innerHTML=`<div style="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;padding:0 2px">Optional Actions <span style="font-weight:400;color:var(--txt4)">(bonus — don't affect %)</span></div>`;
-  OPT_ACTIONS.forEach(a=>{const d=document.createElement("div");d.id=`ar-${S.active}-${a.id}`;optDiv.appendChild(d);renderActionRow(S.active,a.id);});
-  al.appendChild(optDiv);
+
+  // Core section
+  const coreLabel=document.createElement("div");
+  coreLabel.style.cssText="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;padding:0 2px";
+  coreLabel.innerHTML='Core Actions <span style="font-weight:400;color:var(--txt4)">(count toward %)</span>';
+  al.appendChild(coreLabel);
+
+  CORE_ACTIONS.forEach(a=>{
+    const d=document.createElement("div");
+    d.id=`ar-${S.active}-${a.id}`;
+    al.appendChild(d); // append to DOM FIRST
+    renderActionRow(S.active,a.id); // then render
+  });
+
+  // Optional section
+  const optLabel=document.createElement("div");
+  optLabel.style.cssText="font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.3px;text-transform:uppercase;margin:16px 0 8px;padding:0 2px";
+  optLabel.innerHTML='Optional Actions <span style="font-weight:400;color:var(--txt4)">(bonus — don't affect %)</span>';
+  al.appendChild(optLabel);
+
+  OPT_ACTIONS.forEach(a=>{
+    const d=document.createElement("div");
+    d.id=`ar-${S.active}-${a.id}`;
+    al.appendChild(d); // append to DOM FIRST
+    renderActionRow(S.active,a.id); // then render
+  });
 }
 
 function renderActionRow(pid,aid){
