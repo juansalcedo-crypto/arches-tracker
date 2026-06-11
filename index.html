@@ -140,10 +140,14 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
 #cfw{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
 
 /* Theme toggle */
-.theme-toggle{width:34px;height:20px;border-radius:10px;background:var(--bdr);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.theme-toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--sur);transition:transform .2s;box-shadow:var(--shadow)}
+.theme-toggle{width:44px;height:24px;border-radius:12px;background:var(--bdr);border:none;cursor:pointer;position:relative;transition:background .2s;display:flex;align-items:center;justify-content:space-between;padding:0 5px;flex-shrink:0}
+.theme-toggle .sun{font-size:11px;z-index:1;transition:opacity .2s;opacity:1;line-height:1}
+.theme-toggle .moon{font-size:11px;z-index:1;transition:opacity .2s;opacity:.3;line-height:1}
+.theme-toggle::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--sur);transition:transform .2s;box-shadow:var(--shadow)}
 [data-theme="dark"] .theme-toggle{background:var(--org)}
-[data-theme="dark"] .theme-toggle::after{transform:translateX(14px)}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(20px)}
+[data-theme="dark"] .theme-toggle .sun{opacity:.3}
+[data-theme="dark"] .theme-toggle .moon{opacity:1}
 </style>
 </head>
 <body>
@@ -227,7 +231,7 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
           <div style="font-size:10px;color:var(--org);letter-spacing:1px;margin-top:1px" id="s-date"></div>
         </div>
       </div>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark"></button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark"><span class="sun">☀️</span><span class="moon">🌙</span></button>
     </div>
     <div style="font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:16px">Select your team to get started</div>
     <button class="team-btn" onclick="selTeam('luis')">
@@ -310,7 +314,7 @@ input,button,select,textarea{font-family:'Inter',sans-serif;-webkit-font-smoothi
       <button class="hbtn hbtn-soft" onclick="toggleLunch()">🍽 Lunch</button>
       <button class="hbtn hbtn-soft" onclick="toggleMeeting()">📞 Meeting</button>
       <button class="hbtn hbtn-ghost" onclick="resetDay()">↺</button>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark"><span class="sun">☀️</span><span class="moon">🌙</span></button>
     </div>
   </div>
   <div id="gbar"><div id="gbf"></div></div>
